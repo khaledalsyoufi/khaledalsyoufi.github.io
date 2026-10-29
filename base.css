@@ -1,0 +1,343 @@
+:root {
+    --bg-color: #0D0D0D;
+    --text-color: #F4F2EE;
+    --accent-color: #66e8b7;
+    --accent-ink: #0b7a55;
+    --border-color: rgba(244, 242, 238, 0.1);
+    --lightbox-bg: rgba(10, 10, 10, 0.85);
+    --btn-color: #ffffff;
+    --btn-text-color: #000000;
+    --muted-color: rgba(244, 242, 238, 0.55);
+    --mono-font: 'Share Tech Mono', 'IBM Plex Mono', ui-monospace, monospace;
+    --sans-font: 'Instrument Sans', -apple-system, sans-serif;
+    --display-font: 'Teletactile', 'Anton', 'Instrument Sans', sans-serif;
+    --pixel-font: 'Share Tech Mono', 'IBM Plex Mono', monospace;
+    --transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    color-scheme: dark;
+}
+
+/* Light theme lives on <html> so the page background, overscroll and
+   browser UI all follow it (previously set on <body>, which left <html> dark). */
+[data-theme="light"] {
+    --bg-color: #F4F2EE;
+    --text-color: #0D0D0D;
+    --accent-color: #0b7a55;
+    --accent-ink: #0b7a55;
+    --border-color: rgba(13, 13, 13, 0.12);
+    --lightbox-bg: rgba(244, 242, 238, 0.92);
+    --btn-color: #0b7a55;
+    --btn-text-color: #FFFFFF;
+    --muted-color: rgba(13, 13, 13, 0.6);
+    color-scheme: light;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* The custom cursor is opt-in: JS adds .has-custom-cursor on <body> only when
+   a fine pointer is present. Without JS the native cursor stays. */
+body.has-custom-cursor,
+body.has-custom-cursor * {
+    cursor: none;
+}
+
+body.has-custom-cursor input,
+body.has-custom-cursor textarea,
+body.has-custom-cursor select {
+    cursor: auto;
+}
+
+html {
+    scroll-behavior: smooth;
+    background-color: var(--bg-color);
+    scrollbar-color: var(--border-color) transparent;
+    scrollbar-width: thin;
+}
+
+body {
+    font-family: var(--sans-font);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.5;
+    transition: background-color 0.5s ease, color 0.5s ease;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+body.view-mode {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Keeps the footer at the bottom on short views instead of floating mid-page */
+body.view-mode main {
+    flex: 1 0 auto;
+}
+
+body.no-scroll {
+    overflow: hidden !important;
+}
+
+.mono {
+    font-family: var(--mono-font);
+    text-transform: uppercase;
+    /* 13px = 10pt: Apple's desktop legibility floor */
+    font-size: 0.85rem;
+    letter-spacing: 0.09em;
+}
+
+.container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 4vw;
+    position: relative;
+    z-index: 2;
+}
+
+
+
+.display-title {
+    font-family: var(--display-font);
+    font-size: clamp(2.5rem, 6.5vw, 7.5rem);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    margin-left: 0;
+    transition: color 0.4s ease, margin-left 0.4s ease;
+}
+
+.display-title:hover {
+    color: var(--accent-color);
+}
+
+.accent {
+    color: var(--accent-color);
+}
+
+.section {
+    padding: clamp(4rem, 8vw, 8rem) 0;
+    border-top: 1px solid var(--border-color);
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.19, 1, 0.22, 1), transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.section.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+body.view-mode .page-view {
+    display: none;
+}
+
+body.view-mode .page-view.is-visible {
+    display: block;
+    animation: viewFadeIn 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+body.view-mode .hero.page-view.is-visible {
+    display: flex;
+}
+
+/* Short views are centred in the viewport instead of hugging the top edge */
+body.view-mode .clients.page-view.is-visible,
+body.view-mode .contact.page-view.is-visible {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100svh - 7rem);
+}
+
+/* auto margins would otherwise shrink these containers to their content */
+body.view-mode .clients.page-view.is-visible > .container {
+    width: 100%;
+}
+
+body.view-mode .nav-links a.is-current,
+body.view-mode .logo-link.is-current {
+    color: var(--accent-color);
+}
+
+body.view-mode .nav-links a.is-current::before {
+    content: '[';
+    opacity: 1;
+    margin-right: 5px;
+}
+
+body.view-mode .nav-links a.is-current::after {
+    content: ']';
+    opacity: 1;
+    margin-left: 5px;
+}
+
+.section-label {
+    margin-bottom: clamp(2rem, 4vw, 4rem);
+    color: var(--muted-color);
+}
+
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 4px;
+    border-radius: 2px;
+}
+
+.skip-link {
+    position: fixed;
+    top: 0.5rem;
+    left: 50%;
+    transform: translate(-50%, -200%);
+    z-index: 11000;
+    background: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--accent-color);
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+.skip-link:focus {
+    transform: translate(-50%, 0);
+}
+
+.reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@keyframes viewFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+::selection {
+    background: var(--accent-color);
+    color: var(--bg-color);
+}
+
+/* Respect the user's motion preference across the whole site. */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .grid-lines,
+    .marquee-content,
+    .custom-cursor,
+    .celebrate-badge {
+        animation: none !important;
+    }
+
+    .section,
+    .reveal {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* The glass layer is decorative; interactive UI must stay above it. */
+.lens-ui-raised {
+    position: relative;
+}
+
+/* ==========================================================================
+   CRT — grey scanlines over the screen
+   ========================================================================== */
+.crt {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9990;
+    opacity: 0.9;
+    background-image: repeating-linear-gradient(
+        to bottom,
+        rgba(244, 242, 238, 0.05) 0px,
+        rgba(244, 242, 238, 0.05) 1px,
+        rgba(244, 242, 238, 0) 1px,
+        rgba(244, 242, 238, 0) 3px
+    );
+    mix-blend-mode: screen;
+    animation: crtFlicker 7s ease-in-out infinite;
+}
+
+/* the slow rolling band of a CRT refresh */
+.crt::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 34vh;
+    background: linear-gradient(
+        to bottom,
+        rgba(244, 242, 238, 0) 0%,
+        rgba(244, 242, 238, 0.035) 50%,
+        rgba(244, 242, 238, 0) 100%
+    );
+    animation: crtRoll 11s linear infinite;
+}
+
+@keyframes crtFlicker {
+    0%, 100% { opacity: 0.9; }
+    47% { opacity: 0.86; }
+    48% { opacity: 0.94; }
+}
+
+@keyframes crtRoll {
+    from { transform: translateY(-45vh); }
+    to { transform: translateY(115vh); }
+}
+
+[data-theme="light"] .crt {
+    background-image: repeating-linear-gradient(
+        to bottom,
+        rgba(13, 13, 13, 0.055) 0px,
+        rgba(13, 13, 13, 0.055) 1px,
+        rgba(13, 13, 13, 0) 1px,
+        rgba(13, 13, 13, 0) 3px
+    );
+    mix-blend-mode: multiply;
+}
+
+[data-theme="light"] .crt::after {
+    background: linear-gradient(
+        to bottom,
+        rgba(13, 13, 13, 0) 0%,
+        rgba(13, 13, 13, 0.03) 50%,
+        rgba(13, 13, 13, 0) 100%
+    );
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .crt,
+    .crt::after {
+        animation: none;
+    }
+}

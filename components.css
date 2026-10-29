@@ -1,0 +1,4606 @@
+@font-face {
+    font-family: 'Teletactile';
+    src: url('public/fonts/Teletactile.ttf') format('truetype');
+    font-weight: 400 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Custom Cursor */
+.custom-cursor {
+    position: fixed;
+    width: 72px;
+    height: 72px;
+    background-image: url('public/images/cursor.webp');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent;
+    pointer-events: none;
+    z-index: 50000;
+    transform: translate(-50%, -50%);
+    animation: rotateCursor 18s linear infinite;
+    mix-blend-mode: normal;
+    opacity: 0.9;
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.85));
+    transition: opacity 0.3s ease, filter 0.3s ease, background-image 0.5s ease, width 0.3s ease, height 0.3s ease;
+}
+
+.custom-cursor::after {
+    content: '';
+    position: absolute;
+    inset: -20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.12), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+[data-theme="light"] .custom-cursor {
+    background-image: url('public/images/cursor_light.webp');
+}
+
+[data-theme="light"] .custom-cursor::after {
+    background: radial-gradient(circle, rgba(11, 122, 85, 0.14), transparent 70%);
+}
+
+/* Only shown once JS confirms a fine pointer; keeps a native cursor as fallback */
+.custom-cursor {
+    display: none;
+}
+
+body.has-custom-cursor .custom-cursor {
+    display: block;
+}
+
+@keyframes rotateCursor {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.custom-cursor.hover {
+    width: 96px;
+    height: 96px;
+    opacity: 1;
+    filter: drop-shadow(0 0 10px rgba(166, 255, 0, 0.35));
+}
+
+.custom-cursor.hover::after {
+    opacity: 1;
+}
+
+/* ==========================================================================
+   Center Screen VHS OSD Modal (Revealed on 3x Cassette Flip)
+   No modern pop-up scaling — authentic CRT / VHS On-Screen Display snap
+   ========================================================================== */
+.accent-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 20000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.15s steps(2, start), visibility 0.15s;
+}
+
+.accent-modal[hidden] {
+    display: none;
+}
+
+.accent-modal.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.accent-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    background-image: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.4) 0px,
+        rgba(0, 0, 0, 0.4) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+}
+
+/* Authentic VHS Cassette Label / CRT OSD Rectangle */
+.accent-modal-box.vhs-osd-box {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    background-color: var(--accent-color, #66e8b7);
+    background-image: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.08) 0px,
+        rgba(0, 0, 0, 0.08) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    color: #000000;
+    border: 2.5px solid #000000;
+    border-radius: 0 !important;
+    outline: 1.5px solid rgba(0, 0, 0, 0.4);
+    outline-offset: -6px;
+    padding: 1.85rem 1.85rem 1.65rem;
+    box-shadow: 10px 10px 0px #000000;
+    transform: none;
+    z-index: 1;
+}
+
+/* Sudden VHS CRT phosphor snap instead of modern web pop-up scale */
+.accent-modal.is-open .accent-modal-box.vhs-osd-box {
+    animation: vhsOsdSnap 0.18s steps(3, start);
+}
+
+@keyframes vhsOsdSnap {
+    0% {
+        opacity: 0;
+        filter: brightness(2.2) contrast(1.6);
+        transform: translateY(-2px);
+    }
+    40% {
+        opacity: 0.9;
+        filter: brightness(0.85) contrast(1.3);
+        transform: translateY(2px);
+    }
+    100% {
+        opacity: 1;
+        filter: none;
+        transform: translateY(0);
+    }
+}
+
+.modal-body {
+    margin-bottom: 1.55rem;
+}
+
+.modal-subtag {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: #000000;
+    opacity: 0.88;
+    margin-bottom: 0.5rem;
+}
+
+/* Uses the authentic headline font ('Teletactile') */
+.modal-title {
+    font-family: 'Teletactile', var(--display-font, sans-serif);
+    font-size: clamp(1.45rem, 3.4vw, 2.15rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #000000;
+    margin-bottom: 0.75rem;
+}
+
+.modal-desc {
+    font-family: var(--pixel-font, monospace);
+    font-size: 0.76rem;
+    font-weight: 700;
+    line-height: 1.5;
+    color: rgba(0, 0, 0, 0.88);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.modal-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+    margin-bottom: 0;
+}
+
+.modal-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 18px;
+    font-family: var(--pixel-font, monospace);
+    font-size: 0.92rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border-radius: 0 !important;
+    border: 2px solid #000000 !important;
+    background: transparent !important;
+    color: #000000 !important;
+    box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease, transform 0.12s ease, box-shadow 0.12s ease;
+    user-select: none;
+    outline: none !important;
+}
+
+.modal-btn span {
+    color: inherit;
+    font-family: inherit;
+}
+
+.modal-btn:hover {
+    background: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Selected button state: actively swaps to black background with accent text */
+.modal-btn.is-selected {
+    background: #000000 !important;
+    color: var(--accent-color, #66e8b7) !important;
+    border-color: #000000 !important;
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.45);
+}
+
+.modal-btn.is-selected:hover {
+    background: #151515 !important;
+    color: var(--accent-color, #66e8b7) !important;
+}
+
+.modal-btn:focus,
+.modal-btn:focus-visible {
+    outline: none !important;
+}
+
+/* ==========================================================================
+   Clean Minimalist Segmented Tick Loader (matching website background colors)
+   ========================================================================== */
+.loader-screen {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0d0d0c;
+    background-image:
+        radial-gradient(ellipse at 50% 48%,
+            transparent 30%,
+            rgba(0, 0, 0, 0.55) 60%,
+            rgba(0, 0, 0, 0.86) 82%,
+            #000000 100%),
+        radial-gradient(ellipse 85% 62% at 50% 0%,
+            #3a3a37 0%,
+            #2a2a28 26%,
+            #191918 58%,
+            #0e0e0d 86%,
+            #080807 100%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 9900;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    box-sizing: border-box;
+    transition: opacity 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.45s ease;
+}
+
+.loader-screen:not(.hidden) {
+    transition: opacity 0.18s ease-out, visibility 0.18s ease-out;
+}
+
+.loader-screen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 320px 120px;
+}
+
+.loader-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.45s ease;
+}
+
+/* Bottom Loading Bar Container */
+.loader-bottom-bar {
+    position: relative;
+    width: 100%;
+    padding: 0 clamp(1.8rem, 4.5vw, 4.2rem) clamp(2rem, 4.5vh, 3.8rem);
+    box-sizing: border-box;
+}
+
+/* Meta Row: "LOADING" on left, "100" on right */
+.loader-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.65rem;
+    font-family: var(--mono-font), 'Share Tech Mono', monospace;
+    font-size: clamp(0.72rem, 0.95vw, 0.85rem);
+    color: #a4a5a8;
+    letter-spacing: 0.18em;
+    user-select: none;
+}
+
+.loader-label {
+    font-weight: 600;
+}
+
+.loader-percent-wrap {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: var(--accent-color);
+    text-shadow: 0 0 10px rgba(102, 232, 183, 0.35);
+}
+
+/* Segmented Tally / Tick-Mark Track */
+.loader-ticks-track {
+    position: relative;
+    width: 100%;
+    height: 13px;
+    background-image: repeating-linear-gradient(
+        90deg,
+        rgba(102, 232, 183, 0.16) 0px,
+        rgba(102, 232, 183, 0.16) 2px,
+        transparent 2px,
+        transparent 6px
+    );
+    overflow: hidden;
+}
+
+/* Active Bright Fill in Accent Color */
+.loader-ticks-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background-image: repeating-linear-gradient(
+        90deg,
+        var(--accent-color) 0px,
+        var(--accent-color) 2px,
+        transparent 2px,
+        transparent 6px
+    );
+    box-shadow: 0 0 12px rgba(102, 232, 183, 0.65);
+    transition: width 0.05s linear;
+}
+
+/* Intro Overlay */
+#intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-color);
+    z-index: 9998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.intro-title {
+    font-size: clamp(3rem, 8vw, 10rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+    color: var(--text-color);
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(2.5);
+    transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease;
+    white-space: normal;
+    z-index: 1;
+}
+
+/* Corner Navigation */
+.corner-nav {
+    /* sits on the glass so the navigation stays crisp */
+    
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    padding: 3vw 4vw;
+    pointer-events: none;
+    z-index: 960;
+}
+
+.nav-tl, .nav-tr, .nav-bl, .nav-br {
+    position: absolute;
+    pointer-events: auto;
+}
+
+.nav-tl { top: 3vw; left: 4vw; }
+.nav-tr { top: 3vw; right: 4vw; }
+.nav-tc {
+    position: absolute;
+    top: 3vw;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: auto;
+    z-index: 200;
+}
+.nav-bl { bottom: 3vw; left: 4vw; }
+.nav-br { bottom: 3vw; right: 4vw; }
+
+/* Soft corner scrim so the links stay legible when work scrolls underneath */
+.nav-br,
+.nav-bl {
+    padding: 1.4rem 1.5rem;
+    margin: -1.4rem -1.5rem;
+}
+
+.nav-br {
+    background: radial-gradient(130% 130% at 100% 100%, rgba(13, 13, 13, 0.78) 0%, rgba(13, 13, 13, 0.42) 48%, transparent 78%);
+}
+
+.nav-bl {
+    background: radial-gradient(130% 130% at 0% 100%, rgba(13, 13, 13, 0.66) 0%, transparent 75%);
+}
+
+[data-theme="light"] .nav-br {
+    background: radial-gradient(130% 130% at 100% 100%, rgba(244, 242, 238, 0.82) 0%, rgba(244, 242, 238, 0.45) 48%, transparent 78%);
+}
+
+[data-theme="light"] .nav-bl {
+    background: radial-gradient(130% 130% at 0% 100%, rgba(244, 242, 238, 0.72) 0%, transparent 75%);
+}
+
+.nav-tl a {
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+.main-logo {
+    height: 40px;
+    width: auto;
+    display: block;
+    filter: brightness(1.2);
+    transition: var(--transition);
+}
+
+.logo-link:hover .main-logo {
+    transform: scale(1.1);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.1rem;
+}
+
+.nav-links a {
+    display: inline-block;
+    padding: 6px 0;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: var(--transition);
+    position: relative;
+}
+
+.nav-links a::before,
+.nav-links a::after {
+    content: '';
+    color: var(--accent-color);
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.nav-links a:hover {
+    color: var(--accent-color);
+}
+
+.nav-links a:hover::before {
+    content: '[';
+    opacity: 1;
+    margin-right: 5px;
+}
+
+.nav-links a:hover::after {
+    content: ']';
+    opacity: 1;
+    margin-left: 5px;
+}
+
+/* Hero Section */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 2.5rem;
+    align-items: center;
+    width: 100%;
+}
+
+.hero-left {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 4vw;
+    min-width: 0;
+}
+
+.hero-description {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    max-width: 540px;
+    margin-top: 2rem;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.accent-bold {
+    color: var(--accent-color);
+    font-weight: 900;
+    text-decoration: underline;
+    text-decoration-color: var(--accent-color);
+    text-underline-offset: 4px;
+}
+
+.hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    margin-top: 3.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-view-projects {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0.95rem 2.2rem;
+    border-radius: 0;
+    border: 1px solid transparent;
+    color: #000000;
+    background: #ffffff;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    transition: none;
+}
+
+.btn-view-projects:hover {
+    background: var(--accent-color);
+    color: #000000;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-view-projects .arrow-icon {
+    transition: none;
+    color: currentColor;
+}
+
+.btn-view-projects:hover .arrow-icon {
+    transform: none;
+}
+
+
+.freelance-status {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--mono-font);
+}
+
+.status-label {
+    font-size: 0.85rem;
+    opacity: 0.62;
+    letter-spacing: 0.05em;
+}
+
+.status-val {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.2rem;
+}
+
+.pulse-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent-color);
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+    animation: statusPulse 1.8s infinite;
+}
+
+@keyframes statusPulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 8px rgba(0, 0, 0, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
+}
+
+/* Stats Section */
+.hero-stats {
+    display: flex;
+    align-items: center;
+    margin-top: 4rem;
+    width: 100%;
+}
+
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.stat-icon-wrapper {
+    color: var(--muted-color);
+    width: 22px;
+    height: 22px;
+    margin-bottom: 0.8rem;
+    opacity: 0.8;
+}
+
+.stat-icon {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.stat-number {
+    font-family: 'Teletactile', var(--display-font);
+    font-size: 3rem;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: var(--text-color);
+    margin-bottom: 0.6rem;
+}
+
+.stat-label {
+    font-family: var(--mono-font);
+    font-size: 0.82rem;
+    line-height: 1.4;
+    opacity: 0.65;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.stat-card-divider {
+    width: 1px;
+    height: 80px;
+    background: var(--border-color);
+    margin: 0 clamp(1.4rem, 2.4vw, 2.5rem);
+    flex-shrink: 0;
+}
+
+.hero-badge {
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+    width: 140px;
+    height: 140px;
+    z-index: 15;
+    pointer-events: none;
+    animation: slowRotate 20s linear infinite;
+    opacity: 0.7;
+}
+
+.hero-badge img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.hero-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 10;
+    transition: z-index 0.75s step-start;
+}
+
+.hero.tape-focused .hero-right,
+.hero-right:has(.is-centered) {
+    z-index: 900;
+}
+
+.hero-floating-img {
+    width: 100%;
+    max-width: 520px;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+/* Legacy hero-card rules removed in favor of 3D Cassette Tape architecture */
+
+.celebrate-badge {
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 90px;
+    height: 90px;
+    background: rgba(13, 13, 13, 0.5);
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.celebrate-badge:hover {
+    border-color: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), inset 0 1px 2px rgba(0, 0, 0, 0.3);
+    transform: scale(1.22);
+}
+
+[data-theme="light"] .celebrate-badge {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: rgba(13, 13, 13, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .celebrate-badge:hover {
+    border-color: rgba(11, 122, 85, 0.4);
+    box-shadow: 0 10px 30px rgba(11, 122, 85, 0.15), inset 0 1px 2px rgba(11, 122, 85, 0.3);
+}
+
+.celebrate-badge-text {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    animation: slowRotate 15s linear infinite;
+    color: var(--text-color);
+    font-size: 6.5px;
+}
+
+.celebrate-badge-icon {
+    color: var(--accent-color);
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.celebrate-badge-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes slowRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Services Accordion */
+.portfolio-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15vw;
+}
+
+.services-list {
+    margin-top: 4rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.service-item {
+    border-top: 1px solid var(--border-color);
+    cursor: none;
+    transition: var(--transition);
+}
+
+/* Staggered scroll-up entrance animation for Selected Works */
+@keyframes serviceItemScrollUp {
+    0% {
+        opacity: 0;
+        transform: translateY(45px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+body.view-mode .services.page-view.is-visible:not(.animate-in) .section-label,
+body.view-mode .services.page-view.is-visible:not(.animate-in) .service-item {
+    opacity: 0;
+    transform: translateY(45px);
+}
+
+.services.animate-in .section-label {
+    animation: serviceItemScrollUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.04s;
+}
+
+.services.animate-in .service-item {
+    transition: none;
+}
+
+.services.animate-in .service-item:nth-child(1) {
+    animation: serviceItemScrollUp 0.72s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.10s;
+}
+
+.services.animate-in .service-item:nth-child(2) {
+    animation: serviceItemScrollUp 0.72s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.18s;
+}
+
+.services.animate-in .service-item:nth-child(3) {
+    animation: serviceItemScrollUp 0.72s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.26s;
+}
+
+.services.animate-in .service-item:nth-child(4) {
+    animation: serviceItemScrollUp 0.72s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.34s;
+}
+
+.services.animate-in .service-item:nth-child(n+5) {
+    animation: serviceItemScrollUp 0.72s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.42s;
+}
+
+.services.animate-in.animation-done .section-label,
+.services.animate-in.animation-done .service-item {
+    animation: none;
+    transform: none;
+    opacity: 1;
+    transition: var(--transition);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.view-mode .services.page-view.is-visible:not(.animate-in) .section-label,
+    body.view-mode .services.page-view.is-visible:not(.animate-in) .service-item,
+    .services.animate-in .section-label,
+    .services.animate-in .service-item {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+
+.service-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1.5rem;
+    width: 100%;
+    padding: 2rem 0;
+    background: none;
+    border: 0;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    user-select: none;
+    transition: var(--transition);
+}
+
+.service-header:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 6px;
+}
+
+.service-title {
+    font-family: 'Teletactile', var(--display-font);
+    font-size: clamp(1.5rem, 3.4vw, 2.9rem);
+    font-weight: 400;
+    line-height: 1.14;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+}
+
+.service-toggle {
+    font-size: 1rem;
+    opacity: 0.7;
+    white-space: nowrap;
+    flex: 0 0 auto;
+    transition: var(--transition);
+}
+
+.service-title .accent {
+    color: var(--muted-color);
+}
+
+.service-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.service-item.expanded .service-toggle {
+    color: var(--accent-color);
+    opacity: 1;
+}
+
+.service-item:hover .service-title {
+    opacity: 0.82;
+}
+
+.service-details {
+    padding: 0 0 2.5rem 0;
+    max-width: 620px;
+    font-family: var(--sans-font);
+    text-transform: none;
+    font-size: 1rem;
+    line-height: 1.7;
+    letter-spacing: 0;
+    color: var(--text-color);
+    opacity: 0.75;
+}
+
+.service-visuals {
+    padding-bottom: 4rem;
+}
+
+.visual-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.visual-item {
+    display: flex;
+    flex-direction: column;
+    will-change: transform;
+}
+
+.visual-img-wrapper {
+    aspect-ratio: 1;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    position: relative;
+}
+
+.visual-item img, .visual-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), filter 0.4s ease;
+}
+
+/* The work carries the colour; the interface stays monochrome */
+.visual-item:hover img, .visual-item:hover video {
+    transform: scale(1.04);
+    filter: saturate(1.05);
+}
+
+
+
+.visual-caption {
+    margin-top: 0.7rem;
+    font-family: var(--mono-font);
+    font-size: 0.85rem;
+    color: var(--text-color);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.75;
+    transition: var(--transition);
+}
+
+/* Spec line: the real pixel dimensions of the piece, revealed on hover */
+.visual-spec {
+    display: block;
+    margin-top: 0.2rem;
+    font-family: var(--mono-font);
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    color: var(--muted-color);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.35s var(--transition), transform 0.35s var(--transition);
+}
+
+.visual-item:hover .visual-spec,
+.visual-item:focus-visible .visual-spec {
+    opacity: 1;
+    transform: none;
+}
+
+/* The measuring rule: a hairline that draws under the tile on hover */
+.visual-img-wrapper::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--accent-color);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.55s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.visual-item:hover .visual-img-wrapper::after,
+.visual-item:focus-visible .visual-img-wrapper::after {
+    transform: scaleX(1);
+}
+
+.visual-item:hover .visual-caption {
+    opacity: 1;
+}
+
+/* Info Section */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 2rem;
+}
+
+.info-sidebar {
+    grid-column: 1 / 4;
+    color: var(--accent-color);
+}
+
+.info-content {
+    grid-column: 4 / 11;
+}
+
+.large-text {
+    font-size: 2.5rem;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 3rem;
+}
+
+.skills-block {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.skill-row {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Timeline */
+.timeline-item {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border-color);
+    will-change: transform;
+}
+
+.col-date {
+    grid-column: 1 / 3;
+    color: var(--accent-color);
+}
+
+.col-role {
+    grid-column: 4 / 9;
+    font-weight: 700;
+}
+
+.col-org {
+    grid-column: 10 / 13;
+    opacity: 0.6;
+    text-align: right;
+}
+
+/* ==========================================================================
+   Clients Section — Smart TV EPG Channel Guide (Authentic Television Overlay)
+   ========================================================================== */
+.tv-epg-view {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100svh !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #030403;
+    overflow: hidden !important;
+    z-index: 50;
+    color: #ffffff;
+    font-family: var(--body-font, 'Instrument Sans', sans-serif);
+}
+
+body.view-mode .clients.page-view.tv-epg-view.is-visible {
+    display: block !important;
+    width: 100vw !important;
+    height: 100svh !important;
+    position: fixed !important;
+    inset: 0 !important;
+}
+
+/* Fullscreen Stock Imagery Backdrop & Slow-Mo Ken Burns Zoom */
+.tv-epg-backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+    pointer-events: none;
+    background: #08090a;
+}
+
+@keyframes tvSlowZoom {
+    0% {
+        transform: scale(1.0);
+    }
+    100% {
+        transform: scale(1.15);
+    }
+}
+
+.tv-backdrop-slide {
+    position: absolute;
+    inset: -6%;
+    width: 112%;
+    height: 112%;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: none !important;
+    will-change: transform, opacity;
+}
+
+.tv-backdrop-slide.is-active {
+    opacity: 0.38;
+    animation: tvSlowZoom 16s cubic-bezier(0.25, 1, 0.5, 1) infinite alternate;
+}
+
+/* Deep TV Vignette: Heavy dark gradient on left for ultra-clean readability */
+.tv-epg-overlay {
+    position: absolute;
+    inset: 0;
+    background: 
+        linear-gradient(90deg, 
+            rgba(0, 0, 0, 0.94) 0%, 
+            rgba(0, 0, 0, 0.88) 28%, 
+            rgba(0, 0, 0, 0.68) 55%, 
+            rgba(0, 0, 0, 0.35) 80%,
+            rgba(0, 0, 0, 0.55) 100%),
+        linear-gradient(180deg, 
+            rgba(0, 0, 0, 0.75) 0%, 
+            transparent 15%, 
+            transparent 85%, 
+            rgba(0, 0, 0, 0.75) 100%);
+}
+
+.tv-epg-scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.16) 0px,
+        rgba(0, 0, 0, 0.16) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    opacity: 0.85;
+}
+
+.tv-epg-vignette {
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.85);
+    pointer-events: none;
+}
+
+/* Main TV Stage (Centered across the full screen) */
+.tv-epg-stage {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 clamp(1.5rem, 4.5vw, 4rem);
+    z-index: 20;
+    box-sizing: border-box;
+}
+
+/* Left Vertical Channel Wheel Column */
+.tv-dial-column {
+    position: relative;
+    width: clamp(260px, 22vw, 320px);
+    height: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+/* Up/Down Chevrons aligned above & below the active center row */
+.tv-dial-chevron {
+    position: absolute;
+    left: 4px;
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    color: #ffffff;
+    opacity: 0.8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 10;
+}
+
+.tv-dial-chevron:hover {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+/* Center position is at 240px; active row is 68px tall.
+   Chevron Up sits right above active slot, Chevron Down sits right below */
+.tv-chevron-up {
+    top: 168px;
+}
+
+.tv-chevron-down {
+    bottom: 168px;
+}
+
+/* Visible Viewport for smooth vertical translation of channel items */
+.tv-dial-viewport {
+    width: 100%;
+    height: 480px;
+    overflow: hidden;
+    position: relative;
+    /* Soft vertical fade mask at top and bottom */
+    mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 1) 18%, rgba(0, 0, 0, 1) 82%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 1) 18%, rgba(0, 0, 0, 1) 82%, transparent 100%);
+}
+
+.tv-dial-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    transition: none !important;
+    will-change: transform;
+}
+
+/* Individual Channel Dial Row */
+.tv-dial-item {
+    height: 68px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: none !important;
+    opacity: 0.35;
+    filter: grayscale(0.8) brightness(0.9);
+}
+
+.tv-dial-item:hover:not(.is-active) {
+    opacity: 0.7;
+    filter: grayscale(0.2) brightness(1.1);
+}
+
+.tv-dial-num {
+    font-family: 'Teletactile', var(--mono-font, monospace);
+    width: 26px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #ffffff;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.tv-dial-logo-wrap {
+    width: 110px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-shrink: 0;
+}
+
+.tv-dial-logo {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.tv-dial-logo.is-portrait {
+    max-height: 48px;
+    transform: scale(1.22);
+    transform-origin: left center;
+}
+
+.tv-dial-item.is-active .tv-dial-logo.is-portrait {
+    transform: scale(1.32);
+    transform-origin: left center;
+}
+
+/* Action button circle next to active channel */
+.tv-dial-select-pill {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #ffffff;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+    flex-shrink: 0;
+    margin-left: 6px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.tv-dial-select-pill:hover {
+    transform: scale(1.1);
+    background: var(--accent-color, #66e8b7);
+}
+
+/* ACTIVE CHANNEL ITEM IN CENTER */
+.tv-dial-item.is-active {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: translateX(4px);
+}
+
+.tv-dial-item.is-active .tv-dial-num {
+    font-size: 1.35rem;
+    font-weight: 800;
+    opacity: 1;
+}
+
+.tv-dial-item.is-active .tv-dial-logo-wrap {
+    width: 135px;
+    height: 52px;
+}
+
+.tv-dial-item.is-active .tv-dial-logo {
+    filter: brightness(0) invert(1) drop-shadow(0 0 12px rgba(255, 255, 255, 0.35));
+    transform: scale(1.08);
+}
+
+.tv-dial-item.is-active .tv-dial-select-pill {
+    display: flex;
+}
+
+/* Right / Center Program Details Panel */
+.tv-epg-info-panel {
+    margin-left: clamp(2rem, 5.5vw, 6rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 860px;
+    flex: 1;
+    min-width: 0;
+    user-select: none;
+}
+
+/* Standard Guide Row (BEFORE / NEXT) */
+.tv-guide-row {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    line-height: 1.3;
+}
+
+.tv-guide-tag {
+    font-size: 0.92rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: rgba(255, 255, 255, 0.52);
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.tv-guide-name {
+    font-family: 'Teletactile', var(--display-font, sans-serif);
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.85);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tv-guide-next {
+    margin-top: 10px;
+}
+
+/* Active Main Program Headline & Brand Logo */
+.tv-guide-main {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.tv-brand-logo-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 84px;
+    height: auto;
+    margin-bottom: 8px;
+}
+
+.tv-featured-brand-logo {
+    max-height: 82px;
+    max-width: 330px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    object-position: left center;
+    /* User specified: Original brand colors enlarged (NO invert, NO grayscale) */
+    filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.85)) !important;
+    transition: none !important;
+}
+
+/* Portrait / Square brand logos: enlarged to 125px for prominent visual presence */
+.tv-featured-brand-logo.is-portrait {
+    max-height: 125px;
+    max-width: 260px;
+}
+
+.tv-brand-logo-wrap.is-portrait {
+    min-height: 125px;
+}
+
+.tv-guide-title {
+    font-family: 'Teletactile', var(--display-font, sans-serif);
+    font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    color: #ffffff;
+    line-height: 1.1;
+    margin: 0;
+    text-transform: uppercase;
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+}
+
+/* Timeline Scrub Bar Row */
+.tv-timeline-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 22px;
+    max-width: 660px;
+    width: 100%;
+}
+
+.tv-timeline-track {
+    flex: 1;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.24);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.tv-timeline-fill {
+    height: 100%;
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    transition: none !important;
+}
+
+.tv-timeline-end {
+    font-family: 'Teletactile', var(--display-font, sans-serif);
+    font-size: 1.12rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.88);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+/* Interactive Action Controls Row (Play, Replay, Record/Live, Info) */
+.tv-guide-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.tv-ctrl-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.88;
+    transition: opacity 0.15s ease, transform 0.15s ease, color 0.15s ease;
+}
+
+.tv-ctrl-btn:hover {
+    opacity: 1;
+    transform: scale(1.18);
+    color: var(--accent-color, #66e8b7);
+}
+
+.tv-rec-circle {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ff3344;
+    box-shadow: 0 0 8px #ff3344;
+    display: inline-block;
+    animation: tvRecBlink 1.4s infinite ease-in-out;
+}
+
+@keyframes tvRecBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* Responsive Adaptations */
+@media (max-width: 900px) {
+    .tv-epg-stage {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 2rem;
+        padding: 0 5vw;
+    }
+
+    .tv-dial-column {
+        width: 100%;
+        height: 180px;
+    }
+
+    .tv-dial-viewport {
+        height: 180px;
+    }
+
+    .tv-chevron-up {
+        top: 20px;
+    }
+
+    .tv-chevron-down {
+        bottom: 20px;
+    }
+
+    .tv-epg-info-panel {
+        margin-left: 0;
+        max-width: 100%;
+    }
+
+    .tv-guide-title {
+        font-size: 2.2rem;
+    }
+
+    .tv-timeline-row {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .tv-top-center {
+        display: none;
+    }
+
+    .tv-brand-logo-wrap {
+        min-height: 58px;
+        height: auto;
+    }
+
+    .tv-featured-brand-logo {
+        max-height: 56px;
+        max-width: 210px;
+    }
+
+    .tv-featured-brand-logo.is-portrait {
+        max-height: 90px;
+        max-width: 170px;
+    }
+
+    .tv-brand-logo-wrap.is-portrait {
+        min-height: 90px;
+    }
+
+    .tv-guide-title {
+        font-size: 1.85rem;
+    }
+
+    .tv-timeline-end {
+        font-size: 1.05rem;
+    }
+}
+
+/* Contact Section */
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 2rem;
+}
+
+.contact-cta {
+    text-align: left;
+    grid-column: 1 / 9;
+    margin-left: 8rem;
+}
+
+.contact-details {
+    grid-column: 10 / 13;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    justify-content: flex-end;
+}
+
+.contact-note {
+    max-width: 20rem;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    opacity: 0.7;
+}
+
+.contact-details a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: var(--transition);
+}
+
+.contact-key {
+    font-family: var(--mono-font);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    opacity: 0.62;
+}
+
+.contact-val {
+    font-family: var(--sans-font);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 1.05rem;
+    font-weight: 500;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    transition: var(--transition);
+    word-break: break-word;
+}
+
+.contact-details a:hover {
+    color: var(--accent-color);
+}
+
+.contact-details a:hover .contact-val {
+    border-bottom-color: currentColor;
+}
+
+.contact-details a:hover .contact-key {
+    opacity: 0.8;
+}
+
+/* Minimal Footer */
+.minimal-footer {
+    padding: 4vw 0;
+    opacity: 0.68;
+}
+
+/* Centred so the signature sits between the two fixed corner nav blocks */
+.minimal-footer .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.footer-dot {
+    opacity: 0.5;
+}
+
+/* Lightbox */
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--lightbox-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s step-start;
+    pointer-events: none;
+}
+
+.lightbox.active {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s step-start;
+}
+
+.lightbox-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transform: scale(0.98);
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.lightbox.active .lightbox-container {
+    transform: scale(1);
+}
+
+.lightbox-img {
+    max-height: 80vh;
+    max-width: 80vw;
+    object-fit: contain;
+    position: absolute;
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease;
+    opacity: 0;
+    transform: scale(0.95);
+}
+
+.lightbox-img.active {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    z-index: 2;
+}
+
+.lightbox-img.slide-out-left {
+    transform: translateX(-100vw) scale(0.8);
+    opacity: 0;
+}
+
+.lightbox-img.slide-out-right {
+    transform: translateX(100vw) scale(0.8);
+    opacity: 0;
+}
+
+.lightbox-img.slide-in-right {
+    transform: translateX(100vw) scale(0.8);
+    opacity: 0;
+}
+
+.lightbox-img.slide-in-left {
+    transform: translateX(-100vw) scale(0.8);
+    opacity: 0;
+}
+
+.lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.2rem;
+    cursor: none;
+    z-index: 2000;
+    padding: 2rem;
+    transition: var(--transition);
+    opacity: 0.7;
+}
+
+.lightbox-nav:hover {
+    color: var(--accent-color);
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.lightbox-nav.prev { left: 2vw; }
+.lightbox-nav.next { right: 2vw; }
+
+.lightbox-meta-overlay {
+    position: absolute;
+    bottom: 3rem;
+    left: 5vw;
+    max-width: min(430px, calc(100% - 4rem));
+    z-index: 1050;
+    pointer-events: none;
+    text-shadow: none;
+    text-align: left;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease 0.3s;
+    padding: 1.35rem 1.5rem 1.2rem;
+    isolation: isolate;
+    color: #000000;
+}
+
+.lightbox.active .lightbox-meta-overlay {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.lightbox-meta-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 0;
+    background: var(--accent-color);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="light"] .lightbox-meta-overlay::before {
+    border-color: rgba(0, 0, 0, 0.12);
+    background: var(--accent-color);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+}
+
+.lightbox-meta-overlay .project-meta {
+    font-size: 0.85rem;
+    color: #000000;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+    flex-wrap: wrap;
+    letter-spacing: 0.05em;
+}
+
+.lightbox-meta-overlay .meta-count {
+    color: #000000;
+    opacity: 0.75;
+}
+
+.lightbox-meta-overlay .meta-divider {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.project-title,
+.lightbox-meta-overlay .project-title,
+.project-title.display-title {
+    font-family: 'Teletactile', var(--display-font);
+    font-size: clamp(1.1rem, 1.8vw, 1.45rem) !important;
+    line-height: 1.25;
+    margin-bottom: 0.8rem;
+    text-align: left;
+    color: #000000 !important;
+    letter-spacing: 0.01em;
+    margin-left: 1px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.lightbox-meta-overlay .project-line {
+    width: 24px;
+    height: 1.5px;
+    background: #000000;
+    margin-bottom: 0.8rem;
+    opacity: 0.45;
+}
+
+.lightbox-meta-overlay .project-desc {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    opacity: 0.88;
+    color: #000000;
+    font-weight: 500;
+    text-align: left;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 2rem;
+    right: 3vw;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: none;
+    font-size: 0.9rem;
+    padding: 1rem;
+    z-index: 2000;
+    transition: var(--transition);
+    pointer-events: auto;
+    letter-spacing: 0.1em;
+}
+
+.lightbox-close:hover {
+    color: var(--accent-color);
+}
+
+
+
+.icon-sun {
+    opacity: 0;
+    transform: rotate(90deg) scale(0);
+}
+
+.icon-moon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
+
+[data-theme="light"] .icon-sun {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
+
+[data-theme="light"] .icon-moon {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0);
+}
+
+
+[data-theme="light"] 
+[data-theme="light"] 
+
+
+
+
+
+
+
+@keyframes drawStroke {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes mouseEnter {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to { opacity: 0.6; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes mouseWheel {
+    0% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(4px); opacity: 0.4; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+/* View More Button */
+.view-more-btn {
+    display: block;
+    margin: 3rem auto 4rem;
+    background: #ffffff;
+    border: 1px solid #ffffff;
+    color: #000000;
+    padding: 0.95rem 2.2rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: none;
+    cursor: none;
+    letter-spacing: 0.05em;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.view-more-btn:hover {
+    border-color: var(--accent-color);
+    color: #000000;
+    background: var(--accent-color);
+    box-shadow: none;
+    transform: none;
+}
+
+/* Vertical Thumbnails */
+.visual-img-wrapper.vertical-thumbnail {
+    aspect-ratio: 9 / 16;
+}
+
+/* Sound Icon on Video Thumbnails */
+.sound-icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: var(--accent-color);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.sound-icon svg {
+    width: 16px;
+    height: 16px;
+    margin-left: 1px;
+}
+
+.visual-item:hover .sound-icon {
+    opacity: 1;
+}
+
+/* Scroll Progress Indicator */
+.scroll-progress {
+    position: fixed;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 30vh;
+    z-index: 999;
+    background: var(--border-color);
+    border-radius: 2px;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.scroll-progress-fill {
+    width: 100%;
+    height: 0%;
+    background: var(--accent-color);
+    border-radius: 2px;
+    transition: height 0.1s linear;
+}
+
+/* Grain Texture */
+/* Blur Pop Animation */
+.blur-line {
+    display: block;
+    white-space: nowrap;
+    opacity: 0;
+    filter: blur(24px);
+    transform: scale(0.9);
+}
+
+.blur-line.visible {
+    animation: blurPop 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.blur-line.visible:nth-child(1) { animation-delay: 0s; }
+.blur-line.visible:nth-child(2) { animation-delay: 0.15s; }
+.blur-line.visible:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes blurPop {
+    0% {
+        opacity: 0;
+        filter: blur(24px);
+        transform: scale(0.9);
+    }
+    50% {
+        opacity: 1;
+        filter: blur(0);
+        transform: scale(1.04);
+    }
+    100% {
+        opacity: 1;
+        filter: blur(0);
+        transform: scale(1);
+    }
+}
+
+/* Grain Texture */
+.grain-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+}
+
+[data-theme="light"] .grain-overlay {
+    opacity: 0.05;
+    mix-blend-mode: multiply;
+}
+
+/* Grid Trail Canvas */
+#gridTrail {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ---------- Mobile menu ---------- */
+.menu-toggle {
+    position: fixed;
+    top: 3vw;
+    right: 4vw;
+    width: 46px;
+    height: 46px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: rgba(13, 13, 13, 0.35);
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    color: var(--text-color);
+    z-index: 1100;
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    transition: var(--transition);
+}
+
+.menu-toggle-bar {
+    display: block;
+    width: 20px;
+    height: 1.5px;
+    background: currentColor;
+    transition: transform 0.3s ease;
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle-bar:first-child {
+    transform: translateY(3.75px) rotate(45deg);
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle-bar:last-child {
+    transform: translateY(-3.75px) rotate(-45deg);
+}
+
+.mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 1050;
+    background: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2.5rem;
+    padding: 6rem 8vw 3rem;
+    animation: menuIn 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.mobile-menu[hidden] {
+    display: none;
+}
+
+.mobile-menu-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+}
+
+.mobile-menu-list a {
+    font-size: clamp(1.9rem, 9vw, 3rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+.mobile-menu-list a.is-current {
+    color: var(--accent-color);
+}
+
+.mobile-menu-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: auto;
+}
+
+.mobile-menu-contact a {
+    color: var(--text-color);
+    opacity: 0.65;
+    text-decoration: none;
+}
+
+.mobile-menu-contact a:hover {
+    opacity: 1;
+    color: var(--accent-color);
+}
+
+@keyframes menuIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ---------- Video thumbnail affordance ---------- */
+.play-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 54px;
+    height: 54px;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(13, 13, 13, 0.45);
+    border: 1px solid rgba(244, 242, 238, 0.3);
+    color: #F4F2EE;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    pointer-events: none;
+    z-index: 6;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.play-badge svg {
+    width: 18px;
+    height: 18px;
+    margin-left: 3px;
+    fill: currentColor;
+}
+
+.visual-item:hover .play-badge {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.85);
+}
+
+/* ==========================================================================
+   Lens — a glass loupe that follows the pointer
+   ========================================================================== */
+.lens {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 900;
+    opacity: 0;
+    overflow: hidden;
+    will-change: transform, opacity;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(1.5px) brightness(1.05) saturate(1.06);
+    -webkit-backdrop-filter: blur(1.5px) brightness(1.05) saturate(1.06);
+    box-shadow:
+        0 0 0 1px rgba(244, 242, 238, 0.3),
+        inset 0 0 0 1px rgba(244, 242, 238, 0.18),
+        inset 0 -18px 34px rgba(0, 0, 0, 0.28),
+        0 26px 60px rgba(0, 0, 0, 0.45);
+}
+
+.lens.visible {
+    opacity: 1;
+}
+
+/* glass sheen */
+.lens::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.26), transparent 44%),
+        radial-gradient(circle at 70% 82%, rgba(0, 0, 0, 0.12), transparent 50%);
+}
+
+[data-theme="light"] .lens {
+    box-shadow:
+        0 0 0 1px rgba(13, 13, 13, 0.16),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+        inset 0 -18px 34px rgba(13, 13, 13, 0.1),
+        0 26px 60px rgba(13, 13, 13, 0.22);
+}
+
+/* optical fringe at the rim */
+.lens::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 3;
+    background:
+        radial-gradient(circle, transparent 60%, rgba(255, 74, 74, 0.16) 73%, transparent 80%),
+        radial-gradient(circle, transparent 66%, rgba(74, 214, 255, 0.16) 79%, transparent 86%);
+    mix-blend-mode: screen;
+}
+
+.lens-stage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
+    will-change: transform;
+}
+
+.lens-stage img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ==========================================================================
+   Screen lens — the viewport reads as if seen through a convex glass
+   ========================================================================== */
+body.tech-editorial::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 940;
+    pointer-events: none;
+    /* the glass thickens toward the rim, so the edges go soft */
+    backdrop-filter: blur(3.5px) saturate(1.04) brightness(1.03);
+    -webkit-backdrop-filter: blur(3.5px) saturate(1.04) brightness(1.03);
+    -webkit-mask-image: radial-gradient(ellipse at 50% 47%, transparent 50%, #000 94%);
+    mask-image: radial-gradient(ellipse at 50% 47%, transparent 50%, #000 94%);
+}
+body.tech-editorial::after {
+    display: none;
+}
+
+[data-theme="light"] body.tech-editorial::after {
+    background:
+        radial-gradient(ellipse at 50% 46%, transparent 48%, rgba(13, 13, 13, 0.12) 86%, rgba(13, 13, 13, 0.3) 100%);
+    box-shadow:
+        inset 0 0 0 14px #DCD9D3,
+        inset 0 0 0 15px rgba(13, 13, 13, 0.1),
+        inset 0 0 22px rgba(13, 13, 13, 0.14),
+        0 0 0 100vmax #DCD9D3;
+}
+
+/* the fixed UI sits on the glass, so it stays crisp */
+@media (max-width: 900px), (prefers-reduced-motion: reduce) {
+    body.tech-editorial::before,
+    body.tech-editorial::after {
+        display: none;
+    }
+}
+
+/* HUD readouts on the case */
+.nav-bl {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.hud-clock {
+    color: var(--muted-color);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.16em;
+}
+
+/* ==========================================================================
+   VHS — the portfolio as a tape
+   ========================================================================== */
+
+/* the deck readout in the corner */
+.vhs-deck {
+    color: var(--text-color);
+    letter-spacing: 0.16em;
+}
+
+.vhs-sp {
+    display: inline-block;
+    margin-left: 0.5em;
+    padding: 0 0.3em;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    color: var(--muted-color);
+    font-size: 0.85em;
+}
+
+/* tape colour bleed on the big type */
+.display-title {
+    text-shadow:
+        1px 0 0 rgba(255, 70, 70, 0.30),
+        -1px 0 0 rgba(70, 210, 255, 0.24);
+}
+
+/* the loading spinner is hidden — the tape insert replaces it */
+.loader-content .loader-circle,
+.loader-content .loader-text {
+    display: none;
+}
+
+/* ==========================================================================
+   CRT GLITCH — the transition between views
+   ========================================================================== */
+body.glitching main {
+    animation: crtGlitch 0.2s linear both;
+    will-change: transform, filter;
+}
+
+body.glitching .crt {
+    opacity: 1;
+    animation: none;
+}
+
+@keyframes crtGlitch {
+    0%   { transform: translate3d(0, 0, 0); filter: none; }
+    8%   { transform: translate3d(-16px, 4px, 0) skewX(-1.4deg) scaleY(1.02); filter: brightness(2.6) contrast(1.3) saturate(1.6)); }
+    18%  { transform: translate3d(13px, -4px, 0) skewX(1.1deg) scaleY(0.99); filter: brightness(0.6) contrast(1.45) saturate(0.8); }
+    30%  { transform: translate3d(-9px, 3px, 0) skewX(-0.7deg); filter: brightness(2.2) blur(1px)); }
+    44%  { transform: translate3d(18px, 0, 0) skewX(0.9deg) scaleX(1.02); filter: brightness(0.75) contrast(1.5); }
+    58%  { transform: translate3d(-7px, -3px, 0); filter: brightness(1.9)); }
+    72%  { transform: translate3d(5px, 2px, 0) skewX(-0.4deg); filter: brightness(0.95); }
+    86%  { transform: translate3d(-3px, 0, 0); filter: brightness(1.35); }
+    100% { transform: none; filter: none; }
+}
+
+/* the incoming view squeezes in like a CRT powering on */
+body.glitching-in .page-view.is-visible {
+    animation: crtIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes crtIn {
+    0% {
+        opacity: 0;
+        transform: scaleY(0.42) scaleX(1.04) translateY(-16px);
+        filter: brightness(3.4) contrast(1.35) blur(2px);
+    }
+    28% {
+        opacity: 1;
+        transform: scaleY(1.03) scaleX(0.995);
+        filter: brightness(1.9) contrast(1.1));
+    }
+    60% {
+        transform: scaleY(0.995);
+        filter: brightness(1.15);
+    }
+    100% {
+        opacity: 1;
+        transform: none;
+        filter: none;
+    }
+}
+
+
+
+@media (prefers-reduced-motion: reduce) {
+    body.glitching main,
+    body.glitching-in .page-view.is-visible {
+        animation: none;
+    }
+}
+
+
+
+/* ==========================================================================
+   Cassette covers — each project reads as a VHS box
+   ========================================================================== */
+.visual-grid {
+    counter-reset: tape;
+}
+
+.visual-item {
+    counter-increment: tape;
+}
+
+.visual-img-wrapper {
+    border-radius: 3px;
+    border: 1px solid rgba(244, 242, 238, 0.22);
+    box-shadow:
+        inset 0 0 0 4px rgba(13, 13, 13, 0.92),
+        inset 0 0 0 5px rgba(244, 242, 238, 0.08),
+        0 14px 30px -16px rgba(0, 0, 0, 0.9);
+    background: #0a0a0a;
+}
+
+
+/* the spine number */
+.visual-img-wrapper::after {
+    content: counter(tape, decimal-leading-zero);
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    z-index: 3;
+    pointer-events: none;
+    font-family: var(--mono-font);
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    color: rgba(244, 242, 238, 0.8);
+    background: rgba(13, 13, 13, 0.68);
+    border: 1px solid rgba(244, 242, 238, 0.18);
+    border-radius: 2px;
+    padding: 1px 5px;
+}
+
+/* the tape label under the box */
+.visual-caption {
+    letter-spacing: 0.14em;
+}
+
+/* ==========================================================================
+   The surface behind the tape — a lit matte table, not flat black
+   ========================================================================== */
+body.tech-editorial {
+    background-color: #0d0d0c;
+    background-image:
+        radial-gradient(ellipse 85% 62% at 50% 0%, #3a3a37 0%, #2a2a28 26%, #191918 58%, #0e0e0d 86%, #080807 100%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* a faint horizontal grain so the surface reads as a material */
+body.tech-editorial .grain-overlay {
+    opacity: 0.05;
+    background-size: 320px 120px;
+}
+
+/* the case edge sits a touch darker than the lit surface */
+[data-theme="dark"] body.tech-editorial::after {
+    box-shadow:
+        inset 0 0 0 14px #141413,
+        inset 0 0 0 15px rgba(244, 242, 238, 0.09),
+        inset 0 0 34px rgba(0, 0, 0, 0.6),
+        0 0 0 100vmax #141413;
+}
+
+/* ==========================================================================
+   VHS burst — snow + sliding bright bands during the swap
+   ========================================================================== */
+body.glitching .crt::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    animation: glitchSnow 0.14s steps(2) infinite;
+    opacity: 1;
+    filter: contrast(1.5) brightness(1.25);
+    height: 100vh;
+    background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+        repeating-linear-gradient(0deg,
+            rgba(255, 255, 255, 0.35) 0px,
+            rgba(255, 255, 255, 0.35) 2px,
+            rgba(255, 255, 255, 0) 2px,
+            rgba(255, 255, 255, 0) 5px);
+    background-size: 260px 260px, auto;
+    mix-blend-mode: screen;
+}
+
+@keyframes glitchSnow {
+    0% { background-position: 0 0, 0 0; }
+    50% { background-position: -44px 66px, 0 3px; }
+    100% { background-position: 38px -32px, 0 -3px; }
+}
+
+body.glitching .crt::after {
+    animation: glitchBand 0.17s steps(3) infinite;
+    opacity: 0.95;
+    height: 46vh;
+    background:
+        linear-gradient(180deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.55) 34%,
+            rgba(255, 255, 255, 0.95) 50%,
+            rgba(255, 255, 255, 0.45) 64%,
+            rgba(255, 255, 255, 0) 100%);
+    filter: blur(1px);
+}
+
+@keyframes glitchBand {
+    0% { transform: translateY(-50vh); }
+    33% { transform: translateY(52vh); }
+    66% { transform: translateY(8vh); }
+    100% { transform: translateY(104vh); }
+}
+
+/* the incoming view lands with a burst of its own */
+body.glitching-in .crt::before {
+    animation: glitchSnow 0.12s steps(2) 3;
+    opacity: 0.45;
+    height: 100vh;
+}
+
+
+/* ==========================================================================
+   Hero VHS Cassette: Authentic 3D Object with Front, Spine & Back Faces
+   ========================================================================== */
+.hero-right.tape-slide-down {
+    animation: tapeSlideDown 1.05s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes tapeSlideDown {
+    0% {
+        transform: translateY(-160px);
+        opacity: 0;
+        filter: blur(6px);
+    }
+    60% {
+        opacity: 1;
+        filter: blur(0);
+    }
+    82% {
+        transform: translateY(8px);
+    }
+    94% {
+        transform: translateY(-2px);
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-right.tape-slide-down {
+        animation: none;
+        transform: none;
+        opacity: 1;
+        filter: none;
+    }
+}
+
+.hero-floating-img {
+    position: relative;
+    perspective: 1600px;
+    perspective-origin: 50% 45%;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    transform: translate3d(0, 0, 0) scale(1);
+    transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), z-index 0.75s step-start;
+    will-change: transform;
+}
+
+/* Floor drop shadow under the 3D cassette */
+.hero-floating-img::after {
+    content: '';
+    position: absolute;
+    left: 5%;
+    right: 7%;
+    bottom: -9%;
+    height: 52px;
+    z-index: -1;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.4) 45%, transparent 72%);
+    filter: blur(18px);
+    transform: translateZ(-60px);
+    transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), filter 0.75s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.75s ease;
+}
+
+/* Backdrop for Hero 3D Cassette Focus Stage */
+.hero-tape-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 8, 8, 0.65);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 850;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero.tape-focused .hero-tape-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* Screen-centered focus state on click: "اول ما اضغط على الشريط يكبر" */
+.hero-floating-img.is-centered {
+    z-index: 999;
+}
+
+.hero-floating-img.is-centered::after {
+    filter: blur(34px);
+    opacity: 0.98;
+    bottom: -15%;
+    height: 78px;
+}
+
+/* Cinematic focus on the centered cassette: gently dim hero text */
+.hero-left {
+    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), filter 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero.tape-focused .hero-left {
+    opacity: 0.3;
+    filter: blur(2px);
+    pointer-events: none;
+}
+
+.hero-card {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 188 / 104;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    cursor: pointer;
+    outline: none;
+    user-select: none;
+    -webkit-user-select: none;
+    transform-style: preserve-3d;
+    transform: rotateY(-17deg) rotateX(5deg) rotateZ(-2deg);
+    transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+}
+
+.hero-card:focus-visible {
+    outline: 1.5px solid rgba(244, 242, 238, 0.7);
+    outline-offset: 4px;
+}
+
+.hero-card.tilting {
+    transition: transform 0.12s linear;
+}
+
+/* 3D Inner Container for the 180deg flip (Thick retro VHS cassette geometry) */
+.cassette-3d {
+    --cassette-depth: 44px;
+    --cassette-z: 22px;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.85s cubic-bezier(0.2, 0.85, 0.25, 1);
+}
+
+.hero-card.is-flipped .cassette-3d {
+    transform: rotateY(180deg);
+}
+
+@media (max-width: 520px) {
+    .hero-card.is-flipped .cassette-3d {
+        transform: rotateY(180deg);
+    }
+
+    .cassette-front {
+        grid-template-columns: minmax(100px, 120px) 1fr;
+        gap: 4px 8px;
+        padding: 6px 8px 5px;
+    }
+
+    .slipcase-brand-label {
+        font-size: 1.12rem;
+    }
+
+    .slipcase-role-label {
+        font-size: 0.42rem;
+    }
+
+    .barcode-bars {
+        width: 60px;
+        height: 12px;
+    }
+
+    .vhs-tape-body {
+        padding: 4px 6px 3px;
+    }
+
+    .vhs-cassette-housing {
+        gap: 4px;
+        padding: 2px 4px;
+    }
+
+    .vhs-spool-viewport {
+        width: 78px;
+    }
+
+    .vhs-center-sticker {
+        padding: 3px 5px;
+    }
+
+    .stk-row {
+        font-size: 0.35rem;
+        gap: 3px;
+    }
+}
+
+/* 3x Flip Unlock Holographic Glow */
+.hero-card.secret-glow {
+    animation: unlockCassetteGlow 1.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes unlockCassetteGlow {
+    0% {
+        filter: drop-shadow(0 0 0 rgba(166, 255, 0, 0));
+    }
+    35% {
+        filter: drop-shadow(0 0 35px rgba(166, 255, 0, 0.95)) drop-shadow(0 0 70px rgba(166, 255, 0, 0.5));
+    }
+    100% {
+        filter: drop-shadow(0 0 12px rgba(166, 255, 0, 0.3));
+    }
+}
+
+
+
+/* ==========================================================================
+   Faces common properties (Depth: var(--cassette-depth, 70px) -> Z-offset: var(--cassette-z, 35px))
+   ========================================================================== */
+.cassette-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    overflow: hidden;
+    background: #0a0a0a;
+    box-shadow: 0 35px 70px -20px rgba(0, 0, 0, 0.95);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+    background-size: 120px 120px;
+    background-blend-mode: overlay;
+}
+
+/* ---------------- FRONT FACE: COLLECTOR'S VHS SLIPCASE EDITION ---------------- */
+.cassette-front {
+    transform: translateZ(var(--cassette-z, 22px));
+    border: 1px solid rgba(244, 242, 238, 0.16);
+    background: #0d0d0d;
+    box-sizing: border-box;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: minmax(150px, 185px) 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 8px 16px;
+    padding: 10px 14px 8px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04), 0 12px 32px rgba(0, 0, 0, 0.65);
+}
+
+/* Slipcase Top Header */
+.slipcase-top-header {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin-bottom: 2px;
+    flex-shrink: 0;
+}
+
+.slipcase-color-bar {
+    width: 100%;
+    height: 5px;
+    display: flex;
+    margin-bottom: 5px;
+    background: #171717;
+}
+
+.slipcase-color-bar .bar-accent {
+    width: 32%;
+    height: 100%;
+    background: var(--accent-color, #3ED598);
+}
+
+.slipcase-color-bar .bar-light {
+    width: 28%;
+    height: 100%;
+    background: rgba(244, 242, 238, 0.88);
+}
+
+.slipcase-color-bar .bar-dark {
+    width: 40%;
+    height: 100%;
+    background: #1a1a1a;
+}
+
+.slipcase-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--pixel-font), var(--mono-font);
+    font-size: 0.52rem;
+    line-height: 1.35;
+    letter-spacing: 0.06em;
+    color: rgba(244, 242, 238, 0.88);
+}
+
+.slipcase-meta-row .tag-bold {
+    font-weight: 700;
+    color: #f4f2ee;
+    margin-right: 4px;
+}
+
+.slipcase-meta-row .tag-dim {
+    color: rgba(244, 242, 238, 0.55);
+}
+
+.slipcase-meta-row .tag-accent {
+    color: var(--accent-color, #3ED598);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.slipcase-meta-row .meta-right {
+    text-align: right;
+}
+
+/* Editorial Brand Title Block */
+.slipcase-title-block {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 0;
+    border-bottom: 1px solid rgba(244, 242, 238, 0.1);
+    padding-bottom: 6px;
+    flex-shrink: 0;
+}
+
+.slipcase-brand-label {
+    font-family: 'Anton', var(--font-display, sans-serif);
+    font-size: clamp(1.22rem, 1.45vw, 1.55rem);
+    line-height: 0.98;
+    letter-spacing: 0.04em;
+    color: #f4f2ee;
+    text-transform: uppercase;
+}
+
+.slipcase-role-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--pixel-font), var(--mono-font);
+    font-size: 0.5rem;
+    letter-spacing: 0.1em;
+    color: rgba(244, 242, 238, 0.65);
+    margin-top: 4px;
+    text-transform: uppercase;
+}
+
+.slipcase-role-label .role-separator {
+    color: var(--accent-color, #3ED598);
+    font-weight: 700;
+}
+
+/* Die-Cut Framed Photo Passe-Partout */
+.slipcase-photo-frame {
+    grid-column: 1;
+    grid-row: 2 / 4;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 0;
+    background: #080808;
+    border: 1px solid rgba(244, 242, 238, 0.18);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+    border-radius: 2px;
+}
+
+.slipcase-photo-frame picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.slipcase-photo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 18%;
+    display: block;
+    filter: contrast(1.04);
+    transform: none;
+}
+
+.hero-card:hover .slipcase-photo-frame img,
+.vhs-about-tape:hover .slipcase-photo-frame img {
+    transform: none;
+}
+
+/* Technical Crop Corner Crosshairs */
+.frame-crop {
+    position: absolute;
+    font-family: var(--pixel-font), var(--mono-font);
+    font-size: 0.42rem;
+    letter-spacing: 0.06em;
+    color: rgba(244, 242, 238, 0.85);
+    background: rgba(10, 10, 10, 0.72);
+    padding: 1px 4px;
+    z-index: 3;
+    pointer-events: none;
+    backdrop-filter: blur(2px);
+    line-height: 1.3;
+}
+
+.crop-tl { top: 4px; left: 4px; }
+.crop-tr { top: 4px; right: 4px; }
+.crop-bl { bottom: 4px; left: 4px; }
+.crop-br { bottom: 4px; right: 4px; }
+
+/* Holographic Master Quality Seal */
+.hologram-seal {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: conic-gradient(from 140deg at 50% 50%, #d4af37, #ffe599, #3ed598, #6ee7b7, #d4af37, #ffcc00, #3ed598, #d4af37);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.75), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: sealShimmer 6s ease-in-out infinite alternate;
+}
+
+@keyframes sealShimmer {
+    0% { filter: hue-rotate(0deg) brightness(1); }
+    100% { filter: hue-rotate(18deg) brightness(1.15); }
+}
+
+.seal-inner {
+    width: 29px;
+    height: 29px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(16, 16, 16, 0.94) 55%, rgba(28, 28, 28, 0.9));
+    border: 1px dashed rgba(244, 242, 238, 0.55);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.seal-star {
+    color: #ffe599;
+    font-size: 0.55rem;
+    line-height: 1;
+}
+
+.seal-txt {
+    font-family: var(--pixel-font), var(--mono-font);
+    font-size: 0.38rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #f4f2ee;
+    line-height: 1;
+    margin-top: 1px;
+}
+
+.seal-code {
+    font-family: var(--pixel-font), var(--mono-font);
+    font-size: 0.32rem;
+    font-weight: 700;
+    color: var(--accent-color, #3ED598);
+    line-height: 1;
+}
+
+/* Bottom Technical Spec & Barcode Block */
+.slipcase-bottom-block {
+    grid-column: 2;
+    grid-row: 3;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-top: 4px;
+    border-top: none;
+    flex-shrink: 0;
+}
+
+.barcode-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.barcode-bars {
+    width: 82px;
+    height: 16px;
+    background: repeating-linear-gradient(
+        90deg,
+        #f4f2ee 0 2px,
+        transparent 2px 4px,
+        #f4f2ee 4px 5px,
+        transparent 5px 7px,
+        #f4f2ee 7px 10px,
+        transparent 10px 12px,
+        #f4f2ee 12px 13px,
+        transparent 13px 15px,
+        #f4f2ee 15px 18px,
+        transparent 18px 20px,
+        #f4f2ee 20px 23px,
+        transparent 23px 25px,
+        #f4f2ee 25px 28px,
+        transparent 28px 30px
+    );
+    opacity: 0.9;
+}
+
+.barcode-numbers {
+    font-family: var(--pixel-font), var(--mono-font);
+    font-size: 0.44rem;
+    letter-spacing: 0.07em;
+    color: rgba(244, 242, 238, 0.75);
+    margin-top: 2px;
+}
+
+.slipcase-spec-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+    gap: 1px;
+}
+
+.spec-pill {
+    font-family: var(--pixel-font), var(--mono-font);
+    font-size: 0.44rem;
+    letter-spacing: 0.06em;
+    color: rgba(244, 242, 238, 0.7);
+    line-height: 1.25;
+}
+
+.spec-edition {
+    font-family: var(--pixel-font), var(--mono-font);
+    font-size: 0.38rem;
+    letter-spacing: 0.04em;
+    color: rgba(244, 242, 238, 0.45);
+    margin-top: 1px;
+}
+
+/* Cardboard Sleeve Thumb Notch Cutout */
+.slipcase-thumb-notch {
+    position: absolute;
+    right: -1px;
+    top: 48%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 30px;
+    background: #000;
+    border-radius: 15px 0 0 15px;
+    border: 1px solid rgba(244, 242, 238, 0.16);
+    border-right: none;
+    box-shadow: inset 2px 0 4px rgba(0, 0, 0, 0.9);
+    pointer-events: none;
+    z-index: 5;
+}
+
+.hero-card:hover .cassette-face {
+    box-shadow: 0 0 0 1px rgba(244, 242, 238, 0.4), 0 35px 70px -20px rgba(0, 0, 0, 0.95);
+}
+
+/* ---------------- BACK FACE: PHYSICAL VHS CASSETTE BODY (AUTHENTIC HORIZONTAL ORIENTATION) ---------------- */
+.cassette-back {
+    transform: rotateY(180deg) translateZ(var(--cassette-z, 22px));
+    border: 1px solid rgba(244, 242, 238, 0.12);
+    background: #0c0c0c;
+    overflow: hidden;
+}
+
+.vhs-tape-body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #0d0d0d;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 8px 14px 6px;
+    box-sizing: border-box;
+    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.1), inset -1px -1px 0 rgba(0, 0, 0, 0.9);
+    background-image: 
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.012) 0px, rgba(255, 255, 255, 0.012) 1px, transparent 1px, transparent 3px),
+        radial-gradient(circle at 50% 50%, #131313 0%, #090909 100%);
+}
+
+/* 5 Metal Screws */
+.vhs-screw {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #555 0%, #252525 70%, #111 100%);
+    box-shadow: inset 0 1px 1.5px rgba(0, 0, 0, 0.95), 0 0.5px 0.5px rgba(255, 255, 255, 0.18);
+    z-index: 10;
+}
+
+.vhs-screw::before {
+    content: '';
+    position: absolute;
+    inset: 1.5px 3px;
+    background: #080808;
+}
+
+.vhs-screw::after {
+    content: '';
+    position: absolute;
+    inset: 3px 1.5px;
+    background: #080808;
+}
+
+.screw-tl { top: 5px; left: 8px; }
+.screw-tr { top: 5px; right: 8px; }
+.screw-bl { bottom: 5px; left: 8px; }
+.screw-br { bottom: 5px; right: 8px; }
+.screw-center { top: 50%; left: 8px; transform: translateY(-50%); }
+
+/* Top Flap / Gate Lid (Authentic VHS Gate across long horizontal edge) */
+.vhs-top-gate {
+    width: 100%;
+    background: #111;
+    border-bottom: 2px solid #000;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 4px rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 4px 4px;
+    margin-bottom: 3px;
+    position: relative;
+    border-radius: 2px 2px 0 0;
+    flex-shrink: 0;
+}
+
+.vhs-gate-latch {
+    width: 26px;
+    height: 4px;
+    background: #444;
+    border-radius: 0 0 2px 2px;
+    box-shadow: inset 0 -1px 0 #222;
+    margin-bottom: 3px;
+}
+
+.vhs-gate-text {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--pixel-font), var(--mono-font);
+    font-size: 0.42rem;
+    letter-spacing: 0.08em;
+    color: rgba(244, 242, 238, 0.48);
+    text-shadow: 0 -1px 0 #000, 0 1px 0 rgba(255, 255, 255, 0.08);
+    text-transform: uppercase;
+}
+
+.vhs-gate-text .gate-arrow {
+    color: rgba(244, 242, 238, 0.75);
+    font-size: 0.46rem;
+}
+
+/* Central VHS Tape Housing: Left Reel | Wide White Center Sticker | Right Reel */
+.vhs-cassette-housing {
+    position: relative;
+    width: 100%;
+    height: 150px;
+    margin: 3px 0 4px;
+    background: #060706;
+    border: 2px solid #000;
+    box-shadow: inset 0 3px 12px rgba(0, 0, 0, 0.98), 0 1px 0 rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 5px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+/* Spool Viewports (Left and Right of the sticker) */
+.vhs-spool-viewport {
+    width: 118px;
+    height: 100%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(12, 16, 14, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.9);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.vhs-spool-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* CENTER WHITE STICKER (Authentic wide horizontal white label with rounded corners and horizontal tracks) */
+.vhs-center-sticker {
+    flex: 1;
+    min-width: 0;
+    max-width: 215px;
+    height: 136px;
+    background: #fbf9f4;
+    color: #111;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.9), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+    padding: 5px 8px 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-family: var(--pixel-font), var(--mono-font);
+    position: relative;
+    box-sizing: border-box;
+}
+
+.vhs-sticker-stripe {
+    height: 3px;
+    background: linear-gradient(90deg, #059669 0 28%, #111 28% 44%, #e11d48 44% 56%, transparent 56%);
+    margin-bottom: 2px;
+}
+
+.vhs-sticker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
+    padding-bottom: 2px;
+    margin-bottom: 1px;
+}
+
+.sticker-brand {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.vhs-logo-bold {
+    background: #111;
+    color: #f4f2ee;
+    font-weight: 900;
+    font-size: 0.5rem;
+    padding: 1px 4px;
+    line-height: 1;
+    letter-spacing: 0.05em;
+    border-radius: 1px;
+}
+
+.vhs-type-tag {
+    color: #047857;
+    font-size: 0.46rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+}
+
+.sticker-speed,
+.sticker-stereo {
+    font-size: 0.4rem;
+    font-weight: 600;
+    color: #555;
+    letter-spacing: 0.05em;
+}
+
+.vhs-sticker-title {
+    margin-bottom: 1px;
+    font-size: 0.44rem;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.label-kicker {
+    color: #047857;
+    font-weight: 700;
+}
+
+.label-main {
+    color: #111;
+    font-weight: 700;
+}
+
+.vhs-sticker-tracks {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5px;
+    margin: 1px 0;
+}
+
+.stk-row {
+    display: grid;
+    grid-template-columns: 14px 1fr auto;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.42rem;
+    line-height: 1.25;
+    letter-spacing: 0.02em;
+    color: #1a1a1a;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    padding-bottom: 1px;
+}
+
+.stk-num {
+    color: #059669;
+    font-weight: 800;
+}
+
+.stk-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+}
+
+.stk-spec {
+    color: #666;
+    font-family: monospace;
+    font-size: 0.38rem;
+    font-weight: 600;
+}
+
+.vhs-sticker-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.36rem;
+    color: #777;
+    letter-spacing: 0.05em;
+    border-top: 1px dashed rgba(0, 0, 0, 0.2);
+    padding-top: 2px;
+    margin-top: 1px;
+}
+
+/* Lower Section: Molded Grip Recess & Bottom Details (Tight authentic VHS layout) */
+.vhs-lower-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+    min-height: 54px;
+    margin-top: 2px;
+}
+
+.vhs-grip-recess {
+    width: 60%;
+    height: 20px;
+    margin: 1px auto 4px;
+    background: #040404;
+    border: 1.5px solid #000;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 4px 10px #000, 0 1px 0 rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    background-image: repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 0px,
+        rgba(255, 255, 255, 0.05) 3px,
+        transparent 3px,
+        transparent 8px
+    );
+}
+
+/* Bottom Molded Plastic Section */
+.vhs-shell-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0 4px;
+}
+
+.vhs-molded-info {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.vhs-embossed-brand {
+    font-family: sans-serif;
+    font-weight: 900;
+    font-size: 1.15rem;
+    line-height: 0.85;
+    letter-spacing: -0.05em;
+    color: #1a1a1a;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.95), 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.vhs-embossed-specs {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--pixel-font), var(--mono-font);
+    font-size: 0.38rem;
+    letter-spacing: 0.06em;
+    color: rgba(244, 242, 238, 0.35);
+    line-height: 1.35;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.95), 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.vhs-barcode-label {
+    background: #eae8e4;
+    color: #000;
+    padding: 2px 4px 1px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.vhs-barcode-label svg {
+    width: 65px;
+    height: 14px;
+    display: block;
+}
+
+.vhs-barcode-label .barcode-num {
+    font-family: monospace;
+    font-size: 0.38rem;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    color: #111;
+    line-height: 1;
+    margin-top: 1px;
+}
+
+/* ==========================================================================
+   3D SPINES (Depth = var(--cassette-depth, 44px))
+   ========================================================================== */
+.cassette-spine {
+    position: absolute;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    background: #0d0d0d;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* LEFT SPINE (The iconic cassette spine label) */
+.cassette-spine-left {
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    max-height: 100%;
+    left: calc(-1 * var(--cassette-z, 22px));
+    width: var(--cassette-depth, 44px);
+    transform: rotateY(-90deg);
+    border-left: 1px solid rgba(255, 255, 255, 0.12);
+    border-right: 1px solid rgba(0, 0, 0, 0.9);
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0 8px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+    background-size: 60px 60px;
+    background-blend-mode: overlay;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.spine-color-top {
+    width: 100%;
+    height: 5px;
+    background: #66e8b7;
+    border-bottom: 1px solid rgba(244, 242, 238, 0.6);
+}
+
+.spine-format {
+    font-family: var(--pixel-font), var(--mono-font);
+    font-size: 0.48rem;
+    font-weight: 700;
+    color: rgba(244, 242, 238, 0.95);
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+}
+
+.spine-title {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-family: var(--pixel-font), var(--mono-font);
+    font-size: 0.44rem;
+    letter-spacing: 0.1em;
+    color: rgba(244, 242, 238, 0.92);
+    white-space: nowrap;
+    text-align: center;
+    margin: auto 0;
+    max-height: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+.spine-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.spine-hq {
+    background: #66e8b7;
+    color: #000;
+    font-family: var(--pixel-font), var(--mono-font);
+    font-weight: 800;
+    font-size: 0.42rem;
+    padding: 1px 3px;
+    line-height: 1;
+}
+
+.spine-code {
+    font-family: monospace;
+    font-size: 0.38rem;
+    color: rgba(244, 242, 238, 0.5);
+    letter-spacing: 0.05em;
+}
+
+/* When cassette is flipped to back, the left spine blends cleanly into the dark shell */
+.hero-card.is-flipped .cassette-spine-left {
+    background: #0b0b0b;
+    border-left: 1px solid rgba(255, 255, 255, 0.06);
+    border-right: 1px solid rgba(0, 0, 0, 0.95);
+}
+
+.hero-card.is-flipped .cassette-spine-left .spine-title,
+.hero-card.is-flipped .cassette-spine-left .spine-format,
+.hero-card.is-flipped .cassette-spine-left .spine-color-top,
+.hero-card.is-flipped .cassette-spine-left .spine-bottom {
+    opacity: 0.35;
+}
+
+/* RIGHT SPINE (Ribbed plastic shell & notch) */
+.cassette-spine-right {
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    max-height: 100%;
+    right: calc(-1 * var(--cassette-z, 22px));
+    width: var(--cassette-depth, 44px);
+    transform: rotateY(90deg);
+    background: #111;
+    border-left: 1px solid rgba(0, 0, 0, 0.9);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.spine-ribs {
+    height: 38%;
+    background: repeating-linear-gradient(
+        0deg,
+        #0a0a0a 0px,
+        #0a0a0a 2px,
+        #1c1c1c 2px,
+        #1c1c1c 5px
+    );
+}
+
+.spine-notch {
+    height: 16%;
+    background: #060606;
+    border-top: 2px solid #000;
+    border-bottom: 2px solid #000;
+    box-shadow: inset 0 0 6px #000;
+}
+
+/* TOP SPINE */
+.cassette-spine-top {
+    left: 0;
+    right: 0;
+    width: 100%;
+    top: calc(-1 * var(--cassette-z, 22px));
+    height: var(--cassette-depth, 44px);
+    transform: rotateX(90deg);
+    background: #0e0e0e;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.spine-top-bar {
+    width: 20%;
+    height: 100%;
+    background: #66e8b7;
+    border-right: 2px solid rgba(244, 242, 238, 0.3);
+}
+
+/* BOTTOM SPINE */
+.cassette-spine-bottom {
+    left: 0;
+    right: 0;
+    width: 100%;
+    bottom: calc(-1 * var(--cassette-z, 22px));
+    height: var(--cassette-depth, 44px);
+    transform: rotateX(-90deg);
+    background: #080808;
+    border-top: 1px solid rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.spine-bottom-slot {
+    width: 70%;
+    height: 60%;
+    background: #020202;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.95);
+    border: 1px solid rgba(244, 242, 238, 0.08);
+}
+
+/* Hover & reduced motion handling */
+.hero-card:hover {
+    transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-card,
+    .cassette-3d {
+        transition: none !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .cassette-3d {
+        --cassette-depth: 38px;
+        --cassette-z: 19px;
+    }
+
+    .vhs-cassette-housing {
+        height: 135px;
+        gap: 4px;
+        padding: 4px;
+    }
+
+    .vhs-spool-viewport {
+        width: 66px;
+    }
+
+    .vhs-center-sticker {
+        height: 122px;
+        max-width: 110px;
+        padding: 4px 5px;
+    }
+
+    .stk-row {
+        font-size: 0.38rem;
+        gap: 3px;
+        grid-template-columns: 12px 1fr auto;
+        padding-bottom: 1px;
+    }
+
+    .vhs-gate-text {
+        font-size: 0.34rem;
+        gap: 3px;
+    }
+
+    .vhs-grip-recess {
+        height: 26px;
+        width: 74%;
+    }
+
+    .vhs-embossed-brand {
+        font-size: 0.95rem;
+    }
+
+    .vhs-embossed-specs {
+        font-size: 0.32rem;
+    }
+
+    .vhs-barcode-label svg {
+        width: 52px;
+        height: 11px;
+    }
+}
+
+@media (max-width: 900px) {
+    .hero-floating-img {
+        perspective: 1200px;
+        perspective-origin: 50% 50%;
+        max-width: clamp(320px, 75vw, 420px);
+        margin: 0 auto;
+    }
+
+    .hero-floating-img.is-centered {
+        transform: none !important;
+    }
+
+    .hero.tape-focused .hero-left {
+        opacity: 1 !important;
+        filter: none !important;
+    }
+
+    .hero-card {
+        transform: rotateY(-8deg) rotateX(3deg);
+    }
+
+    .hero-floating-img::after {
+        display: block;
+        bottom: -5%;
+        height: 36px;
+    }
+}
+
+/* ==========================================================================
+   Pixel readouts — Silkscreen only where the machine speaks
+   ========================================================================== */
+.section-label,
+.hud-clock,
+.vhs-deck,
+.hero-eyebrow,
+.stat-label,
+.tape-caption,
+.view-more-btn {
+    font-family: var(--pixel-font);
+    letter-spacing: 0.08em;
+}
+
+.cassette-sleeve-header,
+.cassette-back-header,
+.cassette-spine {
+    font-family: var(--pixel-font);
+    letter-spacing: 0.06em;
+}
+.display-title,
+.service-title {
+    font-family: 'Teletactile', var(--display-font);
+}
+
+.display-title:not(.project-title) {
+    font-size: clamp(1.9rem, 4.4vw, 4.6rem);
+    font-weight: 400;
+    line-height: 1.14;
+    letter-spacing: 0.01em;
+}
+
+.display-title .blur-line {
+    line-height: 1.12;
+}
+/* ==========================================================================
+   Square controls — no rounded corners on anything you press
+   ========================================================================== */
+.btn-view-projects,
+.view-more-btn,
+.menu-toggle,
+.menu-toggle-bar,
+.play-badge,
+.lightbox-close,
+.vhs-sp {
+    border-radius: 0;
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle-bar:first-child,
+.menu-toggle[aria-expanded="true"] .menu-toggle-bar:last-child {
+    border-radius: 0;
+}
+/* ==========================================================================
+   VHS CRT Phosphor Screen — RGB Aperture Grille + scanlines + analog jitter
+   ========================================================================== */
+.crt {
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='190'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='190' height='190' filter='url(%23n)' opacity='0.065'/%3E%3C/svg%3E"),
+        /* Vertical RGB Phosphor Triad micro-stripes (Red, Green, Blue) */
+        repeating-linear-gradient(90deg,
+            rgba(255, 30, 30, 0.04) 0px,
+            rgba(255, 30, 30, 0.04) 1px,
+            rgba(30, 255, 30, 0.035) 1px,
+            rgba(30, 255, 30, 0.035) 2px,
+            rgba(30, 100, 255, 0.04) 2px,
+            rgba(30, 100, 255, 0.04) 3px),
+        /* Horizontal scanlines */
+        repeating-linear-gradient(to bottom,
+            rgba(244, 242, 238, 0.075) 0px,
+            rgba(244, 242, 238, 0.075) 1px,
+            rgba(244, 242, 238, 0) 1px,
+            rgba(244, 242, 238, 0) 3px);
+    background-size: 190px 190px, 3px 100%, auto;
+    animation: crtFlicker 7s ease-in-out infinite, crtStatic 0.75s steps(3) infinite;
+}
+
+@keyframes crtStatic {
+    0%   { background-position: 0 0, 0 0, 0 0; }
+    30%  { background-position: -62px 44px, 1px 0, 0 1px; }
+    60%  { background-position: 38px -52px, -1px 0, 0 0; }
+    100% { background-position: 0 0, 0 0, 0 2px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .crt { animation: none; }
+}
+/* no-glow: nothing emits light */
+.pulse-dot,
+.status-val .pulse-dot {
+    box-shadow: none !important;
+    animation: none !important;
+}
+
+.btn-view-projects:hover,
+.service-toggle:hover,
+.view-more-btn:hover,
+.lightbox-close:hover {
+    box-shadow: none;
+}
+
+/* the case frame sits above the CRT layer */
+body.tech-editorial::after {
+    z-index: 9995 !important;
+}
+
+/* ==========================================================================
+   Old TV glass — the reflection of the tube, over everything
+   ========================================================================== */
+.tv-glass {
+    position: fixed;
+    inset: 0;
+    z-index: 9992;
+    pointer-events: none;
+    border-radius: 26px;
+    mix-blend-mode: screen;
+    background:
+        /* glare in the upper-left, where the light hits a convex tube */
+        radial-gradient(115% 85% at 16% 6%, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.025) 26%, transparent 54%),
+        /* the long soft reflection across the diagonal */
+        linear-gradient(118deg,
+            rgba(255, 255, 255, 0.05) 0%,
+            rgba(255, 255, 255, 0.014) 20%,
+            transparent 40%,
+            transparent 68%,
+            rgba(255, 255, 255, 0.012) 86%,
+            transparent 100%),
+        /* light bouncing off the bottom of the tube */
+        radial-gradient(140% 55% at 50% 116%, rgba(255, 255, 255, 0.035), transparent 62%),
+        /* faint haze at the very edges */
+        radial-gradient(ellipse at 50% 50%, transparent 62%, rgba(255, 255, 255, 0.012) 88%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+/* ---------- stronger glass + visible case rim ---------- */
+.tv-glass {
+    background:
+        radial-gradient(115% 85% at 16% 6%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.06) 24%, transparent 52%),
+        linear-gradient(118deg,
+            rgba(255, 255, 255, 0.11) 0%,
+            rgba(255, 255, 255, 0.035) 18%,
+            transparent 38%,
+            transparent 66%,
+            rgba(255, 255, 255, 0.03) 86%,
+            transparent 100%),
+        radial-gradient(140% 55% at 50% 118%, rgba(255, 255, 255, 0.08), transparent 62%),
+        radial-gradient(ellipse at 50% 50%, transparent 58%, rgba(255, 255, 255, 0.03) 88%, rgba(255, 255, 255, 0.05) 100%);
+}
+
+html[data-theme="dark"] body.tech-editorial::after,
+body.tech-editorial::after {
+    box-shadow:
+        inset 0 0 0 16px #2c2c29,
+        inset 0 0 0 17px rgba(244, 242, 238, 0.22),
+        inset 0 0 46px rgba(0, 0, 0, 0.55),
+        0 0 0 100vmax #1a1a18 !important;
+}
+
+/* thicker case rim */
+html[data-theme="dark"] body.tech-editorial::after,
+body.tech-editorial::after {
+    border-radius: 34px !important;
+    box-shadow:
+        inset 0 0 0 30px #2f2f2c,
+        inset 0 0 0 31px rgba(244, 242, 238, 0.26),
+        inset 0 0 0 34px #1b1b19,
+        inset 0 0 60px rgba(0, 0, 0, 0.6),
+        0 0 0 100vmax #1a1a18 !important;
+}
+
+/* case rim grows inward */
+html[data-theme="dark"] body.tech-editorial::after,
+body.tech-editorial::after {
+    box-shadow:
+        inset 0 0 0 46px #2f2f2c,
+        inset 0 0 0 47px rgba(244, 242, 238, 0.28),
+        inset 0 0 0 51px #1b1b19,
+        inset 0 0 80px rgba(0, 0, 0, 0.62),
+        0 0 0 100vmax #1a1a18 !important;
+}
+
+/* frame — selector that cannot miss */
+html body::after {
+    content: '' !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 9995 !important;
+    pointer-events: none !important;
+    border-radius: 36px !important;
+    background: transparent !important;
+    box-shadow:
+        inset 0 0 0 56px #3c3c37,
+        inset 0 0 0 58px rgba(244, 242, 238, 0.35),
+        inset 0 0 0 62px #171715,
+        inset 0 0 90px rgba(0, 0, 0, 0.65),
+        0 0 0 100vmax #141412 !important;
+}
+
+/* frame — dialled back */
+html body::after {
+    box-shadow:
+        inset 0 0 0 38px #34342f,
+        inset 0 0 0 40px rgba(244, 242, 238, 0.28),
+        inset 0 0 0 44px #171715,
+        inset 0 0 80px rgba(0, 0, 0, 0.6),
+        0 0 0 100vmax #141412 !important;
+}
+
+/* frame — thin */
+html body::after {
+    box-shadow:
+        inset 0 0 0 24px #2e2e2a,
+        inset 0 0 0 25px rgba(244, 242, 238, 0.24),
+        inset 0 0 0 28px #171715,
+        inset 0 0 64px rgba(0, 0, 0, 0.55),
+        0 0 0 100vmax #141412 !important;
+}
+
+/* frame — thin black case with a gradient bevel */
+html body::after {
+    content: '' !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 9995 !important;
+    pointer-events: none !important;
+    border: 16px solid transparent !important;
+    border-image: linear-gradient(158deg, #4a4a44 0%, #0b0b0a 38%, #101010 62%, #2f2f2b 100%) 1 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow:
+        inset 0 0 0 1px rgba(244, 242, 238, 0.16),
+        inset 0 0 70px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* frame — thin black case with a gradient bevel (mask ring, no layout impact) */
+html body::after {
+    content: '' !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 9995 !important;
+    pointer-events: none !important;
+    border: 0 !important;
+    border-image: none !important;
+    border-radius: 0 !important;
+    padding: 22px !important;
+    box-sizing: border-box !important;
+    background: linear-gradient(158deg, #4a4a44 0%, #0b0b0a 40%, #101010 64%, #2f2f2b 100%) !important;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0) !important;
+    -webkit-mask-composite: xor !important;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0) !important;
+    mask-composite: exclude !important;
+    box-shadow: none !important;
+}
+
+/* tv glass — toned down */
+.tv-glass {
+    background:
+        radial-gradient(115% 85% at 16% 6%, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.03) 24%, transparent 52%),
+        linear-gradient(118deg,
+            rgba(255, 255, 255, 0.05) 0%,
+            rgba(255, 255, 255, 0.015) 18%,
+            transparent 38%,
+            transparent 66%,
+            rgba(255, 255, 255, 0.014) 86%,
+            transparent 100%),
+        radial-gradient(140% 55% at 50% 118%, rgba(255, 255, 255, 0.035), transparent 62%),
+        radial-gradient(ellipse at 50% 50%, transparent 60%, rgba(255, 255, 255, 0.015) 88%, rgba(255, 255, 255, 0.025) 100%) !important;
+}
+
+/* tv glass — barely there */
+.tv-glass {
+    background:
+        radial-gradient(115% 85% at 16% 6%, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0.012) 24%, transparent 50%),
+        linear-gradient(118deg,
+            rgba(255, 255, 255, 0.022) 0%,
+            rgba(255, 255, 255, 0.006) 18%,
+            transparent 36%,
+            transparent 68%,
+            rgba(255, 255, 255, 0.006) 86%,
+            transparent 100%),
+        radial-gradient(140% 55% at 50% 118%, rgba(255, 255, 255, 0.015), transparent 60%) !important;
+}
+
+/* darker edges — a vignette that follows the same mask as the edge blur */
+body::before {
+    background: radial-gradient(ellipse at 50% 48%,
+        transparent 48%,
+        rgba(0, 0, 0, 0.28) 76%,
+        rgba(0, 0, 0, 0.55) 92%,
+        rgba(0, 0, 0, 0.78) 100%) !important;
+}
+
+/* darker edges, and no rounded corners anywhere on the case */
+body::before {
+    background: radial-gradient(ellipse at 50% 48%,
+        transparent 38%,
+        rgba(0, 0, 0, 0.42) 68%,
+        rgba(0, 0, 0, 0.72) 86%,
+        rgba(0, 0, 0, 0.94) 100%) !important;
+}
+
+html body::after,
+body::before,
+.tv-glass,
+.crt {
+    border-radius: 0 !important;
+}
+
+/* no case at all — just the tube */
+html body::after {
+    display: none !important;
+}
+
+body::before {
+    background: radial-gradient(ellipse at 50% 48%,
+        transparent 30%,
+        rgba(0, 0, 0, 0.55) 60%,
+        rgba(0, 0, 0, 0.86) 82%,
+        #000000 100%) !important;
+}
+
+/* tv glass removed */
+.tv-glass {
+    display: none !important;
+}
+
+/* the nav no longer needs its ground — the vignette handles contrast */
+.nav-br,
+.nav-bl {
+    background: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* TV glass effect removed completely */
+.tv-glass {
+    display: none !important;
+}
+
+/* Reserve each headline line so nothing below shifts while typing */
+.display-title .blur-line {
+    display: block;
+    min-height: 1.12em;
+    position: relative;
+}
+
+.display-title .type-visible {
+    color: inherit;
+}
+
+.display-title .type-ghost {
+    visibility: hidden;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Authentic Typewriter Blinking Dash Cursor (_) */
+.display-title .type-cursor {
+    display: inline-block;
+    color: var(--accent-color, #3ED598);
+    font-family: var(--pixel-font), var(--mono-font), monospace;
+    font-weight: 700;
+    margin-left: 0.04em;
+    line-height: 0.9;
+    vertical-align: 0.02em;
+    animation: typewriterCursorBlink 0.72s step-start infinite;
+    user-select: none;
+    pointer-events: none;
+    text-shadow: 0 0 14px rgba(62, 213, 152, 0.65), 0 0 2px rgba(62, 213, 152, 0.9);
+}
+
+@keyframes typewriterCursorBlink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}
+
+
+
+/* Authentic VHS On-Screen Display (OSD) chromatic fringing */
+.vhs-deck,
+.vhs-sp,
+.loader-vhs .vhs-rec,
+.loader-vhs .vhs-play {
+    text-shadow:
+        -1px 0 rgba(255, 0, 80, 0.5),
+        1px 0 rgba(0, 230, 255, 0.5);
+}
+
+/* ==========================================================================
+   Arc-Style Infinite Vertical Reel & Tape Repulsion Scroll (.vhs-about)
+   ========================================================================== */
+body.view-mode .vhs-about.page-view.is-visible {
+    display: block !important;
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #080808;
+    z-index: 20;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.vhs-about-text {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 13%, #000 87%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 13%, #000 87%, transparent 100%);
+    z-index: 10;
+}
+
+.vhs-about-reel {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate3d(-50%, 0, 0);
+    width: 100%;
+    max-width: 1260px;
+    pointer-events: auto;
+    will-change: transform;
+    padding-top: clamp(60px, 8vh, 100px);
+}
+
+.vhs-about-loop {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(70px, 10vh, 110px);
+    padding-bottom: clamp(70px, 10vh, 110px);
+    align-items: center;
+    width: 100%;
+}
+
+.vhs-about-loop.is-copy {
+    pointer-events: auto;
+}
+
+/* Intro block (Centered, Large Typography, moves behind the tape) */
+.vhs-about-introblock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: clamp(80px, 12vh, 160px) 24px;
+    box-sizing: border-box;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.bio-kicker {
+    font-family: var(--mono-font);
+    font-size: 0.85rem;
+    letter-spacing: 0.22em;
+    color: rgba(244, 242, 238, 0.45);
+    margin-bottom: 28px;
+    font-weight: 600;
+    text-align: center;
+    transform: none !important;
+}
+
+.bio-text {
+    font-family: var(--sans-font);
+    font-size: clamp(2rem, 3.2vw, 3.2rem);
+    line-height: 1.32;
+    color: #f4f2ee;
+    letter-spacing: -0.025em;
+    font-weight: 400;
+    margin: 0 auto;
+    max-width: 960px;
+    text-align: center;
+    transform: none !important;
+}
+
+/* 2-Column Pairs */
+.vhs-about-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: clamp(400px, 42vw, 580px);
+    width: 100%;
+    max-width: 1400px;
+    align-items: start;
+    padding: 0 32px;
+    box-sizing: border-box;
+}
+
+.vhs-about-col[data-side="left"],
+.vhs-about-col[data-side="left"] .vhs-about-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.vhs-about-col[data-side="right"],
+.vhs-about-col[data-side="right"] .vhs-about-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.vhs-about-col h2 {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    color: rgba(244, 242, 238, 0.42);
+    margin-bottom: 14px;
+    font-weight: 600;
+}
+
+.vhs-about-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Individual Text Lines with Repulsion Transform */
+.vhs-about-line {
+    font-family: var(--sans-font);
+    font-size: clamp(0.92rem, 1.05vw, 1.08rem);
+    color: #f4f2ee;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    will-change: transform;
+    display: inline-block;
+    line-height: 1.35;
+}
+
+.vhs-about-line.mono,
+.vhs-about-line .mono {
+    font-family: var(--mono-font);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    color: rgba(244, 242, 238, 0.75);
+}
+
+/* Journey History Leader Line - Short & Compact */
+.vhs-about-role {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.vhs-about-leader {
+    flex: 0 0 auto;
+    width: auto;
+    opacity: 0.35;
+    letter-spacing: -0.05em;
+    user-select: none;
+}
+
+.vhs-about-leader::before {
+    content: "––––";
+}
+
+.role-org {
+    font-weight: 500;
+    color: #f4f2ee;
+}
+
+.role-date {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: rgba(244, 242, 238, 0.5);
+}
+
+/* Connect / Social links */
+.vhs-about-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #f4f2ee;
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 2px;
+    transition: color 0.2s ease;
+}
+
+.vhs-about-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: rgba(244, 242, 238, 0.55);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.vhs-about-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.vhs-about-link:hover {
+    color: #ffffff;
+}
+
+.vhs-about-link .link-arrow {
+    font-size: 0.85em;
+    opacity: 0.5;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.vhs-about-link:hover .link-arrow {
+    opacity: 1;
+    transform: translate(2px, -2px);
+}
+
+/* Pinned Center 3D VHS Cassette Tape - Matching Hero Dimensions & Drop Shadow */
+.vhs-about .vhs-sleeve {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    z-index: 25;
+    width: 100%;
+    max-width: 520px;
+    aspect-ratio: 188 / 104;
+    pointer-events: auto;
+    perspective: 1600px;
+    perspective-origin: 50% 45%;
+    transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), z-index 0.65s step-start;
+    will-change: transform;
+}
+
+.vhs-about .vhs-sleeve:hover {
+    transform: translate(-50%, -50%) scale(1.14);
+    z-index: 35;
+}
+
+/* Floor drop shadow under the 3D cassette matching Hero */
+.vhs-about .vhs-sleeve::after {
+    content: '';
+    position: absolute;
+    left: 5%;
+    right: 7%;
+    bottom: -9%;
+    height: 52px;
+    z-index: -1;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.4) 45%, transparent 72%);
+    filter: blur(18px);
+    transform: translateZ(-60px);
+    transition: filter 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.65s ease;
+}
+
+.vhs-about .vhs-sleeve:hover::after {
+    filter: blur(26px);
+    opacity: 0.95;
+}
+
+.vhs-about .vhs-about-tape {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    cursor: pointer;
+    outline: none;
+    transform-style: preserve-3d;
+    transform: rotateY(-17deg) rotateX(5deg) rotateZ(-2deg);
+    transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+}
+
+.vhs-about .vhs-about-tape.tilting {
+    transition: transform 0.12s linear;
+}
+
+.hero-card:hover .cassette-face,
+.vhs-about .vhs-about-tape:hover .cassette-face {
+    box-shadow: 0 0 0 1px rgba(244, 242, 238, 0.4), 0 35px 70px -20px rgba(0, 0, 0, 0.95);
+}
+
+.hero-card:hover .cassette-front img,
+.hero-card:hover .slipcase-photo-frame img,
+.vhs-about .vhs-about-tape:hover .cassette-front img,
+.vhs-about .vhs-about-tape:hover .slipcase-photo-frame img {
+    filter: contrast(1.08);
+}
+
+.vhs-about .vhs-about-tape .cassette-3d {
+    will-change: transform;
+}
+
+/* Mobile & Tablet Adjustments */
+@media (max-width: 820px) {
+    .vhs-about .vhs-sleeve {
+        width: clamp(280px, 75vw, 420px);
+        perspective: 1200px;
+        perspective-origin: 50% 50%;
+    }
+
+    .vhs-about .vhs-sleeve::after {
+        display: block;
+        bottom: -5%;
+        height: 36px;
+    }
+
+    .vhs-about-pair {
+        column-gap: clamp(200px, 32vw, 320px);
+        padding: 0 16px;
+    }
+
+    .vhs-about-line {
+        font-size: 0.8rem;
+    }
+
+    .vhs-about-role {
+        min-width: 0;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 2px;
+    }
+
+    .vhs-about-leader {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vhs-about-line {
+        transform: none !important;
+    }
+}
+
+
+
