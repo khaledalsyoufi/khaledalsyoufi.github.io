@@ -178,7 +178,10 @@ function renderServices() {
             toggleBtn.className = 'view-more-btn mono';
             toggleBtn.innerHTML = 'VIEW MORE';
             toggleBtn.dataset.state = 'collapsed';
-            
+            toggleBtn.type = 'button';
+            toggleBtn.setAttribute('aria-expanded', 'false');
+            toggleBtn.setAttribute('aria-controls', content.id);
+
             toggleBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const isCollapsed = this.dataset.state === 'collapsed';
@@ -209,12 +212,16 @@ function renderServices() {
                     }, 450);
                 }
                 
-                // Recalculate accordion height after a short delay for transitions
+                this.setAttribute('aria-expanded', String(isCollapsed));
+
+                // Recalculate accordion height once the items are shown / hidden,
+                // otherwise a collapsed grid keeps its expanded max-height and the
+                // accordion's close animation stalls on the empty space.
                 setTimeout(() => {
                     if (serviceItemEl.classList.contains('expanded')) {
                         contentEl.style.maxHeight = `${contentEl.scrollHeight}px`;
                     }
-                }, 100);
+                }, isCollapsed ? 100 : 450);
             });
             visuals.append(toggleBtn);
         }
