@@ -731,11 +731,6 @@ body.has-custom-cursor .custom-cursor {
     transition: z-index 0.75s step-start;
 }
 
-.hero.tape-focused .hero-right,
-.hero-right:has(.is-centered) {
-    z-index: 900;
-}
-
 .hero-floating-img {
     width: 100%;
     max-width: 520px;
@@ -1479,12 +1474,12 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
     margin-bottom: 22px;
 }
 
+/* One fixed slot for every logo: wide or tall, nothing below it moves between clients */
 .tv-brand-logo-wrap {
     display: inline-flex;
     align-items: center;
     justify-content: flex-start;
-    min-height: 84px;
-    height: auto;
+    height: 125px;
     margin-bottom: 8px;
 }
 
@@ -1506,11 +1501,10 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
     max-width: 260px;
 }
 
-.tv-brand-logo-wrap.is-portrait {
-    min-height: 125px;
-}
-
+/* Always one line, or the guide below jumps for long names: fitTitle() in main.js
+   shrinks the few that don't fit. */
 .tv-guide-title {
+    width: 100%;
     font-family: 'Teletactile', var(--display-font, sans-serif);
     font-size: clamp(2.2rem, 4.5vw, 3.8rem);
     font-weight: 400;
@@ -1519,6 +1513,7 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
     line-height: 1.1;
     margin: 0;
     text-transform: uppercase;
+    white-space: nowrap;
     text-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
 }
 
@@ -1630,44 +1625,131 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
 }
 
 /* Responsive Adaptations */
+/* Phones & tablets: the guide sits centred with the channels as a horizontal strip
+   along the bottom. selectChannel() switches to translateX at this same width. */
 @media (max-width: 900px) {
+    .tv-epg-overlay {
+        background: rgba(0, 0, 0, 0.74);
+    }
+
     .tv-epg-stage {
+        --dial-strip-width: min(90vw - 72px, 348px);
         flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
+        align-items: center;
         gap: 1.25rem;
-        padding: 5rem 5vw 1.5rem;
+        padding: 5rem 5vw clamp(1.25rem, 17vh, 10rem);
     }
 
     .tv-dial-column {
-        width: 100%;
-        height: 180px;
+        order: 2;
+        width: calc(var(--dial-strip-width) + 72px);
+        height: 92px;
+        align-items: center;
     }
 
+    /* Exactly three items fit, so the strip never shows more than three logos */
     .tv-dial-viewport {
-        height: 180px;
+        width: var(--dial-strip-width);
+        height: 92px;
+        mask-image: none;
+        -webkit-mask-image: none;
+    }
+
+    .tv-dial-track {
+        display: flex;
+        width: max-content;
+        height: 100%;
+    }
+
+    .tv-dial-item {
+        flex: 0 0 calc(var(--dial-strip-width) / 3);
+        height: 100%;
+        flex-direction: column;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .tv-dial-item.is-active {
+        transform: none;
+    }
+
+    .tv-dial-num {
+        width: auto;
+        text-align: center;
+    }
+
+    .tv-dial-logo-wrap,
+    .tv-dial-item.is-active .tv-dial-logo-wrap {
+        width: calc(100% - 12px);
+        height: 44px;
+        justify-content: center;
+    }
+
+    .tv-dial-logo.is-portrait,
+    .tv-dial-item.is-active .tv-dial-logo.is-portrait {
+        max-height: 100%;
+        transform: none;
+    }
+
+    .tv-dial-item.is-active .tv-dial-select-pill {
+        display: none;
+    }
+
+    /* The up / down chevrons become previous / next at the ends of the strip */
+    .tv-chevron-up,
+    .tv-chevron-down {
+        top: 50%;
+        bottom: auto;
     }
 
     .tv-chevron-up {
-        top: 22px;
+        left: 0;
+        transform: translateY(-50%) rotate(-90deg);
     }
 
     .tv-chevron-down {
-        bottom: 22px;
+        left: auto;
+        right: 0;
+        transform: translateY(-50%) rotate(-90deg);
+    }
+
+    .tv-chevron-up:hover,
+    .tv-chevron-down:hover {
+        transform: translateY(-50%) rotate(-90deg) scale(1.2);
     }
 
     .tv-epg-info-panel {
         margin-left: 0;
+        width: 100%;
         max-width: 100%;
+        align-items: center;
+        text-align: center;
     }
 
+    .tv-guide-main {
+        width: 100%;
+        align-items: center;
+    }
+
+    .tv-brand-logo-wrap {
+        justify-content: center;
+    }
+
+    .tv-featured-brand-logo {
+        object-position: center;
+    }
+
+    /* Fixed heights all the way down, so changing client only swaps the content */
     .tv-guide-title {
+        height: 2.75rem;
         font-size: 2.2rem;
+        line-height: 2.75rem;
     }
 
     .tv-timeline-row {
         max-width: 100%;
         flex-wrap: wrap;
+        justify-content: center;
         gap: 10px;
     }
 
@@ -1675,13 +1757,22 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
         flex-basis: 100%;
     }
 
+    /* Room for two lines, the most any category needs */
     .tv-timeline-end {
-        flex-shrink: 1;
+        flex: 0 0 100%;
         min-width: 0;
+        height: 2.8rem;
+        line-height: 1.4rem;
     }
 
     .tv-guide-controls {
+        justify-content: center;
         margin-bottom: 14px;
+    }
+
+    .tv-guide-row {
+        justify-content: center;
+        max-width: 100%;
     }
 }
 
@@ -1691,22 +1782,17 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
     }
 
     .tv-brand-logo-wrap {
-        min-height: 58px;
-        height: auto;
+        height: 140px;
     }
 
     .tv-featured-brand-logo {
-        max-height: 56px;
-        max-width: 210px;
+        max-height: 90px;
+        max-width: 280px;
     }
 
     .tv-featured-brand-logo.is-portrait {
-        max-height: 90px;
-        max-width: 170px;
-    }
-
-    .tv-brand-logo-wrap.is-portrait {
-        min-height: 90px;
+        max-height: 140px;
+        max-width: 240px;
     }
 
     .tv-guide-title {
@@ -1715,6 +1801,43 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
 
     .tv-timeline-end {
         font-size: 1.05rem;
+    }
+}
+
+/* Narrow phones: the longest category has to stay within its two lines */
+@media (max-width: 360px) {
+    .tv-timeline-end {
+        font-size: 0.88rem;
+    }
+}
+
+/* Small phones: the guide and the strip have to share very little height */
+@media (max-width: 900px) and (max-height: 680px) {
+    .tv-epg-stage {
+        gap: 0.75rem;
+        padding: 4.5rem 5vw 0.75rem;
+    }
+
+    .tv-guide-main {
+        gap: 6px;
+        margin-bottom: 12px;
+    }
+
+    .tv-timeline-row {
+        margin-bottom: 12px;
+    }
+
+    .tv-brand-logo-wrap {
+        height: 92px;
+        margin-bottom: 0;
+    }
+
+    .tv-featured-brand-logo {
+        max-height: 62px;
+    }
+
+    .tv-featured-brand-logo.is-portrait {
+        max-height: 92px;
     }
 }
 
@@ -1803,6 +1926,18 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
 
 .footer-dot {
     opacity: 0.5;
+}
+
+/* :visited too, or a mailto: link the browser remembers falls back to its default purple */
+.minimal-footer a,
+.minimal-footer a:visited {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.minimal-footer a:hover {
+    color: var(--accent-color);
 }
 
 /* Lightbox */
@@ -2285,7 +2420,7 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
 }
 
 .mobile-menu-list a {
-    font-size: clamp(1.9rem, 9vw, 3rem);
+    font-size: clamp(1.7rem, 9vw, 3rem);
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: -0.02em;
@@ -2757,7 +2892,7 @@ body.glitching-in .crt::before {
 
 .hero-floating-img {
     position: relative;
-    perspective: 1600px;
+    perspective: calc(1600px * var(--tape-scale, 1));
     perspective-origin: 50% 45%;
     width: 100%;
     max-width: 520px;
@@ -2774,55 +2909,13 @@ body.glitching-in .crt::before {
     left: 5%;
     right: 7%;
     bottom: -9%;
-    height: 52px;
+    height: calc(52px * var(--tape-scale, 1));
     z-index: -1;
     border-radius: 50%;
     background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.4) 45%, transparent 72%);
-    filter: blur(18px);
-    transform: translateZ(-60px);
+    filter: blur(calc(18px * var(--tape-scale, 1)));
+    transform: translateZ(calc(-60px * var(--tape-scale, 1)));
     transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), filter 0.75s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.75s ease;
-}
-
-/* Backdrop for Hero 3D Cassette Focus Stage */
-.hero-tape-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(8, 8, 8, 0.65);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    z-index: 850;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.hero.tape-focused .hero-tape-backdrop {
-    opacity: 1;
-    pointer-events: auto;
-    cursor: pointer;
-}
-
-/* Screen-centered focus state on click: "اول ما اضغط على الشريط يكبر" */
-.hero-floating-img.is-centered {
-    z-index: 999;
-}
-
-.hero-floating-img.is-centered::after {
-    filter: blur(34px);
-    opacity: 0.98;
-    bottom: -15%;
-    height: 78px;
-}
-
-/* Cinematic focus on the centered cassette: gently dim hero text */
-.hero-left {
-    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), filter 0.65s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.hero.tape-focused .hero-left {
-    opacity: 0.3;
-    filter: blur(2px);
-    pointer-events: none;
 }
 
 .hero-card {
@@ -2852,66 +2945,27 @@ body.glitching-in .crt::before {
     transition: transform 0.12s linear;
 }
 
-/* 3D Inner Container for the 180deg flip (Thick retro VHS cassette geometry) */
+/* 3D Inner Container for the 180deg flip (Thick retro VHS cassette geometry)
+   The tape is always laid out at its 520px design size and scaled as one piece
+   (--tape-scale comes from initTapeScale), so it looks identical at every width.
+   Don't add breakpoints for anything inside it. */
 .cassette-3d {
     --cassette-depth: 44px;
     --cassette-z: 22px;
-    position: relative;
-    width: 100%;
-    height: 100%;
+    --tape-design-height: calc(520px * 104 / 188);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 520px;
+    height: var(--tape-design-height);
+    margin: calc(var(--tape-design-height) / -2) 0 0 -260px;
+    scale: var(--tape-scale, 1);
     transform-style: preserve-3d;
     transition: transform 0.85s cubic-bezier(0.2, 0.85, 0.25, 1);
 }
 
 .hero-card.is-flipped .cassette-3d {
     transform: rotateY(180deg);
-}
-
-@media (max-width: 520px) {
-    .hero-card.is-flipped .cassette-3d {
-        transform: rotateY(180deg);
-    }
-
-    .cassette-front {
-        grid-template-columns: minmax(100px, 120px) 1fr;
-        gap: 4px 8px;
-        padding: 6px 8px 5px;
-    }
-
-    .slipcase-brand-label {
-        font-size: 1.12rem;
-    }
-
-    .slipcase-role-label {
-        font-size: 0.42rem;
-    }
-
-    .barcode-bars {
-        width: 60px;
-        height: 12px;
-    }
-
-    .vhs-tape-body {
-        padding: 4px 6px 3px;
-    }
-
-    .vhs-cassette-housing {
-        gap: 4px;
-        padding: 2px 4px;
-    }
-
-    .vhs-spool-viewport {
-        width: 78px;
-    }
-
-    .vhs-center-sticker {
-        padding: 3px 5px;
-    }
-
-    .stk-row {
-        font-size: 0.35rem;
-        gap: 3px;
-    }
 }
 
 /* 3x Flip Unlock Holographic Glow */
@@ -3843,84 +3897,10 @@ body.glitching-in .crt::before {
     }
 }
 
-@media (max-width: 600px) {
-    .cassette-3d {
-        --cassette-depth: 38px;
-        --cassette-z: 19px;
-    }
-
-    .vhs-cassette-housing {
-        height: 135px;
-        gap: 4px;
-        padding: 4px;
-    }
-
-    .vhs-spool-viewport {
-        width: 66px;
-    }
-
-    .vhs-center-sticker {
-        height: 122px;
-        max-width: 110px;
-        padding: 4px 5px;
-    }
-
-    .stk-row {
-        font-size: 0.38rem;
-        gap: 3px;
-        grid-template-columns: 12px 1fr auto;
-        padding-bottom: 1px;
-    }
-
-    .vhs-gate-text {
-        font-size: 0.34rem;
-        gap: 3px;
-    }
-
-    .vhs-grip-recess {
-        height: 26px;
-        width: 74%;
-    }
-
-    .vhs-embossed-brand {
-        font-size: 0.95rem;
-    }
-
-    .vhs-embossed-specs {
-        font-size: 0.32rem;
-    }
-
-    .vhs-barcode-label svg {
-        width: 52px;
-        height: 11px;
-    }
-}
-
 @media (max-width: 900px) {
     .hero-floating-img {
-        perspective: 1200px;
-        perspective-origin: 50% 50%;
         max-width: clamp(320px, 75vw, 420px);
         margin: 0 auto;
-    }
-
-    .hero-floating-img.is-centered {
-        transform: none !important;
-    }
-
-    .hero.tape-focused .hero-left {
-        opacity: 1 !important;
-        filter: none !important;
-    }
-
-    .hero-card {
-        transform: rotateY(-8deg) rotateX(3deg);
-    }
-
-    .hero-floating-img::after {
-        display: block;
-        bottom: -5%;
-        height: 36px;
     }
 }
 
@@ -4581,7 +4561,7 @@ body.view-mode .vhs-about.page-view.is-visible {
     max-width: 520px;
     aspect-ratio: 188 / 104;
     pointer-events: auto;
-    perspective: 1600px;
+    perspective: calc(1600px * var(--tape-scale, 1));
     perspective-origin: 50% 45%;
     transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), z-index 0.65s step-start;
     will-change: transform;
@@ -4599,12 +4579,12 @@ body.view-mode .vhs-about.page-view.is-visible {
     left: 5%;
     right: 7%;
     bottom: -9%;
-    height: 52px;
+    height: calc(52px * var(--tape-scale, 1));
     z-index: -1;
     border-radius: 50%;
     background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.4) 45%, transparent 72%);
-    filter: blur(18px);
-    transform: translateZ(-60px);
+    filter: blur(calc(18px * var(--tape-scale, 1)));
+    transform: translateZ(calc(-60px * var(--tape-scale, 1)));
     transition: filter 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.65s ease;
 }
 
@@ -4653,38 +4633,20 @@ body.view-mode .vhs-about.page-view.is-visible {
     will-change: transform;
 }
 
-/* Mobile & Tablet Adjustments: there is no room for text on both sides of the tape,
-   so it pins above a single centred column that scrolls underneath it. */
+/* Mobile & Tablet Adjustments: the tape stays centred exactly as on desktop, but
+   there is no room for text on both sides of it, so a single centred column
+   scrolls behind it instead of parting around it. */
 @media (max-width: 1024px) {
-    .vhs-about {
-        --about-tape-top: 4.75rem;
-        --about-tape-width: clamp(190px, 50vw, 300px);
-        --about-text-top: calc(var(--about-tape-top) + var(--about-tape-width) * 0.553 + 0.75rem);
+    .vhs-about .vhs-sleeve {
+        width: min(84vw, 520px);
     }
 
-    .vhs-about .vhs-sleeve,
     .vhs-about .vhs-sleeve:hover {
-        top: var(--about-tape-top);
-        width: var(--about-tape-width);
-        transform: translateX(-50%);
-        perspective: 1200px;
-        perspective-origin: 50% 50%;
-    }
-
-    .vhs-about .vhs-sleeve::after {
-        display: block;
-        bottom: -5%;
-        height: 36px;
-    }
-
-    .vhs-about-text {
-        top: var(--about-text-top);
-        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 7%, #000 90%, transparent 100%);
-        mask-image: linear-gradient(to bottom, transparent 0%, #000 7%, #000 90%, transparent 100%);
+        transform: translate(-50%, calc(-50% + var(--tape-shift, 0px)));
     }
 
     .vhs-about-reel {
-        padding-top: 1.75rem;
+        padding-top: 4.5rem;
     }
 
     .vhs-about-loop {

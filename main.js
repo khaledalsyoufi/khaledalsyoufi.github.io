@@ -894,6 +894,8 @@ function renderClients() {
 
     const ITEM_HEIGHT = 68;
     const AUTOPLAY_DELAY = 3500;
+    // Same breakpoint as the bottom channel strip in components.css
+    const horizontalDial = window.matchMedia('(max-width: 900px)');
 
     dialTrack.innerHTML = '';
     const itemElements = [];
@@ -951,16 +953,36 @@ function renderClients() {
         activeSlideKey = activeSlideKey === 'A' ? 'B' : 'A';
     }
 
+    // The title keeps to one line so the guide below it never shifts between
+    // clients; only the few long names need a smaller size to fit.
+    function fitTitle() {
+        tvMainTitle.style.fontSize = '';
+        tvMainTitle.style.lineHeight = '';
+        const { scrollWidth, clientWidth, clientHeight } = tvMainTitle;
+        if (scrollWidth > clientWidth) {
+            const size = parseFloat(getComputedStyle(tvMainTitle).fontSize);
+            tvMainTitle.style.fontSize = `${Math.floor(size * clientWidth / scrollWidth)}px`;
+            // Smaller text, same line box: the row below stays exactly where it was.
+            tvMainTitle.style.lineHeight = `${clientHeight}px`;
+        }
+    }
+
     // Channel Selection & Wheel Translation
     function selectChannel(targetIndex) {
         const nextIndex = (targetIndex + totalChannels) % totalChannels;
         currentIndex = nextIndex;
 
         // 1. Smoothly translate track so active channel is centered
-        // (the dial is 480px tall on desktop and 180px on phones, so measure it)
-        const dialHeight = dialTrack.parentElement.clientHeight;
-        const translateY = (dialHeight - ITEM_HEIGHT) / 2 - (currentIndex * ITEM_HEIGHT);
-        dialTrack.style.transform = `translateY(${translateY}px)`;
+        // (a vertical wheel on desktop, a horizontal strip on phones)
+        const dialViewport = dialTrack.parentElement;
+        if (horizontalDial.matches) {
+            const itemWidth = itemElements[0].getBoundingClientRect().width;
+            const translateX = (dialViewport.clientWidth - itemWidth) / 2 - (currentIndex * itemWidth);
+            dialTrack.style.transform = `translateX(${translateX}px)`;
+        } else {
+            const translateY = (dialViewport.clientHeight - ITEM_HEIGHT) / 2 - (currentIndex * ITEM_HEIGHT);
+            dialTrack.style.transform = `translateY(${translateY}px)`;
+        }
 
         // 2. Update active class on items
         itemElements.forEach((el, i) => {
@@ -984,6 +1006,7 @@ function renderClients() {
 
         if (tvMainTitle) {
             tvMainTitle.textContent = currentClient.name;
+            fitTitle();
         }
 
         if (tvTimelineFill) {
@@ -996,7 +1019,7 @@ function renderClients() {
         }
 
         if (tvNextName) {
-            tvNextName.textContent = nextClient.name + (nextClient.category ? ' · ' + nextClient.category : '');
+            tvNextName.textContent = nextClient.name;
         }
 
         if (tvInfoName) {
@@ -1090,15 +1113,19 @@ function renderClients() {
             }
         }, { passive: true });
 
-        // Swipe up / down on touch screens
-        let swipeStartY = null;
+        // Swipe on touch screens, in whichever direction the gesture mostly went
+        let swipeStart = null;
         stageEl.addEventListener('touchstart', (e) => {
-            swipeStartY = e.touches.length === 1 ? e.touches[0].clientY : null;
+            swipeStart = e.touches.length === 1
+                ? { x: e.touches[0].clientX, y: e.touches[0].clientY }
+                : null;
         }, { passive: true });
         stageEl.addEventListener('touchend', (e) => {
-            if (swipeStartY === null) return;
-            const distance = e.changedTouches[0].clientY - swipeStartY;
-            swipeStartY = null;
+            if (!swipeStart) return;
+            const dx = e.changedTouches[0].clientX - swipeStart.x;
+            const dy = e.changedTouches[0].clientY - swipeStart.y;
+            swipeStart = null;
+            const distance = Math.abs(dx) > Math.abs(dy) ? dx : dy;
             if (Math.abs(distance) < 40) return;
             pickChannel(currentIndex + (distance < 0 ? 1 : -1));
         }, { passive: true });
@@ -1111,13 +1138,13 @@ function renderClients() {
         if (document.body.classList.contains('modal-open')) return;
         if (document.body.classList.contains('no-scroll')) return;
 
-        if (e.key === 'ArrowDown') {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
             e.preventDefault();
             pickChannel(currentIndex + 1);
             return;
         }
 
-        if (e.key === 'ArrowUp') {
+        if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
             e.preventDefault();
             pickChannel(currentIndex - 1);
             return;
@@ -1577,72 +1604,33 @@ function initAccentModal() {
     window.openAccentPdfModal = openModal;
 }
 
-// Authentic 3D VHS Cassette Tape: Flip interaction, Pointer-tilt, and Click Centering Focus for Hero
+// The tape is laid out once at 520px and scaled as a whole, so its design is the
+// same at every screen size. The scale sits on the perspective parent so the depth
+// and the floor shadow shrink along with it.
+function initTapeScale() {
+    const DESIGN_WIDTH = 520;
+
+    document.querySelectorAll('.hero-card').forEach((card) => {
+        const applyScale = () => {
+            // Zero while its page is hidden; the observer fires again once it shows.
+            if (!card.offsetWidth) return;
+            card.parentElement.style.setProperty('--tape-scale', (card.offsetWidth / DESIGN_WIDTH).toFixed(4));
+        };
+
+        applyScale();
+        if ('ResizeObserver' in window) new ResizeObserver(applyScale).observe(card);
+        else window.addEventListener('resize', applyScale);
+    });
+}
+
+// Authentic 3D VHS Cassette Tape: Flip interaction and Pointer-tilt for Hero
 function initTapeTilt() {
-    const hero = document.querySelector('.hero');
-    const heroRight = document.querySelector('.hero-right');
-    const heroFloatingImg = document.querySelector('.hero-floating-img');
     const card = document.querySelector('.hero .hero-card');
-    if (!card || !heroFloatingImg) return;
+    if (!card) return;
 
     let isFlipped = false;
     let isFlipping = false;
     let flipCount = 0;
-    let isCentered = false;
-
-    // 1. Create or bind the focus backdrop
-    let backdrop = document.querySelector('.hero-tape-backdrop');
-    if (!backdrop && hero) {
-        backdrop = document.createElement('div');
-        backdrop.className = 'hero-tape-backdrop';
-        backdrop.setAttribute('aria-hidden', 'true');
-        hero.appendChild(backdrop);
-    }
-
-    const computeAndApplyCenter = () => {
-        if (!heroRight) return;
-
-        if (window.innerWidth <= 900) {
-            heroFloatingImg.style.transform = 'scale(1.12)';
-            heroFloatingImg.style.zIndex = '999';
-            heroFloatingImg.classList.add('is-centered');
-            if (hero) hero.classList.add('tape-focused');
-            return;
-        }
-
-        const rightRect = heroRight.getBoundingClientRect();
-        const restingCenterX = rightRect.left + rightRect.width / 2;
-        const restingCenterY = rightRect.top + rightRect.height / 2;
-
-        const screenCenterX = window.innerWidth / 2;
-        const screenCenterY = window.innerHeight / 2;
-
-        const deltaX = Math.round(screenCenterX - restingCenterX);
-        const deltaY = Math.round(screenCenterY - restingCenterY);
-
-        heroFloatingImg.style.transform = `translate3d(${deltaX}px, ${deltaY}px, 0) scale(1.3)`;
-        heroFloatingImg.style.zIndex = '999';
-        heroFloatingImg.classList.add('is-centered');
-        if (hero) hero.classList.add('tape-focused');
-        heroRight.style.zIndex = '999';
-    };
-
-    const enterFocus = () => {
-        if (isCentered) return;
-        isCentered = true;
-        computeAndApplyCenter();
-    };
-
-    const exitFocus = () => {
-        if (!isCentered) return;
-        isCentered = false;
-
-        heroFloatingImg.style.transform = '';
-        heroFloatingImg.style.zIndex = '';
-        heroFloatingImg.classList.remove('is-centered');
-        if (hero) hero.classList.remove('tape-focused');
-        if (heroRight) heroRight.style.zIndex = '';
-    };
 
     const doFlip = () => {
         flipCount++;
@@ -1668,67 +1656,15 @@ function initTapeTilt() {
         }, 850);
     };
 
-    // Click trigger: Enlarge immediately on first click + flip 180deg
-    // "خلاص خليها اول ما اضغط على الشريط يكبر، دا غير عدد مرات اللف"
-    card.addEventListener('click', (e) => {
-        e.stopPropagation();
-
-        // 1. Immediately center and enlarge if not already centered
-        if (!isCentered) {
-            enterFocus();
-        }
-
-        // 2. Flip the cassette tape in 3D (flip count tracked separately for 3x modal)
-        doFlip();
-    });
+    // Click trigger: flip 180deg in place (flip count tracked for the 3x modal)
+    card.addEventListener('click', doFlip);
 
     card.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            if (!isCentered) {
-                enterFocus();
-            }
             doFlip();
         }
     });
-
-    // Close / return to resting place when clicking backdrop or outside
-    if (backdrop) {
-        backdrop.addEventListener('click', (e) => {
-            e.stopPropagation();
-            exitFocus();
-        });
-    }
-
-    document.addEventListener('click', (e) => {
-        if (isCentered && !heroFloatingImg.contains(e.target)) {
-            exitFocus();
-        }
-    });
-
-    // Close on Escape key
-    window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && isCentered) {
-            exitFocus();
-        }
-    });
-
-    // Close on page scroll
-    window.addEventListener('scroll', () => {
-        if (isCentered) {
-            exitFocus();
-        }
-    }, { passive: true });
-
-    // Close when leaving the page, so home isn't still dimmed on the way back
-    window.addEventListener('viewchange', exitFocus);
-
-    // Recompute on window resize while centered
-    window.addEventListener('resize', () => {
-        if (isCentered) {
-            computeAndApplyCenter();
-        }
-    }, { passive: true });
 
     // 3D Pointer-tilt physics on the tape face
     const BASE_Y = -17;
@@ -1772,8 +1708,8 @@ function initInfoReelScroll() {
     const firstLoop = reel.querySelector('.vhs-about-loop');
     if (!firstLoop) return;
 
-    // Up to 1024px the tape is pinned above a single text column (see components.css),
-    // so there is nothing for the lines to part around.
+    // Up to 1024px the text is a single column running behind the tape (see
+    // components.css), so there are no side columns for the lines to part into.
     const stackedLayout = window.matchMedia('(max-width: 1024px)');
 
     // Clone the primary loop twice to create 3 seamless infinite loops
@@ -1917,7 +1853,7 @@ function initInfoReelScroll() {
 
         // The biography opens right behind the tape, so the tape rests just below it
         // and slides back to centre as soon as the reel starts moving.
-        const bio = stackedLayout.matches ? null : reel.querySelector('.bio-text');
+        const bio = reel.querySelector('.bio-text');
         if (bio) {
             const bioBottom = bio.getBoundingClientRect().bottom - containerRect.top;
             const roomBelow = containerRect.height - (tapeBox.top + tapeBox.height) - 44;
@@ -2443,6 +2379,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initLightbox();
     initTilt3D();
     initMobileMenu();
+    initTapeScale();
     initTapeTilt();
     initAccentModal();
     initInfoReelScroll();

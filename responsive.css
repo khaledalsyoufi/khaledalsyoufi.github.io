@@ -95,7 +95,7 @@
     .hero-grid {
         grid-template-columns: 1fr;
         gap: 3rem;
-        padding-top: 4rem;
+        padding-top: 0;
         padding-bottom: 4rem;
     }
 
@@ -141,7 +141,9 @@
         line-height: 1.35;
     }
 
+    /* The tape leads, with the typed headline underneath it */
     .hero-right {
+        order: -1;
         justify-content: center;
     }
 
@@ -492,7 +494,6 @@
         max-width: 300px;
         position: relative;
         bottom: auto;
-        margin-top: 2rem;
     }
 
     .hero-badge {
