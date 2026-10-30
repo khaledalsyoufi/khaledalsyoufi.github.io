@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://alsyoufi70.github.io/sitemap.xml
+Sitemap: https://alsyoufi70.github.io/khaledalsyoufi/sitemap.xml
