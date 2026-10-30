@@ -11,11 +11,13 @@
     <link rel="canonical" href="https://khaledalsyoufi.com/">
     <link rel="icon" type="image/png" sizes="256x256" href="public/images/favicon-256.png">
     <link rel="apple-touch-icon" href="public/images/favicon-256.png">
-    <link rel="stylesheet" href="base.css?v=123">
-    <link rel="stylesheet" href="components.css?v=134">
-    <link rel="stylesheet" href="responsive.css?v=122">
+    <link rel="stylesheet" href="base.css?v=124">
+    <link rel="stylesheet" href="components.css?v=137">
+    <link rel="stylesheet" href="responsive.css?v=123">
+    <link rel="preload" as="font" type="font/ttf" href="public/fonts/Teletactile.ttf" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://images.pexels.com">
     <link
         href="https://fonts.googleapis.com/css2?family=Anton&family=Share+Tech+Mono&family=Instrument+Sans:wght@400;500;600&display=swap"
         rel="stylesheet">
@@ -47,7 +49,7 @@
         "location": { "@type": "Place", "name": "Egypt" },
         "knowsAbout": ["Graphic Design", "Branding", "Editorial Design", "Presentation Design", "Motion Graphics", "Video Editing"],
         "sameAs": [
-            "https://behance.net/khaledalsyoufi"
+            "https://www.behance.net/khaledalsyoufi"
         ]
     }
     </script>
@@ -146,10 +148,10 @@
                                 <polyline points="12 5 19 12 12 19"></polyline>
                             </svg>
                         </a>
-                        <div class="freelance-status">
+                        <a class="freelance-status" href="https://wa.me/201006711563" target="_blank" rel="noreferrer" aria-label="Available for freelance: message on WhatsApp">
                             <span class="status-label">AVAILABLE FOR</span>
                             <span class="status-val">FREELANCE <span class="pulse-dot"></span></span>
-                        </div>
+                        </a>
                     </div>
 
                     <div class="hero-stats">
@@ -488,7 +490,7 @@
         <!-- Services Section (Expandable Accordion) -->
         <section id="services" class="section services page-view" data-view="services">
             <div class="container">
-                <div class="section-label mono">[SELECTED WORKS]</div>
+                <h1 class="section-label mono">[SELECTED WORKS]</h1>
                 <div id="servicesList" class="services-list"></div>
             </div>
         </section>
@@ -517,7 +519,7 @@
 
                     <!-- Visible Dial Window (Centers the active channel row) -->
                     <div class="tv-dial-viewport">
-                        <div class="tv-dial-track" id="tvDialTrack" role="listbox" aria-label="Channels">
+                        <div class="tv-dial-track" id="tvDialTrack" role="listbox" tabindex="0" aria-label="Clients. Use the up and down arrow keys to change channel.">
                             <!-- Injected dynamically via renderClients() -->
                         </div>
                     </div>
@@ -550,22 +552,24 @@
 
                     <!-- Action Controls Row -->
                     <div class="tv-guide-controls">
-                        <button type="button" class="tv-ctrl-btn" id="tvCtrlPlay" aria-label="Play Project" title="Play Project">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <button type="button" class="tv-ctrl-btn" id="tvCtrlPlay" aria-label="Auto-play channels" aria-pressed="false" title="Auto-play channels">
+                            <svg class="tv-icon-play" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
                                 <polygon points="5 3 19 12 5 21 5 3"></polygon>
                             </svg>
+                            <svg class="tv-icon-pause" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+                                <rect x="5" y="3" width="5" height="18"></rect>
+                                <rect x="14" y="3" width="5" height="18"></rect>
+                            </svg>
                         </button>
-                        <button type="button" class="tv-ctrl-btn" id="tvCtrlReplay" aria-label="Replay / Restart" title="Replay">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <button type="button" class="tv-ctrl-btn" id="tvCtrlReplay" aria-label="Back to first channel" title="Back to first channel">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <polyline points="1 4 1 10 7 10"></polyline>
                                 <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
                             </svg>
                         </button>
-                        <button type="button" class="tv-ctrl-btn" id="tvCtrlRec" aria-label="Live Stream" title="Live Broadcast">
-                            <span class="tv-rec-circle"></span>
-                        </button>
-                        <button type="button" class="tv-ctrl-btn" id="tvCtrlInfo" aria-label="Information" title="Project Info">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <span class="tv-rec-indicator" aria-hidden="true"><span class="tv-rec-circle"></span></span>
+                        <button type="button" class="tv-ctrl-btn" id="tvCtrlInfo" aria-label="Channel details" aria-expanded="false" aria-controls="tvInfoRow" title="Channel details">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <line x1="12" y1="16" x2="12" y2="12"></line>
                                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
@@ -577,6 +581,12 @@
                     <div class="tv-guide-row tv-guide-next">
                         <span class="tv-guide-tag mono">NEXT</span>
                         <span class="tv-guide-name" id="tvNextName">Art of Care &bull; HEALTHCARE &amp; SPECIALIZED CLINIC</span>
+                    </div>
+
+                    <!-- INFO Row (toggled from the guide controls) -->
+                    <div class="tv-guide-row tv-guide-next" id="tvInfoRow" hidden>
+                        <span class="tv-guide-tag mono">INFO</span>
+                        <span class="tv-guide-name" id="tvInfoName"></span>
                     </div>
                 </div>
             </div>
@@ -590,7 +600,7 @@
                     <div class="vhs-about-loop">
                         <!-- Intro Block (Centered, Large Typography, moves behind the tape) -->
                         <div class="vhs-about-introblock">
-                            <div class="bio-kicker mono">[BIOGRAPHY]</div>
+                            <h1 class="bio-kicker mono">[BIOGRAPHY]</h1>
                             <p class="bio-text">
                                 A multi-disciplinary graphic designer with 4+ years of experience crafting high-impact visual identities, editorial layouts, motion graphics, and presentation decks that feel alive.
                             </p>
@@ -683,7 +693,7 @@
                                         </a>
                                     </li>
                                     <li class="vhs-about-line">
-                                        <a href="https://behance.net/khaledalsyoufi" target="_blank" rel="noreferrer" class="vhs-about-link">
+                                        <a href="https://www.behance.net/khaledalsyoufi" target="_blank" rel="noreferrer" class="vhs-about-link">
                                             <span>BEHANCE</span> <span class="link-arrow">↗</span>
                                         </a>
                                     </li>
@@ -990,6 +1000,8 @@
                     </div>
                 </div>
             </div>
+
+            <div class="vhs-about-hint mono" aria-hidden="true">[ SCROLL ]</div>
         </section>
 
         <!-- (Contact section removed per user request) -->
@@ -1001,7 +1013,7 @@
         <div class="container">
             <span>&copy;KHALED ALSYOUFI.</span>
             <span class="footer-dot">/</span>
-            <span>MADE WITH PRECISION</span>
+            <a href="mailto:khaledalsyoufi@gmail.com">KHALEDALSYOUFI@GMAIL.COM</a>
         </div>
     </footer>
 
@@ -1041,7 +1053,7 @@
         <div class="accent-modal-box vhs-osd-box">
             <div class="modal-body">
                 <div class="modal-subtag mono">[ ARCHIVE UNLOCKED &bull; 3x FLIP ]</div>
-                <h2 id="modalQuestionTitle" class="modal-title">OPEN PDF PORTFOLIO?</h2>
+                <h2 id="modalQuestionTitle" class="modal-title">OPEN FULL PORTFOLIO?</h2>
                 <p class="modal-desc mono">DO YOU WANT TO LAUNCH KHALED ALSYOUFI'S COMPLETE VISUAL ARCHIVE?</p>
             </div>
             <div class="modal-actions">
@@ -1066,8 +1078,8 @@
         </style>
     </noscript>
 
-    <script src="portfolio-data.js?v=122"></script>
-    <script src="main.js?v=126"></script>
+    <script src="portfolio-data.js?v=123"></script>
+    <script src="main.js?v=128"></script>
 </body>
 
 </html>

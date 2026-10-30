@@ -82,6 +82,15 @@ body.no-scroll {
     overflow: hidden !important;
 }
 
+/* Clients and Info fill the screen on their own; nothing may scroll behind them */
+body.view-fixed {
+    overflow: hidden;
+}
+
+body.view-fixed .minimal-footer {
+    display: none;
+}
+
 .mono {
     font-family: var(--mono-font);
     text-transform: uppercase;
@@ -179,6 +188,7 @@ body.view-mode .nav-links a.is-current::after {
 .section-label {
     margin-bottom: clamp(2rem, 4vw, 4rem);
     color: var(--muted-color);
+    font-weight: 400;
 }
 
 a:focus-visible,
@@ -187,6 +197,11 @@ button:focus-visible,
     outline: 2px solid var(--accent-color);
     outline-offset: 4px;
     border-radius: 2px;
+}
+
+/* Views take focus on navigation only so the next Tab starts there */
+.page-view:focus {
+    outline: none;
 }
 
 .skip-link {

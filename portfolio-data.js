@@ -1,4 +1,6 @@
 window.portfolioData = {
+    // Shared Google Drive link to the full PDF portfolio. Leave empty to use Behance instead.
+    portfolioDriveUrl: '',
     services: [
         {
             slug: 'reels-motion',

@@ -159,7 +159,12 @@ function renderServices() {
             visualItem.tabIndex = 0;
             visualItem.setAttribute('role', 'button');
             visualItem.setAttribute('aria-label',
-                `${project.title || (isVideoCover ? 'Motion reel' : 'Project')}: open gallery`);
+                `${project.title || (isVideoCover ? `Motion reel ${index + 1}` : 'Project')}: open gallery`);
+            // The whole card opens the gallery, caption included. A click on the media
+            // itself is already handled by the lightbox and never reaches this listener.
+            visualItem.addEventListener('click', (event) => {
+                if (event.target !== media) media.click();
+            });
             visualItem.addEventListener('keydown', (event) => {
                 if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
                     event.preventDefault();
@@ -182,12 +187,27 @@ function renderServices() {
             toggleBtn.setAttribute('aria-expanded', 'false');
             toggleBtn.setAttribute('aria-controls', content.id);
 
+            let collapseTimer = null;
+
             toggleBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const isCollapsed = this.dataset.state === 'collapsed';
                 const hiddenItems = grid.querySelectorAll('.hidden-project');
                 const serviceItemEl = this.closest('.service-item');
                 const contentEl = serviceItemEl.querySelector('.service-content');
+
+                // Recalculate accordion height once the items are shown / hidden,
+                // otherwise a collapsed grid keeps its expanded max-height and the
+                // accordion's close animation stalls on the empty space.
+                const syncHeight = () => {
+                    if (serviceItemEl.classList.contains('expanded')) {
+                        contentEl.style.maxHeight = `${contentEl.scrollHeight}px`;
+                    }
+                };
+
+                // A quick second click must cancel the pending hide, or the items
+                // vanish while the button already reads VIEW LESS.
+                clearTimeout(collapseTimer);
 
                 if (isCollapsed) {
                     // Expand
@@ -197,31 +217,26 @@ function renderServices() {
                     });
                     this.innerHTML = 'VIEW LESS';
                     this.dataset.state = 'expanded';
+                    setTimeout(syncHeight, 100);
                 } else {
                     // Collapse
                     hiddenItems.forEach(item => {
                         item.style.opacity = '0';
-                        setTimeout(() => item.style.display = 'none', 400);
                     });
                     this.innerHTML = 'VIEW MORE';
                     this.dataset.state = 'collapsed';
-                    
-                    // Scroll back to button position if needed
-                    setTimeout(() => {
-                        serviceItemEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 450);
-                }
-                
-                this.setAttribute('aria-expanded', String(isCollapsed));
 
-                // Recalculate accordion height once the items are shown / hidden,
-                // otherwise a collapsed grid keeps its expanded max-height and the
-                // accordion's close animation stalls on the empty space.
-                setTimeout(() => {
-                    if (serviceItemEl.classList.contains('expanded')) {
-                        contentEl.style.maxHeight = `${contentEl.scrollHeight}px`;
-                    }
-                }, isCollapsed ? 100 : 450);
+                    collapseTimer = setTimeout(() => {
+                        hiddenItems.forEach(item => {
+                            item.style.display = 'none';
+                        });
+                        syncHeight();
+                        // Scroll back to button position if needed
+                        serviceItemEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 400);
+                }
+
+                this.setAttribute('aria-expanded', String(isCollapsed));
             });
             visuals.append(toggleBtn);
         }
@@ -257,10 +272,25 @@ function initServices() {
         });
     };
 
+    // Closing a tall section above pulls the page up, which can leave the newly
+    // opened header off-screen; bring it back once the accordion has settled.
+    const keepInView = (item) => {
+        setTimeout(() => {
+            if (!item.classList.contains('expanded')) return;
+            const { top } = item.getBoundingClientRect();
+            if (top < 0 || top > window.innerHeight * 0.6) {
+                item.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 620);
+    };
+
     const toggleItem = (item) => {
         const isExpanded = item.classList.contains('expanded');
         serviceItems.forEach((serviceItem) => setExpanded(serviceItem, false));
-        if (!isExpanded) setExpanded(item, true);
+        if (!isExpanded) {
+            setExpanded(item, true);
+            keepInView(item);
+        }
     };
 
     serviceItems.forEach((item) => {
@@ -311,38 +341,6 @@ function triggerTapeSlideDown() {
     heroRight.classList.add('tape-slide-down');
 }
 
-// Glitch Text Effect
-function initGlitch() {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
-    const glitchElements = document.querySelectorAll('.glitch-text');
-
-    glitchElements.forEach(el => {
-        const originalText = el.dataset.text || el.innerText;
-        let iteration = 0;
-        let interval = null;
-
-        const startGlitch = () => {
-            clearInterval(interval);
-            iteration = 0;
-            interval = setInterval(() => {
-                el.innerText = originalText.split("")
-                    .map((char, index) => {
-                        if (index < iteration) return originalText[index];
-                        return chars[Math.floor(Math.random() * chars.length)];
-                    })
-                    .join("");
-
-                if (iteration >= originalText.length) clearInterval(interval);
-                iteration += 1 / 3;
-            }, 30);
-        };
-
-        el.addEventListener('mouseenter', startGlitch);
-        // Initial glitch
-        setTimeout(startGlitch, 500);
-    });
-}
-
 // Staggered Reveal on Scroll
 function initReveal() {
     const revealElements = document.querySelectorAll('.reveal, .timeline-item, .section-label, .section');
@@ -357,11 +355,6 @@ function initReveal() {
     }, { threshold: 0.1 });
 
     revealElements.forEach(el => observer.observe(el));
-}
-
-// Hero Section Parallax Interaction (Retired in favor of 3D VHS cassette tape physics)
-function initHeroParallax() {
-    // Parallax retired: 3D cassette tape handles its own physics, tilt, and hover centering
 }
 
 // Image Lightbox Logic (Slider Mode)
@@ -385,6 +378,8 @@ function initLightbox() {
     let isAnimating = false;
     let lastFocused = null;
     let currentPoster = '';
+    let isSlider = false;
+    let closeTimer = null;
 
     const updateCounter = (mode = 'desktop') => {
         if (!metaCount) return;
@@ -400,13 +395,13 @@ function initLightbox() {
     };
 
     // Helper to create media element
-    const createMedia = (src, poster = '') => {
+    const createMedia = (src, poster = '', lazy = false) => {
         const isVideo = src.match(/\.(mp4|webm|ogg)$/i);
         const media = document.createElement(isVideo ? 'video' : 'img');
         media.src = src;
         media.className = 'lightbox-img';
         if (!isVideo) {
-            media.loading = 'lazy';
+            if (lazy) media.loading = 'lazy';
             media.decoding = 'async';
             media.alt = projectTitle.innerText ? `${projectTitle.innerText} — project image` : 'Project image';
         }
@@ -440,6 +435,15 @@ function initLightbox() {
                 if (el.paused) attemptPlay();
             }, { once: true });
         }
+    };
+
+    // Fetch the slides on either side so PREV / NEXT never land on an empty frame.
+    const preloadNeighbors = () => {
+        if (currentImages.length < 2) return;
+        [currentIndex + 1, currentIndex - 1].forEach((index) => {
+            const src = currentImages[(index + currentImages.length) % currentImages.length];
+            if (!/\.(mp4|webm|ogg)$/i.test(src)) new Image().src = src;
+        });
     };
 
     // Update View
@@ -495,21 +499,25 @@ function initLightbox() {
         }
 
         updateCounter();
+        preloadNeighbors();
 
         setTimeout(() => {
             isAnimating = false;
         }, 500);
     };
 
-    // Navigation Handlers
+    // Navigation Handlers: a single reel has nothing to page to (the arrows would
+    // just rebuild it from zero), and the phone layout is a plain vertical scroll.
+    const canNavigate = () => isSlider && !isAnimating && currentImages.length > 1;
+
     const goNext = () => {
-        if (isAnimating) return;
+        if (!canNavigate()) return;
         currentIndex = (currentIndex + 1) % currentImages.length;
         updateView('next');
     };
 
     const goPrev = () => {
-        if (isAnimating) return;
+        if (!canNavigate()) return;
         currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
         updateView('prev');
     };
@@ -548,10 +556,13 @@ function initLightbox() {
                 metaOverlay.style.display = metadata.title ? 'block' : 'none';
             }
 
-            // Reset State
+            // Reset State (a close still fading out must not wipe this new gallery)
+            clearTimeout(closeTimer);
             lightboxContainer.innerHTML = '';
             currentIndex = 0;
-            
+            isAnimating = false;
+            isSlider = window.innerWidth > 900;
+
             // Hide navigation if only 1 item (like Reels)
             if (currentImages.length <= 1) {
                 prevBtn.style.display = 'none';
@@ -566,10 +577,10 @@ function initLightbox() {
             document.body.classList.add('no-scroll');
 
             // Layout Decision: Mobile (Vertical Scroll) vs Desktop (Slider)
-            if (window.innerWidth <= 900) {
+            if (!isSlider) {
                 // Mobile: Render ALL images
                 currentImages.forEach(src => {
-                    const imgEl = createMedia(src, currentPoster);
+                    const imgEl = createMedia(src, currentPoster, true);
                     imgEl.classList.add('active'); // active makes it visible
                     // No slide classes needed
                     lightboxContainer.appendChild(imgEl);
@@ -581,8 +592,6 @@ function initLightbox() {
                 updateView(null);
             }
 
-            lightbox.classList.add('active');
-            document.body.classList.add('no-scroll');
             lastFocused = document.activeElement;
             // The dialog keeps visibility:hidden until its (transitioned) style lands,
             // so retry the focus hand-off for a few frames instead of guessing a delay.
@@ -600,6 +609,20 @@ function initLightbox() {
     // Event Listeners
     nextBtn.addEventListener('click', (e) => { e.stopPropagation(); goNext(); });
     prevBtn.addEventListener('click', (e) => { e.stopPropagation(); goPrev(); });
+
+    // Swipe between slides on tablets, where the slider has no keyboard.
+    let swipeStartX = null;
+    lightbox.addEventListener('touchstart', (e) => {
+        swipeStartX = e.touches.length === 1 ? e.touches[0].clientX : null;
+    }, { passive: true });
+    lightbox.addEventListener('touchend', (e) => {
+        if (swipeStartX === null) return;
+        const distance = e.changedTouches[0].clientX - swipeStartX;
+        swipeStartX = null;
+        if (Math.abs(distance) < 50) return;
+        if (distance < 0) goNext();
+        else goPrev();
+    }, { passive: true });
 
     // Keyboard Nav + focus trap
     document.addEventListener('keydown', (e) => {
@@ -629,7 +652,7 @@ function initLightbox() {
         lightbox.querySelectorAll('video').forEach((v) => v.pause());
         lightbox.classList.remove('active');
         document.body.classList.remove('no-scroll');
-        setTimeout(() => {
+        closeTimer = setTimeout(() => {
             lightboxContainer.innerHTML = '';
             if (metaCount) {
                 metaCount.innerText = '';
@@ -719,7 +742,10 @@ function initLoader() {
         loader.classList.add('hidden');
         document.body.classList.add('page-loaded');
 
-        const currentView = window.location.hash.replace('#', '') || 'home';
+        // Read the view actually on screen: an unknown #hash falls back to home.
+        const currentView = document.querySelector('.page-view.is-visible')?.dataset.view
+            || window.location.hash.replace('#', '')
+            || 'home';
         if (currentView === 'services') {
             triggerServicesScrollUp();
         } else if (currentView === 'home') {
@@ -811,14 +837,14 @@ function initLoader() {
     }
 
     // Play on every page load/refresh
-    let percent = 0;
     const duration = 1150; // smooth ~1.15s loading
-    const increment = 100 / (duration / 16);
+    let loaderStart = null;
 
-    const animateLoader = () => {
-        percent += increment;
-
-        if (percent > 100) percent = 100;
+    // Driven by elapsed time, not frame count, so it takes the same 1.15s on a
+    // 144Hz screen as on a phone dropping frames.
+    const animateLoader = (timestamp) => {
+        if (loaderStart === null) loaderStart = timestamp;
+        const percent = Math.min(((timestamp - loaderStart) / duration) * 100, 100);
 
         setProgress(percent);
 
@@ -832,7 +858,6 @@ function initLoader() {
                 hideLoader();
                 document.documentElement.style.scrollBehavior = 'smooth';
                 window.scrollTo(0, 0);
-                triggerTapeSlideDown();
             }, 240);
         }
     };
@@ -851,6 +876,11 @@ function renderClients() {
     const tvNextName = document.getElementById('tvNextName');
     const tvDialUp = document.getElementById('tvDialUp');
     const tvDialDown = document.getElementById('tvDialDown');
+    const tvCtrlPlay = document.getElementById('tvCtrlPlay');
+    const tvCtrlReplay = document.getElementById('tvCtrlReplay');
+    const tvCtrlInfo = document.getElementById('tvCtrlInfo');
+    const tvInfoRow = document.getElementById('tvInfoRow');
+    const tvInfoName = document.getElementById('tvInfoName');
     const slideA = document.getElementById('tvBackdropSlideA');
     const slideB = document.getElementById('tvBackdropSlideB');
     const clientsSection = document.getElementById('clients');
@@ -863,8 +893,7 @@ function renderClients() {
     if (currentIndex >= totalChannels) currentIndex = 0;
 
     const ITEM_HEIGHT = 68;
-    const VIEWPORT_HEIGHT = 480;
-    const CENTER_OFFSET = (VIEWPORT_HEIGHT / 2) - (ITEM_HEIGHT / 2); // 206px
+    const AUTOPLAY_DELAY = 3500;
 
     dialTrack.innerHTML = '';
     const itemElements = [];
@@ -874,6 +903,10 @@ function renderClients() {
         const item = document.createElement('div');
         item.className = 'tv-dial-item' + (i === currentIndex ? ' is-active' : '');
         item.dataset.index = String(i);
+        item.id = `tv-channel-${i}`;
+        item.setAttribute('role', 'option');
+        item.setAttribute('aria-label', client.name);
+        item.setAttribute('aria-selected', i === currentIndex ? 'true' : 'false');
 
         const isP = Boolean(client.isPortrait);
         item.innerHTML = `
@@ -889,12 +922,15 @@ function renderClients() {
         `;
 
         item.addEventListener('click', () => {
-            selectChannel(i);
+            pickChannel(i);
         });
 
         dialTrack.appendChild(item);
         itemElements.push(item);
     });
+
+    // Phones don't need the 1920px stock frames.
+    const backdropUrl = (url) => (window.innerWidth <= 900 ? url.replace('w=1920', 'w=1080') : url);
 
     // Dynamic Stock Backdrop Switcher with Slow-Mo Ken Burns Zoom In
     let activeSlideKey = 'A';
@@ -903,7 +939,7 @@ function renderClients() {
         const nextSlide = activeSlideKey === 'A' ? slideB : slideA;
         const currentSlide = activeSlideKey === 'A' ? slideA : slideB;
 
-        nextSlide.style.backgroundImage = `url("${imageUrl}")`;
+        nextSlide.style.backgroundImage = `url("${backdropUrl(imageUrl)}")`;
         // Restart the CSS Ken Burns slow zoom animation
         nextSlide.style.animation = 'none';
         void nextSlide.offsetWidth; // force reflow
@@ -921,13 +957,17 @@ function renderClients() {
         currentIndex = nextIndex;
 
         // 1. Smoothly translate track so active channel is centered
-        const translateY = CENTER_OFFSET - (currentIndex * ITEM_HEIGHT);
+        // (the dial is 480px tall on desktop and 180px on phones, so measure it)
+        const dialHeight = dialTrack.parentElement.clientHeight;
+        const translateY = (dialHeight - ITEM_HEIGHT) / 2 - (currentIndex * ITEM_HEIGHT);
         dialTrack.style.transform = `translateY(${translateY}px)`;
 
         // 2. Update active class on items
         itemElements.forEach((el, i) => {
             el.classList.toggle('is-active', i === currentIndex);
+            el.setAttribute('aria-selected', i === currentIndex ? 'true' : 'false');
         });
+        dialTrack.setAttribute('aria-activedescendant', itemElements[currentIndex].id);
 
         // 3. Update EPG Details with pure client names & categories
         const currentClient = clients[currentIndex];
@@ -959,10 +999,43 @@ function renderClients() {
             tvNextName.textContent = nextClient.name + (nextClient.category ? ' · ' + nextClient.category : '');
         }
 
+        if (tvInfoName) {
+            const channel = String(currentIndex + 1).padStart(2, '0');
+            tvInfoName.textContent = `CH ${channel} / ${totalChannels} · ${currentClient.year || ''}`;
+        }
+
         // 4. Update dynamic stock background for brand field with Slow-Mo Zoom In
         if (currentClient.bg) {
             updateBackdropImage(currentClient.bg);
         }
+
+        // 5. Fetch the frames on either side so the backdrop never cuts to black
+        if (clientsSection?.classList.contains('is-visible')) {
+            [nextClient, clients[(currentIndex - 1 + totalChannels) % totalChannels]].forEach((client) => {
+                if (client.bg) new Image().src = backdropUrl(client.bg);
+            });
+        }
+    }
+
+    // Play button: flips through the channels on its own until the viewer takes over
+    let autoplayTimer = null;
+
+    const setAutoplay = (isOn) => {
+        clearInterval(autoplayTimer);
+        autoplayTimer = isOn
+            ? setInterval(() => selectChannel(currentIndex + 1), AUTOPLAY_DELAY)
+            : null;
+        if (tvCtrlPlay) {
+            tvCtrlPlay.setAttribute('aria-pressed', isOn ? 'true' : 'false');
+            tvCtrlPlay.setAttribute('aria-label', isOn ? 'Pause channels' : 'Auto-play channels');
+            tvCtrlPlay.title = isOn ? 'Pause' : 'Auto-play channels';
+        }
+    };
+
+    // Every manual selection goes through here so it also stops the auto-play.
+    function pickChannel(targetIndex) {
+        setAutoplay(false);
+        selectChannel(targetIndex);
     }
 
     // Initial setup with Channel 8 centered
@@ -971,13 +1044,33 @@ function renderClients() {
     // Chevron Arrows
     if (tvDialUp) {
         tvDialUp.addEventListener('click', () => {
-            selectChannel(currentIndex - 1);
+            pickChannel(currentIndex - 1);
         });
     }
 
     if (tvDialDown) {
         tvDialDown.addEventListener('click', () => {
-            selectChannel(currentIndex + 1);
+            pickChannel(currentIndex + 1);
+        });
+    }
+
+    // Guide Controls
+    if (tvCtrlPlay) {
+        tvCtrlPlay.addEventListener('click', () => {
+            setAutoplay(!autoplayTimer);
+        });
+    }
+
+    if (tvCtrlReplay) {
+        tvCtrlReplay.addEventListener('click', () => {
+            pickChannel(0);
+        });
+    }
+
+    if (tvCtrlInfo && tvInfoRow) {
+        tvCtrlInfo.addEventListener('click', () => {
+            tvInfoRow.hidden = !tvInfoRow.hidden;
+            tvCtrlInfo.setAttribute('aria-expanded', tvInfoRow.hidden ? 'false' : 'true');
         });
     }
 
@@ -991,40 +1084,54 @@ function renderClients() {
             wheelThrottle = now;
 
             if (e.deltaY > 10) {
-                selectChannel(currentIndex + 1);
+                pickChannel(currentIndex + 1);
             } else if (e.deltaY < -10) {
-                selectChannel(currentIndex - 1);
+                pickChannel(currentIndex - 1);
             }
+        }, { passive: true });
+
+        // Swipe up / down on touch screens
+        let swipeStartY = null;
+        stageEl.addEventListener('touchstart', (e) => {
+            swipeStartY = e.touches.length === 1 ? e.touches[0].clientY : null;
+        }, { passive: true });
+        stageEl.addEventListener('touchend', (e) => {
+            if (swipeStartY === null) return;
+            const distance = e.changedTouches[0].clientY - swipeStartY;
+            swipeStartY = null;
+            if (Math.abs(distance) < 40) return;
+            pickChannel(currentIndex + (distance < 0 ? 1 : -1));
         }, { passive: true });
     }
 
-    // Keyboard Navigation
+    // Keyboard Navigation. Enter and Space stay with whatever has focus, so links
+    // and buttons keep working on this page.
     document.addEventListener('keydown', (e) => {
         if (!clientsSection || !clientsSection.classList.contains('is-visible')) return;
         if (document.body.classList.contains('modal-open')) return;
-        if (document.querySelector('.lightbox.is-open')) return;
+        if (document.body.classList.contains('no-scroll')) return;
 
         if (e.key === 'ArrowDown') {
             e.preventDefault();
-            selectChannel(currentIndex + 1);
+            pickChannel(currentIndex + 1);
             return;
         }
 
         if (e.key === 'ArrowUp') {
             e.preventDefault();
-            selectChannel(currentIndex - 1);
+            pickChannel(currentIndex - 1);
             return;
         }
 
         if (e.key === 'PageDown') {
             e.preventDefault();
-            selectChannel(currentIndex + 4);
+            pickChannel(currentIndex + 4);
             return;
         }
 
         if (e.key === 'PageUp') {
             e.preventDefault();
-            selectChannel(currentIndex - 4);
+            pickChannel(currentIndex - 4);
             return;
         }
 
@@ -1032,132 +1139,21 @@ function renderClients() {
             e.preventDefault();
             const homeLink = document.querySelector('[data-view-link="home"]');
             if (homeLink) homeLink.click();
-            return;
-        }
-
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            // Acknowledge selection
-            const pill = itemElements[currentIndex]?.querySelector('.tv-dial-select-pill');
-            if (pill) {
-                pill.style.transform = 'scale(0.92)';
-                setTimeout(() => { pill.style.transform = ''; }, 120);
-            }
-            return;
         }
     });
 
     // Reset center position when view becomes visible
     window.addEventListener('viewchange', (e) => {
         if (e.detail?.view === 'clients') {
-            setTimeout(() => {
-                selectChannel(currentIndex);
-                if (tvEpgVideo) tvEpgVideo.play().catch(() => {});
-            }, 50);
+            setTimeout(() => selectChannel(currentIndex), 50);
+        } else {
+            setAutoplay(false);
         }
     });
-}
 
-// Intro Title Animation
-function initIntro() {
-    const titleEl = document.querySelector('.display-title');
-    if (!titleEl) return;
-
-    const revealLines = () => {
-        document.querySelectorAll('.blur-line').forEach(el => el.classList.add('visible'));
-    };
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        titleEl.style.visibility = 'visible';
-        revealLines();
-        return;
-    }
-
-    const originalText = titleEl.innerText;
-    titleEl.style.visibility = 'hidden';
-
-    // Create black overlay + title
-    const overlay = document.createElement('div');
-    overlay.id = 'intro-overlay';
-
-    const titleDiv = document.createElement('div');
-    titleDiv.className = 'intro-title';
-    titleDiv.innerHTML = originalText.replace(/\n/g, '<br>');
-    overlay.appendChild(titleDiv);
-
-    document.body.appendChild(overlay);
-
-    // After a brief pause, shrink the title
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            overlay.querySelector('.intro-title').style.transform = 'translate(-50%, -50%) scale(1)';
-            overlay.querySelector('.intro-title').style.opacity = '0';
-        });
-    });
-
-    // Fade out overlay
-    setTimeout(() => {
-        overlay.style.opacity = '0';
-        titleEl.style.visibility = 'visible';
-        setTimeout(() => {
-            overlay.remove();
-            revealLines();
-        }, 400);
-    }, 450);
-}
-
-// Theme Toggler
-// Theme Toggler
-// Theme Toggler
-function initTheme() {
-    const toggleBtn = document.getElementById('theme-toggle');
-    const root = document.documentElement;
-    const logo = document.querySelector('.main-logo');
-
-    const readSaved = () => {
-        try { return localStorage.getItem('theme'); } catch (e) { return null; }
-    };
-    const save = (theme) => {
-        try { localStorage.setItem('theme', theme); } catch (e) { }
-    };
-
-    const updateImages = (theme) => {
-        if (logo) {
-            logo.src = theme === 'light' ? 'public/images/logo_light.webp' : 'public/images/logo.webp';
-        }
-    };
-
-    const applyTheme = (theme) => {
-        // Theme lives on <html> so the page canvas, overscroll and UA chrome follow it.
-        root.setAttribute('data-theme', theme);
-        updateImages(theme);
-        if (toggleBtn) {
-            toggleBtn.setAttribute('aria-label',
-                theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme');
-        }
-    };
-
-    const systemPrefersLight = window.matchMedia('(prefers-color-scheme: light)');
-    const savedTheme = readSaved();
-
-    applyTheme(savedTheme || (systemPrefersLight.matches ? 'light' : 'dark'));
-
-    systemPrefersLight.addEventListener('change', (e) => {
-        if (!readSaved()) applyTheme(e.matches ? 'light' : 'dark');
-    });
-
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', () => {
-            const currentTheme = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            applyTheme(newTheme);
-            save(newTheme);
-        });
-    }
-}
-// Magnetic Hover Effect (Disabled per user request)
-function initMagnetic() {
-    // Disabled
+    window.addEventListener('resize', () => {
+        if (clientsSection?.classList.contains('is-visible')) selectChannel(currentIndex);
+    }, { passive: true });
 }
 
 // 3D Gyroscope Tilt Effect
@@ -1165,8 +1161,7 @@ function initTilt3D() {
     if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    // The hero portrait is owned by the parallax handler, so it is excluded here.
-    const targets = document.querySelectorAll('.visual-item, .timeline-item, .client-item');
+    const targets = document.querySelectorAll('.visual-item');
     if (!targets.length) return;
 
     targets.forEach(el => {
@@ -1221,6 +1216,8 @@ function initSectionViews() {
         }
 
         body.classList.add('view-mode');
+        // Clients and Info are full-screen stages: nothing behind them should scroll.
+        body.classList.toggle('view-fixed', nextView === 'clients' || nextView === 'about');
 
         pageViews.forEach((view) => {
             const isVisible = view.dataset.view === nextView;
@@ -1243,9 +1240,19 @@ function initSectionViews() {
         }
 
         document.title = viewTitles[nextView] || viewTitles.home;
+        const isFirstView = activeView === null;
         activeView = nextView;
         window.dispatchEvent(new CustomEvent('viewchange', { detail: { view: nextView } }));
         window.scrollTo({ top: 0, behavior: 'auto' });
+
+        // Hand keyboard and screen-reader focus over to the new page.
+        if (!isFirstView) {
+            const viewEl = pageViews.find((view) => view.dataset.view === nextView);
+            if (viewEl) {
+                viewEl.setAttribute('tabindex', '-1');
+                viewEl.focus({ preventScroll: true });
+            }
+        }
 
         if (nextView === 'services') {
             if (window.typewriterController?.pause) window.typewriterController.pause();
@@ -1297,6 +1304,12 @@ function initSectionViews() {
             }
         } finally {
             isTransitioning = false;
+        }
+
+        // Back / Forward pressed mid-transition: catch up with the URL.
+        const hashView = window.location.hash.replace('#', '') || 'home';
+        if (validViews.has(hashView) && hashView !== activeView) {
+            navigateWithLoader(hashView);
         }
     };
 
@@ -1362,9 +1375,26 @@ function initMobileMenu() {
     });
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !menu.hidden) {
+        if (menu.hidden) return;
+
+        if (e.key === 'Escape') {
             closeMenu();
             toggle.focus({ preventScroll: true });
+            return;
+        }
+
+        // Focus trap: the close button sits outside the panel, so it joins the cycle.
+        if (e.key === 'Tab') {
+            const focusables = [toggle, ...menu.querySelectorAll('a')];
+            const first = focusables[0];
+            const last = focusables[focusables.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
         }
     });
 
@@ -1373,94 +1403,6 @@ function initMobileMenu() {
     });
 
     window.addEventListener('viewchange', closeMenu);
-}
-
-
-// Lens magnifier — a glass loupe that follows the pointer
-function initLens() {
-    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!finePointer || reduced) return;
-
-    const SIZE = 220;
-    const ZOOM = 1.85;
-
-    const lens = document.createElement('div');
-    lens.className = 'lens';
-    lens.setAttribute('aria-hidden', 'true');
-    const stage = document.createElement('div');
-    stage.className = 'lens-stage';
-    lens.appendChild(stage);
-    document.body.appendChild(lens);
-
-    let media = null;
-    let frame = 0;
-    let x = 0;
-    let y = 0;
-
-    const clear = () => {
-        stage.replaceChildren();
-        lens.classList.remove('has-media');
-        media = null;
-    };
-
-    const fill = (el) => {
-        const rect = el.getBoundingClientRect();
-        stage.replaceChildren();
-        const copy = document.createElement('img');
-        copy.alt = '';
-        copy.decoding = 'async';
-        copy.src = el.tagName === 'VIDEO'
-            ? (el.poster || el.currentSrc)
-            : (el.currentSrc || el.src);
-        copy.style.width = rect.width + 'px';
-        copy.style.height = rect.height + 'px';
-        stage.style.width = rect.width + 'px';
-        stage.style.height = rect.height + 'px';
-        stage.appendChild(copy);
-        lens.classList.add('has-media');
-        media = el;
-        return rect;
-    };
-
-    const render = () => {
-        frame = 0;
-        lens.style.transform = `translate3d(${x - SIZE / 2}px, ${y - SIZE / 2}px, 0)`;
-
-        if (!media || !media.isConnected) {
-            if (media) clear();
-            return;
-        }
-
-        const rect = media.getBoundingClientRect();
-        const ox = x - rect.left;
-        const oy = y - rect.top;
-        stage.style.transform =
-            `translate(${SIZE / 2 - ox * ZOOM}px, ${SIZE / 2 - oy * ZOOM}px) scale(${ZOOM})`;
-    };
-
-    document.addEventListener('pointermove', (event) => {
-        x = event.clientX;
-        y = event.clientY;
-
-        const wrap = event.target.closest ? event.target.closest('.visual-img-wrapper') : null;
-        const next = wrap ? wrap.querySelector('img, video') : null;
-
-        if (next && next !== media) fill(next);
-        else if (!next && media) clear();
-
-        lens.classList.add('visible');
-        if (!frame) frame = requestAnimationFrame(render);
-    }, { passive: true });
-
-    document.addEventListener('pointerleave', () => {
-        lens.classList.remove('visible');
-        clear();
-    });
-
-    window.addEventListener('scroll', () => {
-        if (!frame) frame = requestAnimationFrame(render);
-    }, { passive: true });
 }
 
 
@@ -1522,20 +1464,26 @@ function initAccentModal() {
     const btnYes = document.getElementById('modalBtnYes');
     const btnNo = document.getElementById('modalBtnNo');
 
-    // Google Drive portfolio link (replaces heavy local PDF)
-    const PORTFOLIO_DRIVE_URL = 'https://drive.google.com/';
-    const PDF_URL = PORTFOLIO_DRIVE_URL;
+    // Google Drive portfolio link (replaces heavy local PDF). Set portfolioDriveUrl in
+    // portfolio-data.js; until then the modal opens Behance and the Info row stays out.
+    const driveUrl = window.portfolioData?.portfolioDriveUrl;
+    const PORTFOLIO_URL = driveUrl || 'https://www.behance.net/khaledalsyoufi';
+
+    const driveLink = document.getElementById('aboutDriveLink');
+    if (driveLink) {
+        if (driveUrl) driveLink.href = driveUrl;
+        else driveLink.closest('li')?.remove();
+    }
 
     const buttons = [btnYes, btnNo].filter(Boolean);
     let focusedIndex = 0;
+    let focusBeforeOpen = null;
 
     const setSelectedButton = (index, shouldFocus = true) => {
         if (!buttons.length) return;
         focusedIndex = (index + buttons.length) % buttons.length;
         buttons.forEach((btn, i) => {
-            const isSel = (i === focusedIndex);
-            btn.classList.toggle('is-selected', isSel);
-            btn.setAttribute('aria-selected', isSel ? 'true' : 'false');
+            btn.classList.toggle('is-selected', i === focusedIndex);
         });
         if (shouldFocus && document.activeElement !== buttons[focusedIndex]) {
             buttons[focusedIndex].focus();
@@ -1543,6 +1491,7 @@ function initAccentModal() {
     };
 
     const openModal = () => {
+        focusBeforeOpen = document.activeElement;
         modal.removeAttribute('hidden');
         void modal.offsetWidth; // Force layout reflow
         modal.classList.add('is-open');
@@ -1553,6 +1502,7 @@ function initAccentModal() {
     const closeModal = () => {
         modal.classList.remove('is-open');
         document.body.classList.remove('modal-open');
+        if (focusBeforeOpen?.isConnected) focusBeforeOpen.focus({ preventScroll: true });
         setTimeout(() => {
             if (!modal.classList.contains('is-open')) {
                 modal.setAttribute('hidden', '');
@@ -1564,9 +1514,9 @@ function initAccentModal() {
     if (btnYes) {
         btnYes.addEventListener('click', () => {
             closeModal();
-            const win = window.open(PDF_URL, '_blank');
+            const win = window.open(PORTFOLIO_URL, '_blank');
             if (!win || win.closed || typeof win.closed === 'undefined') {
-                window.location.href = PDF_URL;
+                window.location.href = PORTFOLIO_URL;
             }
         });
         btnYes.addEventListener('focus', () => setSelectedButton(0, false));
@@ -1705,7 +1655,9 @@ function initTapeTilt() {
         card.classList.remove('tilting');
 
         // On 3rd flip: trigger the Center Screen Accent Modal (no glow per user request)
+        // Count restarts so the modal returns every 3 flips, not on every flip after.
         if (flipCount >= 3) {
+            flipCount = 0;
             if (typeof window.openAccentPdfModal === 'function') {
                 window.openAccentPdfModal();
             }
@@ -1768,6 +1720,9 @@ function initTapeTilt() {
         }
     }, { passive: true });
 
+    // Close when leaving the page, so home isn't still dimmed on the way back
+    window.addEventListener('viewchange', exitFocus);
+
     // Recompute on window resize while centered
     window.addEventListener('resize', () => {
         if (isCentered) {
@@ -1812,8 +1767,14 @@ function initInfoReelScroll() {
     const sleeve = container.querySelector('.vhs-sleeve');
     const tapeCard = container.querySelector('.vhs-about-tape');
     const inner3d = tapeCard ? tapeCard.querySelector('.cassette-3d') : null;
+    const textLayer = container.querySelector('.vhs-about-text');
+    const scrollHint = container.querySelector('.vhs-about-hint');
     const firstLoop = reel.querySelector('.vhs-about-loop');
     if (!firstLoop) return;
+
+    // Up to 1024px the tape is pinned above a single text column (see components.css),
+    // so there is nothing for the lines to part around.
+    const stackedLayout = window.matchMedia('(max-width: 1024px)');
 
     // Clone the primary loop twice to create 3 seamless infinite loops
     // (Loops 2 & 3 marked as copies with aria-hidden="true" and inert for accessibility)
@@ -1824,6 +1785,7 @@ function initInfoReelScroll() {
             clone.classList.add('is-copy');
             clone.setAttribute('aria-hidden', 'true');
             clone.setAttribute('inert', '');
+            clone.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
             reel.appendChild(clone);
         }
     }
@@ -1843,6 +1805,7 @@ function initInfoReelScroll() {
     let loopHeight = 1;
     let lineItems = [];
     let tapeBox = { left: 0, right: 0, top: 0, width: 0, height: 0 };
+    let restShift = 0;
 
     // Tape click / keyboard flip
     let infoFlipCount = 0;
@@ -1852,8 +1815,14 @@ function initInfoReelScroll() {
         targetTapeAngle = 180 * Math.round((targetTapeAngle + 180) / 180);
         startAnimation();
 
+        if (tapeCard) {
+            const showsBack = Math.round(targetTapeAngle / 180) % 2 !== 0;
+            tapeCard.setAttribute('aria-pressed', showsBack ? 'true' : 'false');
+        }
+
         // On 3rd flip: trigger the Center Screen Accent Modal (matches Hero cassette)
         if (infoFlipCount >= 3) {
+            infoFlipCount = 0;
             if (typeof window.openAccentPdfModal === 'function') {
                 window.openAccentPdfModal();
             }
@@ -1916,14 +1885,18 @@ function initInfoReelScroll() {
         const containerRect = container.getBoundingClientRect();
         if (!containerRect.height) return;
 
-        const tapeRect = tapeCard ? tapeCard.getBoundingClientRect() : (sleeve ? sleeve.getBoundingClientRect() : null);
-        if (tapeRect && tapeRect.width > 0) {
+        // Layout size, not getBoundingClientRect: the sleeve is centred by CSS and its
+        // live rect would include the hover scale and the opening offset below.
+        if (sleeve && sleeve.offsetWidth > 0) {
+            const width = sleeve.offsetWidth;
+            const height = sleeve.offsetHeight;
+            const left = (containerRect.width - width) / 2;
             tapeBox = {
-                left: tapeRect.left - containerRect.left,
-                right: tapeRect.right - containerRect.left,
-                top: tapeRect.top - containerRect.top,
-                width: tapeRect.width,
-                height: tapeRect.height
+                left,
+                right: left + width,
+                top: (containerRect.height - height) / 2,
+                width,
+                height
             };
         } else {
             const cx = containerRect.width / 2;
@@ -1941,6 +1914,17 @@ function initInfoReelScroll() {
 
         const loopEl = reel.querySelector('.vhs-about-loop');
         loopHeight = loopEl ? loopEl.offsetHeight : 1;
+
+        // The biography opens right behind the tape, so the tape rests just below it
+        // and slides back to centre as soon as the reel starts moving.
+        const bio = stackedLayout.matches ? null : reel.querySelector('.bio-text');
+        if (bio) {
+            const bioBottom = bio.getBoundingClientRect().bottom - containerRect.top;
+            const roomBelow = containerRect.height - (tapeBox.top + tapeBox.height) - 44;
+            restShift = Math.max(0, Math.min(bioBottom + 20 - tapeBox.top, roomBelow));
+        } else {
+            restShift = 0;
+        }
 
         lineItems = lines.map((el) => {
             const r = el.getBoundingClientRect();
@@ -1971,9 +1955,15 @@ function initInfoReelScroll() {
             inner3d.style.transition = 'none';
         }
 
-        if (!lineItems.length) return;
+        // Measured from the nearest loop seam so the offset stays continuous when the
+        // reel wraps around and the biography comes back up from below.
+        const seamDistance = Math.min(t, loopHeight - t);
+        const tapeShift = restShift * (1 - smooth(Math.min(1, seamDistance / 260)));
+        if (sleeve) sleeve.style.setProperty('--tape-shift', `${tapeShift.toFixed(1)}px`);
 
-        const tapeCenterY = tapeBox.top + tapeBox.height / 2;
+        if (!lineItems.length || stackedLayout.matches) return;
+
+        const tapeCenterY = tapeBox.top + tapeBox.height / 2 + tapeShift;
         const halfH = tapeBox.height / 2;
         const feather = tapeBox.height * 0.26;
         const gap = Math.max(22, tapeBox.width * 0.08);
@@ -2039,6 +2029,7 @@ function initInfoReelScroll() {
 
     const addScrollDelta = (delta) => {
         targetScroll += delta;
+        if (scrollHint) scrollHint.classList.add('is-hidden');
 
         // Flip/spin the tape in 3D with the scroll
         targetTapeAngle += delta * 0.45;
@@ -2061,6 +2052,36 @@ function initInfoReelScroll() {
         const amount = e.deltaMode === 1 ? delta * 16 : delta;
         addScrollDelta(amount * 0.9);
     }, { passive: true });
+
+    // Keyboard input: the page itself doesn't scroll, so these would otherwise do nothing
+    document.addEventListener('keydown', (e) => {
+        if (!isAboutActive()) return;
+        if (document.body.classList.contains('modal-open')) return;
+        if (document.body.classList.contains('no-scroll')) return;
+
+        const onControl = Boolean(e.target.closest?.('a, button, [role="button"]'));
+        const steps = {
+            ArrowDown: 80,
+            ArrowUp: -80,
+            PageDown: window.innerHeight * 0.75,
+            PageUp: window.innerHeight * -0.75,
+            ' ': onControl ? 0 : window.innerHeight * 0.75
+        };
+
+        if (steps[e.key]) {
+            e.preventDefault();
+            addScrollDelta(steps[e.key]);
+        }
+    });
+
+    // Tabbing to a link: bring it into the visible part of the reel. The text layer
+    // clips its overflow, so the browser would scroll that layer out of place instead.
+    container.addEventListener('focusin', (e) => {
+        const link = e.target.closest('.vhs-about-link');
+        if (!link) return;
+        if (textLayer) textLayer.scrollTop = 0;
+        addScrollDelta(link.getBoundingClientRect().top - window.innerHeight * 0.7);
+    });
 
     // Touch input with momentum
     let touchStartY = null;
@@ -2101,7 +2122,8 @@ function initInfoReelScroll() {
     let dragLastT = 0;
 
     container.addEventListener('pointerdown', (e) => {
-        if (!isAboutActive() || e.button > 0) return;
+        // Touch has its own handlers above; running both would double every swipe.
+        if (!isAboutActive() || e.button > 0 || e.pointerType === 'touch') return;
         if (e.target.closest('a, button, .hero-card')) return;
         isDragging = true;
         dragLastY = e.clientY;
@@ -2415,11 +2437,9 @@ initCustomCursor();
 document.addEventListener('DOMContentLoaded', () => {
     renderServices();
     renderClients();
-    initGlitch();
     initServices();
     initReveal();
     initTypewriter();
-    initHeroParallax();
     initLightbox();
     initTilt3D();
     initMobileMenu();

@@ -598,6 +598,12 @@ body.has-custom-cursor .custom-cursor {
     display: flex;
     flex-direction: column;
     font-family: var(--mono-font);
+    color: inherit;
+    text-decoration: none;
+}
+
+.freelance-status:hover .status-label {
+    opacity: 1;
 }
 
 .status-label {
@@ -940,6 +946,11 @@ body.view-mode .services.page-view.is-visible:not(.animate-in) .service-item {
     transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Keeps a scrolled-to section clear of the fixed logo */
+.service-item {
+    scroll-margin-top: 5rem;
+}
+
 .service-item.expanded .service-toggle {
     color: var(--accent-color);
     opacity: 1;
@@ -1020,7 +1031,7 @@ body.view-mode .services.page-view.is-visible:not(.animate-in) .service-item {
     color: var(--muted-color);
     opacity: 0;
     transform: translateY(4px);
-    transition: opacity 0.35s var(--transition), transform 0.35s var(--transition);
+    transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
 .visual-item:hover .visual-spec,
@@ -1265,13 +1276,16 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
 }
 
 /* Center position is at 240px; active row is 68px tall.
-   Chevron Up sits right above active slot, Chevron Down sits right below */
+   Chevron Up sits right above active slot, Chevron Down sits right below,
+   stacked over the round select pill so they clear the channel numbers */
 .tv-chevron-up {
     top: 168px;
+    left: 208px;
 }
 
 .tv-chevron-down {
     bottom: 168px;
+    left: 208px;
 }
 
 /* Visible Viewport for smooth vertical translation of channel items */
@@ -1292,6 +1306,16 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
     width: 100%;
     transition: none !important;
     will-change: transform;
+}
+
+/* The track is taller than the window, so the focus ring goes on the select pill */
+.tv-dial-track:focus-visible {
+    outline: none;
+}
+
+.tv-dial-track:focus-visible .tv-dial-item.is-active .tv-dial-select-pill {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 3px;
 }
 
 /* Individual Channel Dial Row */
@@ -1562,6 +1586,34 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
     color: var(--accent-color, #66e8b7);
 }
 
+.tv-ctrl-btn[aria-pressed="true"],
+.tv-ctrl-btn[aria-expanded="true"] {
+    color: var(--accent-color, #66e8b7);
+    opacity: 1;
+}
+
+.tv-icon-pause {
+    display: none;
+}
+
+.tv-ctrl-btn[aria-pressed="true"] .tv-icon-play {
+    display: none;
+}
+
+.tv-ctrl-btn[aria-pressed="true"] .tv-icon-pause {
+    display: block;
+}
+
+.tv-guide-row[hidden] {
+    display: none;
+}
+
+.tv-rec-indicator {
+    display: flex;
+    padding: 4px;
+    opacity: 0.88;
+}
+
 .tv-rec-circle {
     width: 14px;
     height: 14px;
@@ -1583,8 +1635,8 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
         flex-direction: column;
         align-items: flex-start;
         justify-content: center;
-        gap: 2rem;
-        padding: 0 5vw;
+        gap: 1.25rem;
+        padding: 5rem 5vw 1.5rem;
     }
 
     .tv-dial-column {
@@ -1597,11 +1649,11 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
     }
 
     .tv-chevron-up {
-        top: 20px;
+        top: 22px;
     }
 
     .tv-chevron-down {
-        bottom: 20px;
+        bottom: 22px;
     }
 
     .tv-epg-info-panel {
@@ -1615,6 +1667,21 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
 
     .tv-timeline-row {
         max-width: 100%;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .tv-timeline-track {
+        flex-basis: 100%;
+    }
+
+    .tv-timeline-end {
+        flex-shrink: 1;
+        min-width: 0;
+    }
+
+    .tv-guide-controls {
+        margin-bottom: 14px;
     }
 }
 
@@ -1748,7 +1815,7 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
     background: var(--lightbox-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    z-index: 1000;
+    z-index: 1200; /* above the mobile menu button, which sits where [ CLOSE ] does */
     display: flex;
     flex-direction: column;
     visibility: hidden;
@@ -1824,7 +1891,7 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
     border: none;
     color: var(--text-color);
     font-size: 1.2rem;
-    cursor: none;
+    cursor: pointer;
     z-index: 2000;
     padding: 2rem;
     transition: var(--transition);
@@ -1939,7 +2006,7 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
     background: none;
     border: none;
     color: var(--text-color);
-    cursor: none;
+    cursor: pointer;
     font-size: 0.9rem;
     padding: 1rem;
     z-index: 2000;
@@ -1975,8 +2042,6 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
 }
 
 
-[data-theme="light"] 
-[data-theme="light"] 
 
 
 
@@ -3884,8 +3949,9 @@ body.glitching-in .crt::before {
     font-family: 'Teletactile', var(--display-font);
 }
 
+/* 4vw keeps the longest rotating line ("THAT COMMAND", ~10em) clear of the tape */
 .display-title:not(.project-title) {
-    font-size: clamp(1.9rem, 4.4vw, 4.6rem);
+    font-size: clamp(1.9rem, 4vw, 4.6rem);
     font-weight: 400;
     line-height: 1.14;
     letter-spacing: 0.01em;
@@ -4316,6 +4382,27 @@ body.view-mode .vhs-about.page-view.is-visible {
     z-index: 5;
 }
 
+.vhs-about-hint {
+    position: absolute;
+    left: 50%;
+    bottom: 1rem;
+    transform: translateX(-50%);
+    z-index: 30;
+    color: var(--muted-color);
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    animation: hintBob 2.2s ease-in-out infinite;
+}
+
+.vhs-about-hint.is-hidden {
+    opacity: 0;
+}
+
+@keyframes hintBob {
+    0%, 100% { margin-bottom: 0; }
+    50% { margin-bottom: 6px; }
+}
+
 .bio-kicker {
     font-family: var(--mono-font);
     font-size: 0.85rem;
@@ -4329,7 +4416,7 @@ body.view-mode .vhs-about.page-view.is-visible {
 
 .bio-text {
     font-family: var(--sans-font);
-    font-size: clamp(2rem, 3.2vw, 3.2rem);
+    font-size: clamp(1.7rem, min(3.2vw, 5vh), 3.2rem);
     line-height: 1.32;
     color: #f4f2ee;
     letter-spacing: -0.025em;
@@ -4488,7 +4575,7 @@ body.view-mode .vhs-about.page-view.is-visible {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, calc(-50% + var(--tape-shift, 0px))) scale(1);
     z-index: 25;
     width: 100%;
     max-width: 520px;
@@ -4501,7 +4588,7 @@ body.view-mode .vhs-about.page-view.is-visible {
 }
 
 .vhs-about .vhs-sleeve:hover {
-    transform: translate(-50%, -50%) scale(1.14);
+    transform: translate(-50%, calc(-50% + var(--tape-shift, 0px))) scale(1.14);
     z-index: 35;
 }
 
@@ -4541,6 +4628,11 @@ body.view-mode .vhs-about.page-view.is-visible {
     will-change: transform;
 }
 
+.vhs-about .vhs-about-tape:focus-visible {
+    outline: 1.5px solid rgba(244, 242, 238, 0.7);
+    outline-offset: 4px;
+}
+
 .vhs-about .vhs-about-tape.tilting {
     transition: transform 0.12s linear;
 }
@@ -4561,10 +4653,20 @@ body.view-mode .vhs-about.page-view.is-visible {
     will-change: transform;
 }
 
-/* Mobile & Tablet Adjustments */
-@media (max-width: 820px) {
-    .vhs-about .vhs-sleeve {
-        width: clamp(280px, 75vw, 420px);
+/* Mobile & Tablet Adjustments: there is no room for text on both sides of the tape,
+   so it pins above a single centred column that scrolls underneath it. */
+@media (max-width: 1024px) {
+    .vhs-about {
+        --about-tape-top: 4.75rem;
+        --about-tape-width: clamp(190px, 50vw, 300px);
+        --about-text-top: calc(var(--about-tape-top) + var(--about-tape-width) * 0.553 + 0.75rem);
+    }
+
+    .vhs-about .vhs-sleeve,
+    .vhs-about .vhs-sleeve:hover {
+        top: var(--about-tape-top);
+        width: var(--about-tape-width);
+        transform: translateX(-50%);
         perspective: 1200px;
         perspective-origin: 50% 50%;
     }
@@ -4575,23 +4677,65 @@ body.view-mode .vhs-about.page-view.is-visible {
         height: 36px;
     }
 
+    .vhs-about-text {
+        top: var(--about-text-top);
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 7%, #000 90%, transparent 100%);
+        mask-image: linear-gradient(to bottom, transparent 0%, #000 7%, #000 90%, transparent 100%);
+    }
+
+    .vhs-about-reel {
+        padding-top: 1.75rem;
+    }
+
+    .vhs-about-loop {
+        gap: 3.25rem;
+        padding-bottom: 3.25rem;
+    }
+
+    .vhs-about-introblock {
+        padding: 0 1.5rem;
+    }
+
+    .bio-kicker {
+        margin-bottom: 14px;
+    }
+
+    .bio-text {
+        font-size: clamp(1.2rem, 4.6vw, 1.9rem);
+        line-height: 1.4;
+    }
+
     .vhs-about-pair {
-        column-gap: clamp(200px, 32vw, 320px);
-        padding: 0 16px;
+        grid-template-columns: 1fr;
+        row-gap: 3.25rem;
+        padding: 0 1.5rem;
+    }
+
+    .vhs-about-col[data-side="left"],
+    .vhs-about-col[data-side="left"] .vhs-about-list,
+    .vhs-about-col[data-side="right"],
+    .vhs-about-col[data-side="right"] .vhs-about-list {
+        align-items: center;
+        text-align: center;
     }
 
     .vhs-about-line {
-        font-size: 0.8rem;
+        font-size: 0.85rem;
+        white-space: normal;
+    }
+
+    .vhs-about-link {
+        padding-block: 6px;
     }
 
     .vhs-about-role {
-        min-width: 0;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 2px;
+        flex-wrap: wrap;
+        justify-content: center;
+        white-space: normal;
     }
 
-    .vhs-about-leader {
+    /* The column runs off the bottom edge by itself, and the hint would sit on top of it */
+    .vhs-about-hint {
         display: none;
     }
 }
