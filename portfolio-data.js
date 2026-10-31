@@ -965,6 +965,35 @@ window.portfolioData = {
                         "projects/branding/glorify/20_closing.webp"
                     ],
                     "description": "Brand identity for an interior design studio, from monogram and palette to social and stationery."
+                },
+                {
+                    "title": "Zemamk",
+                    "year": "2026",
+                    "role": "BRAND IDENTITY",
+                    "cover": "projects/branding/zemamk/01_cover.webp",
+                    "gallery": [
+                        "projects/branding/zemamk/01_cover.webp",
+                        "projects/branding/zemamk/02_control.webp",
+                        "projects/branding/zemamk/03_primary_logo.webp",
+                        "projects/branding/zemamk/04_wordmark.webp",
+                        "projects/branding/zemamk/05_built_from_data.webp",
+                        "projects/branding/zemamk/06_three_ideas.webp",
+                        "projects/branding/zemamk/07_one_place.webp",
+                        "projects/branding/zemamk/08_construction.webp",
+                        "projects/branding/zemamk/09_colorways.webp",
+                        "projects/branding/zemamk/10_palette.webp",
+                        "projects/branding/zemamk/11_typography.webp",
+                        "projects/branding/zemamk/12_decisions.webp",
+                        "projects/branding/zemamk/13_questions.webp",
+                        "projects/branding/zemamk/14_three_steps.webp",
+                        "projects/branding/zemamk/15_wall_sign.webp",
+                        "projects/branding/zemamk/16_instagram.webp",
+                        "projects/branding/zemamk/17_campaign.webp",
+                        "projects/branding/zemamk/18_stationery.webp",
+                        "projects/branding/zemamk/19_dashboard.webp",
+                        "projects/branding/zemamk/20_closing.webp"
+                    ],
+                    "description": "Brand identity for an e-commerce analytics platform, from logo and palette to campaign, stationery and dashboard."
                 }
             ]
         }
