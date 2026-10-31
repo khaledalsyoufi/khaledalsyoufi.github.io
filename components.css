@@ -1979,50 +1979,6 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
     z-index: 2;
 }
 
-.lightbox-img.slide-out-left {
-    transform: translateX(-100vw) scale(0.8);
-    opacity: 0;
-}
-
-.lightbox-img.slide-out-right {
-    transform: translateX(100vw) scale(0.8);
-    opacity: 0;
-}
-
-.lightbox-img.slide-in-right {
-    transform: translateX(100vw) scale(0.8);
-    opacity: 0;
-}
-
-.lightbox-img.slide-in-left {
-    transform: translateX(-100vw) scale(0.8);
-    opacity: 0;
-}
-
-.lightbox-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--text-color);
-    font-size: 1.2rem;
-    cursor: pointer;
-    z-index: 2000;
-    padding: 2rem;
-    transition: var(--transition);
-    opacity: 0.7;
-}
-
-.lightbox-nav:hover {
-    color: var(--accent-color);
-    opacity: 1;
-    transform: translateY(-50%) scale(1.1);
-}
-
-.lightbox-nav.prev { left: 2vw; }
-.lightbox-nav.next { right: 2vw; }
-
 .lightbox-meta-overlay {
     position: absolute;
     bottom: 3rem;
@@ -2133,6 +2089,49 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
 
 .lightbox-close:hover {
     color: var(--accent-color);
+}
+
+/* Image projects: a scrolling column of images beside the project card. The card sits
+   outside the scroller, so it holds still. Phones keep the card under the column. */
+@media (min-width: 901px) {
+    .lightbox.is-stack {
+        --stack-card: clamp(260px, 24vw, 340px);
+    }
+
+    .lightbox.is-stack .lightbox-container {
+        display: block;
+        overflow-y: auto;
+        padding: 6rem calc(3vw + var(--stack-card) + 3rem) 4rem 5vw;
+        transform: none;
+        scrollbar-width: thin;
+        scrollbar-color: var(--muted-color) transparent;
+    }
+
+    .lightbox.is-stack .lightbox-img {
+        position: static;
+        display: block;
+        width: 100%;
+        max-width: 1280px;
+        max-height: none;
+        margin: 0 auto 1.5rem;
+    }
+
+    .lightbox.is-stack.is-portrait .lightbox-img {
+        max-width: 720px;
+    }
+
+    .lightbox.is-stack .lightbox-meta-overlay {
+        top: 6rem;
+        right: 3vw;
+        bottom: auto;
+        left: auto;
+        width: var(--stack-card);
+        max-width: none;
+    }
+}
+
+.lightbox-container:focus {
+    outline: none;
 }
 
 

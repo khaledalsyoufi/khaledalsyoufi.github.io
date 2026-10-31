@@ -337,12 +337,10 @@ function initReveal() {
     revealElements.forEach(el => observer.observe(el));
 }
 
-// Image Lightbox Logic (Slider Mode)
+// Project gallery: image projects scroll as a column beside a fixed card, a reel plays alone
 function initLightbox() {
     const lightbox = document.getElementById('lightbox');
     const lightboxContainer = lightbox.querySelector('.lightbox-container');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
 
     // Project Info Elements
     const projectTitle = lightbox.querySelector('.project-title');
@@ -352,30 +350,16 @@ function initLightbox() {
     const closeBtn = lightbox.querySelector('.lightbox-close');
     const metaOverlay = lightbox.querySelector('.lightbox-meta-overlay');
 
+    const VIDEO_SRC = /\.(mp4|webm|ogg)$/i;
+
     let currentImages = [];
-    let currentIndex = 0;
-    let isAnimating = false;
     let lastFocused = null;
     let currentPoster = '';
-    let isSlider = false;
     let closeTimer = null;
-
-    const updateCounter = (mode = 'desktop') => {
-        if (!metaCount) return;
-
-        if (mode === 'mobile') {
-            metaCount.innerText = `${currentImages.length} IMAGES`;
-            return;
-        }
-
-        const currentLabel = String(currentIndex + 1).padStart(2, '0');
-        const totalLabel = String(currentImages.length).padStart(2, '0');
-        metaCount.innerText = `${currentLabel} / ${totalLabel}`;
-    };
 
     // Helper to create media element
     const createMedia = (src, poster = '', lazy = false) => {
-        const isVideo = src.match(/\.(mp4|webm|ogg)$/i);
+        const isVideo = VIDEO_SRC.test(src);
         const media = document.createElement(isVideo ? 'video' : 'img');
         media.src = src;
         media.className = 'lightbox-img';
@@ -416,91 +400,6 @@ function initLightbox() {
         }
     };
 
-    // Fetch the slides on either side so PREV / NEXT never land on an empty frame.
-    const preloadNeighbors = () => {
-        if (currentImages.length < 2) return;
-        [currentIndex + 1, currentIndex - 1].forEach((index) => {
-            const src = currentImages[(index + currentImages.length) % currentImages.length];
-            if (!/\.(mp4|webm|ogg)$/i.test(src)) new Image().src = src;
-        });
-    };
-
-    // Update View
-    const updateView = (direction = 'next') => {
-        if (isAnimating) return;
-        isAnimating = true;
-
-        const incomingSrc = currentImages[currentIndex];
-
-        // Remove existing current if any (except the one we are transitioning out)
-        // But simpler: Just append new, animate, then clean up.
-
-        const newImg = createMedia(incomingSrc, currentPoster);
-        // Start position depending on direction
-        if (direction === 'next') {
-            newImg.classList.add('slide-in-right');
-        } else if (direction === 'prev') {
-            newImg.classList.add('slide-in-left');
-        } else {
-            // Initial load
-            newImg.classList.add('active'); // Just fade in/appear
-        }
-
-        lightboxContainer.appendChild(newImg);
-        startPlayback(newImg);
-
-        // Force reflow
-        void newImg.offsetWidth;
-
-        // Current active image to slide out
-        const currentActive = lightboxContainer.querySelector('.lightbox-img.active');
-
-        if (currentActive && direction) {
-            currentActive.classList.remove('active');
-            if (direction === 'next') {
-                currentActive.classList.add('slide-out-left');
-            } else {
-                currentActive.classList.add('slide-out-right');
-            }
-
-            // Cleanup old image after transition
-            setTimeout(() => {
-                if (currentActive && currentActive.parentNode) {
-                    currentActive.parentNode.removeChild(currentActive);
-                }
-            }, 500); // Match CSS transition time
-        }
-
-        // Animate new in
-        if (direction) {
-            newImg.classList.remove('slide-in-right', 'slide-in-left');
-            newImg.classList.add('active');
-        }
-
-        updateCounter();
-        preloadNeighbors();
-
-        setTimeout(() => {
-            isAnimating = false;
-        }, 500);
-    };
-
-    // Navigation Handlers: a single reel has nothing to page to (the arrows would
-    // just rebuild it from zero), and the phone layout is a plain vertical scroll.
-    const canNavigate = () => isSlider && !isAnimating && currentImages.length > 1;
-
-    const goNext = () => {
-        if (!canNavigate()) return;
-        currentIndex = (currentIndex + 1) % currentImages.length;
-        updateView('next');
-    };
-
-    const goPrev = () => {
-        if (!canNavigate()) return;
-        currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
-        updateView('prev');
-    };
-
     // Open Lightbox
     document.querySelectorAll('.visual-item img, .visual-item video').forEach(img => {
         img.addEventListener('click', (e) => {
@@ -537,46 +436,36 @@ function initLightbox() {
             // Reset State (a close still fading out must not wipe this new gallery)
             clearTimeout(closeTimer);
             lightboxContainer.innerHTML = '';
-            currentIndex = 0;
-            isAnimating = false;
-            isSlider = window.innerWidth > 900;
 
-            // Hide navigation if only 1 item (like Reels)
-            if (currentImages.length <= 1) {
-                prevBtn.style.display = 'none';
-                nextBtn.style.display = 'none';
-            } else {
-                prevBtn.style.display = '';
-                nextBtn.style.display = '';
-            }
+            const isStack = !currentImages.some((src) => VIDEO_SRC.test(src));
+            lightbox.classList.toggle('is-stack', isStack);
+            lightbox.classList.toggle('is-portrait', isStack && img.naturalHeight > img.naturalWidth);
+            metaCount.innerText = `${currentImages.length} ${currentImages.length === 1 ? 'IMAGE' : 'IMAGES'}`;
 
             // Reveal the dialog first: a video can't start inside a hidden subtree.
             lightbox.classList.add('active');
             document.body.classList.add('no-scroll');
 
-            // Layout Decision: Mobile (Vertical Scroll) vs Desktop (Slider)
-            if (!isSlider) {
-                // Mobile: Render ALL images
-                currentImages.forEach(src => {
-                    const imgEl = createMedia(src, currentPoster, true);
-                    imgEl.classList.add('active'); // active makes it visible
-                    // No slide classes needed
-                    lightboxContainer.appendChild(imgEl);
-                    startPlayback(imgEl);
-                });
-                updateCounter('mobile');
-            } else {
-                // Desktop: Interactive Slider
-                updateView(null);
-            }
+            currentImages.forEach((src, index) => {
+                const mediaEl = createMedia(src, currentPoster, index > 1);
+                mediaEl.classList.add('active');
+                // Holds each image's space until it loads, so the column doesn't jump.
+                if (isStack && img.naturalWidth) {
+                    mediaEl.style.aspectRatio = `auto ${img.naturalWidth} / ${img.naturalHeight}`;
+                }
+                lightboxContainer.appendChild(mediaEl);
+                startPlayback(mediaEl);
+            });
 
             lastFocused = document.activeElement;
+            // Focus on the column lets the arrow keys and space scroll it straight away.
+            const focusTarget = isStack ? lightboxContainer : closeBtn;
             // The dialog keeps visibility:hidden until its (transitioned) style lands,
             // so retry the focus hand-off for a few frames instead of guessing a delay.
             void lightbox.offsetWidth;
             const focusIntoDialog = (attempt = 0) => {
                 if (!lightbox.classList.contains('active')) return;
-                closeBtn.focus({ preventScroll: true });
+                focusTarget.focus({ preventScroll: true });
                 if (lightbox.contains(document.activeElement) || attempt > 40) return;
                 requestAnimationFrame(() => focusIntoDialog(attempt + 1));
             };
@@ -584,35 +473,20 @@ function initLightbox() {
         });
     });
 
-    // Event Listeners
-    nextBtn.addEventListener('click', (e) => { e.stopPropagation(); goNext(); });
-    prevBtn.addEventListener('click', (e) => { e.stopPropagation(); goPrev(); });
-
-    // Swipe between slides on tablets, where the slider has no keyboard.
-    let swipeStartX = null;
-    lightbox.addEventListener('touchstart', (e) => {
-        swipeStartX = e.touches.length === 1 ? e.touches[0].clientX : null;
-    }, { passive: true });
-    lightbox.addEventListener('touchend', (e) => {
-        if (swipeStartX === null) return;
-        const distance = e.changedTouches[0].clientX - swipeStartX;
-        swipeStartX = null;
-        if (Math.abs(distance) < 50) return;
-        if (distance < 0) goNext();
-        else goPrev();
-    }, { passive: true });
-
-    // Keyboard Nav + focus trap
+    // Keyboard: Escape + focus trap
     document.addEventListener('keydown', (e) => {
         if (!lightbox.classList.contains('active')) return;
-        if (e.key === 'ArrowRight') goNext();
-        if (e.key === 'ArrowLeft') goPrev();
         if (e.key === 'Escape') closeLightbox();
 
         if (e.key === 'Tab') {
             const focusables = [...lightbox.querySelectorAll('button, [href], video[controls]')]
                 .filter((el) => el.getClientRects().length > 0 && !el.disabled);
             if (!focusables.length) return;
+            if (!focusables.includes(document.activeElement)) {
+                e.preventDefault();
+                focusables[0].focus();
+                return;
+            }
             const first = focusables[0];
             const last = focusables[focusables.length - 1];
             if (e.shiftKey && document.activeElement === first) {
@@ -643,6 +517,8 @@ function initLightbox() {
 
     closeBtn.addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', (e) => {
+        // A press on the column's scrollbar lands on the container too.
+        if (e.target === lightboxContainer && e.offsetX >= lightboxContainer.clientWidth) return;
         if (e.target === lightbox || e.target === lightboxContainer) {
             closeLightbox();
         }

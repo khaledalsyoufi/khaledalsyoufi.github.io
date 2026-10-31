@@ -156,10 +156,6 @@
 }
 
 @media (max-width: 900px) {
-    .lightbox-nav {
-        display: none !important;
-    }
-
     .scroll-progress {
         display: none !important;
     }
