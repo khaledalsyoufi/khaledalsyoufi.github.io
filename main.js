@@ -1861,8 +1861,10 @@ function initInfoReelScroll() {
 
         const tapeCenterY = tapeBox.top + tapeBox.height / 2;
         const halfH = tapeBox.height / 2;
-        const feather = tapeBox.height * 0.26;
+        const feather = tapeBox.height * 0.45;
         const gap = Math.max(22, tapeBox.width * 0.08);
+        const edge = 16;
+        const stageWidth = tapeBox.left + tapeBox.right;
 
         // Repulsion physics: dynamic parting of text lines around the VHS tape
         for (let i = 0; i < lineItems.length; i++) {
@@ -1873,7 +1875,10 @@ function initInfoReelScroll() {
             const s = smooth(Math.min(1, Math.max(0, (halfH + feather - distY) / feather)));
 
             if (s > 0.001) {
-                const targetX = item.isLeft ? (tapeBox.left - gap - item.w) : (tapeBox.right + gap);
+                // On narrow desktops a long line stops at the screen edge, under the tape.
+                const targetX = item.isLeft
+                    ? Math.max(edge, tapeBox.left - gap - item.w)
+                    : Math.min(stageWidth - edge - item.w, tapeBox.right + gap);
                 const shiftX = (targetX - item.initialX) * s;
                 item.el.style.transform = `translate3d(${shiftX.toFixed(1)}px, 0, 0)`;
             } else if (item.el.style.transform) {

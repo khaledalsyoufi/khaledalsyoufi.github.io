@@ -4392,7 +4392,7 @@ body.view-mode .vhs-about.page-view.is-visible {
 .vhs-about-pair {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    column-gap: clamp(400px, 42vw, 580px);
+    column-gap: clamp(120px, 14vw, 220px);
     width: 100%;
     max-width: 1400px;
     align-items: start;
