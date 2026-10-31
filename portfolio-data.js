@@ -374,6 +374,23 @@ window.portfolioData = {
                         "projects/social/clara/rose_scent.webp"
                     ],
                     "description": "Social media campaign designs and visual assets."
+                },
+                {
+                    "title": "Emad Rizq",
+                    "year": "2026",
+                    "role": "SOCIAL MEDIA DESIGN",
+                    "cover": "projects/social/emad_rizq/heart_colour_offer.webp",
+                    "gallery": [
+                        "projects/social/emad_rizq/heart_colour_offer.webp",
+                        "projects/social/emad_rizq/ruby_heart_necklace.webp",
+                        "projects/social/emad_rizq/look_missing_something.webp",
+                        "projects/social/emad_rizq/stella_earrings.webp",
+                        "projects/social/emad_rizq/national_day_sets.webp",
+                        "projects/social/emad_rizq/fuchsia_set.webp",
+                        "projects/social/emad_rizq/national_day_ring.webp",
+                        "projects/social/emad_rizq/rosalinda_ring.webp"
+                    ],
+                    "description": "Social media campaign designs and visual assets."
                 }
             ]
         },
