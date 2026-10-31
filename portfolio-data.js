@@ -285,6 +285,20 @@ window.portfolioData = {
                         "projects/social/jettintblack/she will - 1080 x 1440.webp"
                     ],
                     "description": "Social media campaign designs and visual assets."
+                },
+                {
+                    "title": "One Marketing",
+                    "year": "2026",
+                    "role": "SOCIAL MEDIA DESIGN",
+                    "cover": "projects/social/one_marketing/catch_it_first_time.webp",
+                    "gallery": [
+                        "projects/social/one_marketing/catch_it_first_time.webp",
+                        "projects/social/one_marketing/plan_before_ads.webp",
+                        "projects/social/one_marketing/marketing_losing_you.webp",
+                        "projects/social/one_marketing/choose_marketing_company.webp",
+                        "projects/social/one_marketing/plan_and_grow.webp"
+                    ],
+                    "description": "Social media campaign designs and visual assets."
                 }
             ]
         },
