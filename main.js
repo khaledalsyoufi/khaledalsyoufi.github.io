@@ -113,7 +113,6 @@ function renderServices() {
                 media.alt = project.title ? `${project.title} — project cover` : 'Project cover';
             }
             media.dataset.title = project.title;
-            media.dataset.year = project.year;
             media.dataset.role = project.role;
             media.dataset.gallery = project.gallery.join(',');
             media.dataset.desc = project.description;
@@ -134,25 +133,6 @@ function renderServices() {
                 caption.className = 'visual-caption';
                 caption.textContent = project.title;
                 visualItem.append(caption);
-            }
-
-            // Signature detail: the piece's real pixel dimensions, revealed on hover.
-            const spec = document.createElement('div');
-            spec.className = 'visual-spec';
-            spec.textContent = project.year || '';
-            visualItem.append(spec);
-
-            const setSpec = () => {
-                const w = isVideoCover ? media.videoWidth : media.naturalWidth;
-                const h = isVideoCover ? media.videoHeight : media.naturalHeight;
-                if (!w || !h) return;
-                spec.textContent = `${w} × ${h}${project.year ? ' · ' + project.year : ''}`;
-            };
-            if (isVideoCover) {
-                media.addEventListener('loadedmetadata', setSpec, { once: true });
-            } else {
-                media.addEventListener('load', setSpec, { once: true });
-                if (media.complete) setSpec();
             }
 
             // Keyboard access to the gallery, not just mouse.
@@ -367,7 +347,6 @@ function initLightbox() {
     // Project Info Elements
     const projectTitle = lightbox.querySelector('.project-title');
     const projectDesc = lightbox.querySelector('.project-desc');
-    const metaYear = lightbox.querySelector('.meta-year');
     const metaRole = lightbox.querySelector('.meta-role');
     const metaCount = lightbox.querySelector('.meta-count');
     const closeBtn = lightbox.querySelector('.lightbox-close');
@@ -549,7 +528,6 @@ function initLightbox() {
             projectTitle.style.display = metadata.title ? 'block' : 'none';
             projectDesc.innerText = metadata.desc || 'No description available.';
             projectDesc.style.display = metadata.desc && metadata.title ? 'block' : 'none';
-            metaYear.innerText = metadata.year || '2025';
             metaRole.innerText = metadata.role || 'DESIGN';
             
             if (metaOverlay) {

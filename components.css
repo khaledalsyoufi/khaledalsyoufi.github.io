@@ -1016,25 +1016,6 @@ body.view-mode .services.page-view.is-visible:not(.animate-in) .service-item {
     transition: var(--transition);
 }
 
-/* Spec line: the real pixel dimensions of the piece, revealed on hover */
-.visual-spec {
-    display: block;
-    margin-top: 0.2rem;
-    font-family: var(--mono-font);
-    font-size: 0.85rem;
-    letter-spacing: 0.06em;
-    color: var(--muted-color);
-    opacity: 0;
-    transform: translateY(4px);
-    transition: opacity 0.35s ease, transform 0.35s ease;
-}
-
-.visual-item:hover .visual-spec,
-.visual-item:focus-visible .visual-spec {
-    opacity: 1;
-    transform: none;
-}
-
 /* The measuring rule: a hairline that draws under the tile on hover */
 .visual-img-wrapper::after {
     content: '';
