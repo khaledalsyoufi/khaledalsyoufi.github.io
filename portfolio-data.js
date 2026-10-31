@@ -341,6 +341,26 @@ window.portfolioData = {
                         "projects/social/mohammed_alojaymi/different_experiences.webp"
                     ],
                     "description": "Social media campaign designs and visual assets."
+                },
+                {
+                    "title": "Broca Logistics",
+                    "year": "2026",
+                    "role": "SOCIAL MEDIA DESIGN",
+                    "cover": "projects/social/broca_logistics/warehouse_visibility.webp",
+                    "gallery": [
+                        "projects/social/broca_logistics/warehouse_visibility.webp",
+                        "projects/social/broca_logistics/scattered_data.webp",
+                        "projects/social/broca_logistics/total_cost_of_ownership.webp",
+                        "projects/social/broca_logistics/automation_complexity.webp",
+                        "projects/social/broca_logistics/frontline_decisions.webp",
+                        "projects/social/broca_logistics/clearer_vision.webp",
+                        "projects/social/broca_logistics/technology_alone.webp",
+                        "projects/social/broca_logistics/ready_solution_fit.webp",
+                        "projects/social/broca_logistics/reliable_operations.webp",
+                        "projects/social/broca_logistics/healthcare_logistics.webp",
+                        "projects/social/broca_logistics/define_the_problem.webp"
+                    ],
+                    "description": "Social media campaign designs and visual assets."
                 }
             ]
         },
