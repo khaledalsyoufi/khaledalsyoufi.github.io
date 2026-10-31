@@ -936,6 +936,35 @@ window.portfolioData = {
                         "projects/branding/masjid_hamada/17_closing.webp"
                     ],
                     "description": "Brand identity for a masjid and community initiative, from Arabic calligraphy logo and palette to social and stationery."
+                },
+                {
+                    "title": "Glorify",
+                    "year": "2026",
+                    "role": "BRAND IDENTITY",
+                    "cover": "projects/branding/glorify/01_cover.webp",
+                    "gallery": [
+                        "projects/branding/glorify/01_cover.webp",
+                        "projects/branding/glorify/02_art_and_detail.webp",
+                        "projects/branding/glorify/03_primary_logo.webp",
+                        "projects/branding/glorify/04_portrait_logo.webp",
+                        "projects/branding/glorify/05_anatomy.webp",
+                        "projects/branding/glorify/06_construction.webp",
+                        "projects/branding/glorify/07_the_star.webp",
+                        "projects/branding/glorify/08_the_frame.webp",
+                        "projects/branding/glorify/09_clear_space.webp",
+                        "projects/branding/glorify/10_colorways.webp",
+                        "projects/branding/glorify/11_palette.webp",
+                        "projects/branding/glorify/12_typography.webp",
+                        "projects/branding/glorify/13_wordmark.webp",
+                        "projects/branding/glorify/14_supergraphic.webp",
+                        "projects/branding/glorify/15_instagram.webp",
+                        "projects/branding/glorify/16_stories.webp",
+                        "projects/branding/glorify/17_business_cards.webp",
+                        "projects/branding/glorify/18_identity_board.webp",
+                        "projects/branding/glorify/19_carved.webp",
+                        "projects/branding/glorify/20_closing.webp"
+                    ],
+                    "description": "Brand identity for an interior design studio, from monogram and palette to social and stationery."
                 }
             ]
         }
