@@ -21,24 +21,6 @@ window.portfolioData = {
                     title: '',
                     year: '2026',
                     role: 'VIDEO EDITING',
-                    cover: 'projects/reels&motion/optimized/2.mp4',
-                    poster: 'projects/reels&motion/posters/2.webp',
-                    gallery: ['projects/reels&motion/optimized/2.mp4'],
-                    description: 'Short-form social media video editing.'
-                },
-                {
-                    title: '',
-                    year: '2026',
-                    role: 'VIDEO EDITING',
-                    cover: 'projects/reels&motion/optimized/3.mp4',
-                    poster: 'projects/reels&motion/posters/3.webp',
-                    gallery: ['projects/reels&motion/optimized/3.mp4'],
-                    description: 'Short-form social media video editing.'
-                },
-                {
-                    title: '',
-                    year: '2026',
-                    role: 'VIDEO EDITING',
                     cover: 'projects/reels&motion/optimized/4.mp4',
                     poster: 'projects/reels&motion/posters/4.webp',
                     gallery: ['projects/reels&motion/optimized/4.mp4'],
