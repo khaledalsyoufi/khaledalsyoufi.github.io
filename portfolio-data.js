@@ -151,6 +151,24 @@ window.portfolioData = {
                     poster: 'projects/reels&motion/posters/18.webp',
                     gallery: ['projects/reels&motion/optimized/18.mp4'],
                     description: 'Short-form social media video editing.'
+                },
+                {
+                    title: '',
+                    year: '2026',
+                    role: 'VIDEO EDITING',
+                    cover: 'projects/reels&motion/optimized/19.mp4',
+                    poster: 'projects/reels&motion/posters/19.webp',
+                    gallery: ['projects/reels&motion/optimized/19.mp4'],
+                    description: 'Short-form social media video editing.'
+                },
+                {
+                    title: '',
+                    year: '2026',
+                    role: 'VIDEO EDITING',
+                    cover: 'projects/reels&motion/optimized/20.mp4',
+                    poster: 'projects/reels&motion/posters/20.webp',
+                    gallery: ['projects/reels&motion/optimized/20.mp4'],
+                    description: 'Short-form social media video editing.'
                 }
             ]
         },
