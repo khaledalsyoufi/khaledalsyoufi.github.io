@@ -361,6 +361,19 @@ window.portfolioData = {
                         "projects/social/broca_logistics/define_the_problem.webp"
                     ],
                     "description": "Social media campaign designs and visual assets."
+                },
+                {
+                    "title": "Clara",
+                    "year": "2026",
+                    "role": "SOCIAL MEDIA DESIGN",
+                    "cover": "projects/social/clara/change_shower_mood.webp",
+                    "gallery": [
+                        "projects/social/clara/change_shower_mood.webp",
+                        "projects/social/clara/protects_your_hair.webp",
+                        "projects/social/clara/whatever_your_mood.webp",
+                        "projects/social/clara/rose_scent.webp"
+                    ],
+                    "description": "Social media campaign designs and visual assets."
                 }
             ]
         },
