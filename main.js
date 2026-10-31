@@ -1741,7 +1741,6 @@ function initInfoReelScroll() {
     let loopHeight = 1;
     let lineItems = [];
     let tapeBox = { left: 0, right: 0, top: 0, width: 0, height: 0 };
-    let restShift = 0;
 
     // Tape click / keyboard flip
     let infoFlipCount = 0;
@@ -1822,7 +1821,7 @@ function initInfoReelScroll() {
         if (!containerRect.height) return;
 
         // Layout size, not getBoundingClientRect: the sleeve is centred by CSS and its
-        // live rect would include the hover scale and the opening offset below.
+        // live rect would include the hover scale.
         if (sleeve && sleeve.offsetWidth > 0) {
             const width = sleeve.offsetWidth;
             const height = sleeve.offsetHeight;
@@ -1850,17 +1849,6 @@ function initInfoReelScroll() {
 
         const loopEl = reel.querySelector('.vhs-about-loop');
         loopHeight = loopEl ? loopEl.offsetHeight : 1;
-
-        // The biography opens right behind the tape, so the tape rests just below it
-        // and slides back to centre as soon as the reel starts moving.
-        const bio = reel.querySelector('.bio-text');
-        if (bio) {
-            const bioBottom = bio.getBoundingClientRect().bottom - containerRect.top;
-            const roomBelow = containerRect.height - (tapeBox.top + tapeBox.height) - 44;
-            restShift = Math.max(0, Math.min(bioBottom + 20 - tapeBox.top, roomBelow));
-        } else {
-            restShift = 0;
-        }
 
         lineItems = lines.map((el) => {
             const r = el.getBoundingClientRect();
@@ -1891,15 +1879,9 @@ function initInfoReelScroll() {
             inner3d.style.transition = 'none';
         }
 
-        // Measured from the nearest loop seam so the offset stays continuous when the
-        // reel wraps around and the biography comes back up from below.
-        const seamDistance = Math.min(t, loopHeight - t);
-        const tapeShift = restShift * (1 - smooth(Math.min(1, seamDistance / 260)));
-        if (sleeve) sleeve.style.setProperty('--tape-shift', `${tapeShift.toFixed(1)}px`);
-
         if (!lineItems.length || stackedLayout.matches) return;
 
-        const tapeCenterY = tapeBox.top + tapeBox.height / 2 + tapeShift;
+        const tapeCenterY = tapeBox.top + tapeBox.height / 2;
         const halfH = tapeBox.height / 2;
         const feather = tapeBox.height * 0.26;
         const gap = Math.max(22, tapeBox.width * 0.08);

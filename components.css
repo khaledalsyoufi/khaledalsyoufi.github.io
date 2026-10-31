@@ -4317,8 +4317,8 @@ body.view-mode .vhs-about.page-view.is-visible {
     inset: 0;
     pointer-events: none;
     overflow: hidden;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 13%, #000 87%, transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, #000 13%, #000 87%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 7%, #000 87%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 7%, #000 87%, transparent 100%);
     z-index: 10;
 }
 
@@ -4331,7 +4331,7 @@ body.view-mode .vhs-about.page-view.is-visible {
     max-width: 1260px;
     pointer-events: auto;
     will-change: transform;
-    padding-top: clamp(60px, 8vh, 100px);
+    padding-top: clamp(44px, 7vh, 100px);
 }
 
 .vhs-about-loop {
@@ -4356,7 +4356,7 @@ body.view-mode .vhs-about.page-view.is-visible {
     width: 100%;
     max-width: 1000px;
     margin: 0 auto;
-    padding: clamp(80px, 12vh, 160px) 24px;
+    padding: 0 24px clamp(80px, 12vh, 160px);
     box-sizing: border-box;
     pointer-events: none;
     z-index: 5;
@@ -4388,7 +4388,7 @@ body.view-mode .vhs-about.page-view.is-visible {
     font-size: 0.85rem;
     letter-spacing: 0.22em;
     color: rgba(244, 242, 238, 0.45);
-    margin-bottom: 28px;
+    margin-bottom: 16px;
     font-weight: 600;
     text-align: center;
     transform: none !important;
@@ -4396,7 +4396,7 @@ body.view-mode .vhs-about.page-view.is-visible {
 
 .bio-text {
     font-family: var(--sans-font);
-    font-size: clamp(1.7rem, min(3.2vw, 5vh), 3.2rem);
+    font-size: clamp(1.35rem, min(2.3vw, 3.6vh), 3.2rem);
     line-height: 1.32;
     color: #f4f2ee;
     letter-spacing: -0.025em;
@@ -4555,7 +4555,7 @@ body.view-mode .vhs-about.page-view.is-visible {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, calc(-50% + var(--tape-shift, 0px))) scale(1);
+    transform: translate(-50%, -50%) scale(1);
     z-index: 25;
     width: 100%;
     max-width: 520px;
@@ -4568,7 +4568,7 @@ body.view-mode .vhs-about.page-view.is-visible {
 }
 
 .vhs-about .vhs-sleeve:hover {
-    transform: translate(-50%, calc(-50% + var(--tape-shift, 0px))) scale(1.14);
+    transform: translate(-50%, -50%) scale(1.14);
     z-index: 35;
 }
 
@@ -4642,11 +4642,11 @@ body.view-mode .vhs-about.page-view.is-visible {
     }
 
     .vhs-about .vhs-sleeve:hover {
-        transform: translate(-50%, calc(-50% + var(--tape-shift, 0px)));
+        transform: translate(-50%, -50%);
     }
 
     .vhs-about-reel {
-        padding-top: 4.5rem;
+        padding-top: min(4.5rem, 8vh);
     }
 
     .vhs-about-loop {
@@ -4663,7 +4663,7 @@ body.view-mode .vhs-about.page-view.is-visible {
     }
 
     .bio-text {
-        font-size: clamp(1.2rem, 4.6vw, 1.9rem);
+        font-size: clamp(1rem, min(5.1vw, 2.9vh), 1.9rem);
         line-height: 1.4;
     }
 
