@@ -852,6 +852,35 @@ window.portfolioData = {
                         "projects/branding/khaled_alsyoufi/40_closing.webp"
                     ],
                     "description": "Personal brand identity and guidelines."
+                },
+                {
+                    "title": "Orouq Alrukham",
+                    "year": "2026",
+                    "role": "BRAND IDENTITY",
+                    "cover": "projects/branding/orouq_alrukham/01_cover.webp",
+                    "gallery": [
+                        "projects/branding/orouq_alrukham/01_cover.webp",
+                        "projects/branding/orouq_alrukham/02_mountain_to_home.webp",
+                        "projects/branding/orouq_alrukham/03_vein_overlay.webp",
+                        "projects/branding/orouq_alrukham/04_logo_build.webp",
+                        "projects/branding/orouq_alrukham/05_primary_logo.webp",
+                        "projects/branding/orouq_alrukham/06_logo_variations.webp",
+                        "projects/branding/orouq_alrukham/07_supergraphic.webp",
+                        "projects/branding/orouq_alrukham/08_palette.webp",
+                        "projects/branding/orouq_alrukham/09_triptych.webp",
+                        "projects/branding/orouq_alrukham/10_statement.webp",
+                        "projects/branding/orouq_alrukham/11_stories.webp",
+                        "projects/branding/orouq_alrukham/12_business_cards.webp",
+                        "projects/branding/orouq_alrukham/13_laptop.webp",
+                        "projects/branding/orouq_alrukham/14_web_products.webp",
+                        "projects/branding/orouq_alrukham/15_web_product_detail.webp",
+                        "projects/branding/orouq_alrukham/16_samples.webp",
+                        "projects/branding/orouq_alrukham/17_plaque.webp",
+                        "projects/branding/orouq_alrukham/18_wall_sign.webp",
+                        "projects/branding/orouq_alrukham/19_billboard.webp",
+                        "projects/branding/orouq_alrukham/20_closing.webp"
+                    ],
+                    "description": "Brand identity for a natural marble company, from logo and palette to stationery, web and signage."
                 }
             ]
         }
