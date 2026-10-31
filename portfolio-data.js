@@ -881,6 +881,35 @@ window.portfolioData = {
                         "projects/branding/orouq_alrukham/20_closing.webp"
                     ],
                     "description": "Brand identity for a natural marble company, from logo and palette to stationery, web and signage."
+                },
+                {
+                    "title": "Clara",
+                    "year": "2026",
+                    "role": "BRAND IDENTITY",
+                    "cover": "projects/branding/clara/01_cover.webp",
+                    "gallery": [
+                        "projects/branding/clara/01_cover.webp",
+                        "projects/branding/clara/02_the_idea.webp",
+                        "projects/branding/clara/03_droplet.webp",
+                        "projects/branding/clara/04_anatomy.webp",
+                        "projects/branding/clara/05_clear_space.webp",
+                        "projects/branding/clara/06_colorways.webp",
+                        "projects/branding/clara/07_supergraphic.webp",
+                        "projects/branding/clara/08_water_depth_palette.webp",
+                        "projects/branding/clara/09_scent_colors.webp",
+                        "projects/branding/clara/10_drop_pattern.webp",
+                        "projects/branding/clara/11_mood.webp",
+                        "projects/branding/clara/12_shower.webp",
+                        "projects/branding/clara/13_product.webp",
+                        "projects/branding/clara/14_range.webp",
+                        "projects/branding/clara/15_in_hand.webp",
+                        "projects/branding/clara/16_social.webp",
+                        "projects/branding/clara/17_website.webp",
+                        "projects/branding/clara/18_packaging.webp",
+                        "projects/branding/clara/19_thank_you_cards.webp",
+                        "projects/branding/clara/20_closing.webp"
+                    ],
+                    "description": "Brand identity for a scented shower filter, from logo and water palette to packaging, web and social."
                 }
             ]
         }
