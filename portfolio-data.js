@@ -299,6 +299,20 @@ window.portfolioData = {
                         "projects/social/one_marketing/plan_and_grow.webp"
                     ],
                     "description": "Social media campaign designs and visual assets."
+                },
+                {
+                    "title": "Dweib Agency",
+                    "year": "2026",
+                    "role": "SOCIAL MEDIA DESIGN",
+                    "cover": "projects/social/dweib/window_cant_be_closed.webp",
+                    "gallery": [
+                        "projects/social/dweib/window_cant_be_closed.webp",
+                        "projects/social/dweib/succeed_more_than_expected.webp",
+                        "projects/social/dweib/product_speaks.webp",
+                        "projects/social/dweib/abandoned_carts.webp",
+                        "projects/social/dweib/website_should_work.webp"
+                    ],
+                    "description": "Social media campaign designs and visual assets."
                 }
             ]
         },
