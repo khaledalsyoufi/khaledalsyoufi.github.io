@@ -430,10 +430,10 @@ window.portfolioData = {
         },
 
         {
-            slug: 'editorial',
-            title: 'EDITORIAL',
+            slug: 'print',
+            title: 'PRINT',
             accent: 'DESIGN',
-            description: 'Typography-led design solutions for print and digital publications, focusing on structural hierarchy and readability.',
+            description: 'Company profiles, book covers and publications designed for print, with structured hierarchy and clear, confident layouts.',
             projects: [
                 {
                     title: 'A NEW YEAR AND A NEW WORLD',
@@ -484,7 +484,204 @@ window.portfolioData = {
                         'projects/editorial/plymouth_canton/4.webp'
                     ],
                     description: 'Community schools newsletter design, focusing on clean information architecture and engaging imagery.'
-                }
+                },
+                {
+                    title: 'Extravaganza - Company Profile',
+                    year: '2024',
+                    role: 'COMPANY PROFILE',
+                    "cover": "projects/presentation/extravaganza_company_profile/1.webp",
+                        "gallery": [
+                            "projects/presentation/extravaganza_company_profile/1.webp",
+                            "projects/presentation/extravaganza_company_profile/2.webp",
+                            "projects/presentation/extravaganza_company_profile/3.webp",
+                            "projects/presentation/extravaganza_company_profile/4.webp",
+                            "projects/presentation/extravaganza_company_profile/5.webp",
+                            "projects/presentation/extravaganza_company_profile/6.webp",
+                            "projects/presentation/extravaganza_company_profile/7.webp",
+                            "projects/presentation/extravaganza_company_profile/8.webp",
+                            "projects/presentation/extravaganza_company_profile/9.webp",
+                            "projects/presentation/extravaganza_company_profile/10.webp",
+                            "projects/presentation/extravaganza_company_profile/11.webp",
+                            "projects/presentation/extravaganza_company_profile/12.webp",
+                            "projects/presentation/extravaganza_company_profile/13.webp",
+                            "projects/presentation/extravaganza_company_profile/14.webp",
+                            "projects/presentation/extravaganza_company_profile/cover.webp"
+                        ],
+                    description: 'Comprehensive company profile presentation for an event management firm, showcasing capabilities and past achievements.'
+                },
+        {
+                "title": "Lawazem",
+                "year": "2026",
+                "role": "COMPANY PROFILE",
+                "cover": "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_01.webp",
+                "gallery": [
+                    "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_01.webp",
+                    "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_02.webp",
+                    "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_03.webp",
+                    "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_04.webp",
+                    "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_05.webp",
+                    "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_06.webp",
+                    "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_07.webp",
+                    "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_08.webp",
+                    "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_09.webp",
+                    "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_10.webp",
+                    "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_11.webp",
+                    "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_12.webp",
+                    "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_13.webp"
+                ],
+                "description": "Corporate presentation and company profile design."
+            },
+            {
+                "title": "Maya Alhyah",
+                "year": "2026",
+                "role": "COMPANY PROFILE",
+                "cover": "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_01.webp",
+                "gallery": [
+                    "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_01.webp",
+                    "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_02.webp",
+                    "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_03.webp",
+                    "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_04.webp",
+                    "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_05.webp",
+                    "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_06.webp",
+                    "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_07.webp",
+                    "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_08.webp",
+                    "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_09.webp",
+                    "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_10.webp"
+                ],
+                "description": "Corporate presentation and company profile design."
+            },
+            {
+                "title": "Palm",
+                "year": "2026",
+                "role": "COMPANY PROFILE",
+                "cover": "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_01.webp",
+                "gallery": [
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_01.webp",
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_02.webp",
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_03.webp",
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_04.webp",
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_05.webp",
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_06.webp",
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_07.webp",
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_08.webp",
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_09.webp",
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_10.webp",
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_11.webp",
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_12.webp",
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_13.webp",
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_14.webp",
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_15.webp",
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_16.webp",
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_17.webp",
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_18.webp",
+                    "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_19.webp"
+                ],
+                "description": "Corporate presentation and company profile design."
+            },
+            {
+                "title": "Seed Life",
+                "year": "2026",
+                "role": "COMPANY PROFILE",
+                "cover": "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_01.webp",
+                "gallery": [
+                    "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_01.webp",
+                    "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_02.webp",
+                    "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_03.webp",
+                    "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_04.webp",
+                    "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_05.webp",
+                    "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_06.webp",
+                    "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_07.webp",
+                    "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_08.webp",
+                    "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_09.webp",
+                    "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_10.webp"
+                ],
+                "description": "Corporate presentation and company profile design."
+            },
+            {
+                "title": "Seed Life V2",
+                "year": "2026",
+                "role": "COMPANY PROFILE",
+                "cover": "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_01.webp",
+                "gallery": [
+                    "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_01.webp",
+                    "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_02.webp",
+                    "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_03.webp",
+                    "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_04.webp",
+                    "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_05.webp",
+                    "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_06.webp",
+                    "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_07.webp",
+                    "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_08.webp",
+                    "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_09.webp",
+                    "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_10.webp"
+                ],
+                "description": "Corporate presentation and company profile design."
+            },
+            {
+                "title": "SHPL",
+                "year": "2026",
+                "role": "COMPANY PROFILE",
+                "cover": "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_01.webp",
+                "gallery": [
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_01.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_02.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_03.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_04.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_05.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_06.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_07.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_08.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_09.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_10.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_11.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_12.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_13.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_14.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_15.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_16.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_17.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_18.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_19.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_20.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_21.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_22.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_23.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_24.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_25.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_26.webp",
+                    "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_27.webp"
+                ],
+                "description": "Corporate presentation and company profile design."
+            },
+            {
+                "title": "VIII",
+                "year": "2026",
+                "role": "COMPANY PROFILE",
+                "cover": "projects/presentation/VIII_Company_Profile/Artboard 1.webp",
+                "gallery": [
+                    "projects/presentation/VIII_Company_Profile/Artboard 1.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 2.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 3.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 4.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 5.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 6.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 7.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 8.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 9.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 10.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 11.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 12.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 13.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 14.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 15.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 16.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 17.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 18.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 19.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 20.webp",
+                    "projects/presentation/VIII_Company_Profile/Artboard 21.webp"
+                ],
+                "description": "Corporate presentation and company profile design."
+            }
             ]
         },
         {
@@ -563,30 +760,6 @@ window.portfolioData = {
                     description: 'Long-term strategic roadmap presentation for a government initiative.'
                 },
                 {
-                    title: 'Extravaganza - Company Profile',
-                    year: '2024',
-                    role: 'COMPANY PROFILE',
-                    "cover": "projects/presentation/extravaganza_company_profile/1.webp",
-                        "gallery": [
-                            "projects/presentation/extravaganza_company_profile/1.webp",
-                            "projects/presentation/extravaganza_company_profile/2.webp",
-                            "projects/presentation/extravaganza_company_profile/3.webp",
-                            "projects/presentation/extravaganza_company_profile/4.webp",
-                            "projects/presentation/extravaganza_company_profile/5.webp",
-                            "projects/presentation/extravaganza_company_profile/6.webp",
-                            "projects/presentation/extravaganza_company_profile/7.webp",
-                            "projects/presentation/extravaganza_company_profile/8.webp",
-                            "projects/presentation/extravaganza_company_profile/9.webp",
-                            "projects/presentation/extravaganza_company_profile/10.webp",
-                            "projects/presentation/extravaganza_company_profile/11.webp",
-                            "projects/presentation/extravaganza_company_profile/12.webp",
-                            "projects/presentation/extravaganza_company_profile/13.webp",
-                            "projects/presentation/extravaganza_company_profile/14.webp",
-                            "projects/presentation/extravaganza_company_profile/cover.webp"
-                        ],
-                    description: 'Comprehensive company profile presentation for an event management firm, showcasing capabilities and past achievements.'
-                },
-                {
                     title: 'Political Texts & Terminology',
                     year: '2023',
                     role: 'ACADEMIC DECK',
@@ -622,180 +795,7 @@ window.portfolioData = {
                             "projects/presentation/political_texts_terminology/cover.webp"
                         ],
                     description: 'Educational presentation analyzing political discourse and terminology shifts over time.'
-                },
-                {
-                        "title": "Lawazem",
-                        "year": "2026",
-                        "role": "COMPANY PROFILE",
-                        "cover": "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_01.webp",
-                        "gallery": [
-                            "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_01.webp",
-                            "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_02.webp",
-                            "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_03.webp",
-                            "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_04.webp",
-                            "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_05.webp",
-                            "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_06.webp",
-                            "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_07.webp",
-                            "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_08.webp",
-                            "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_09.webp",
-                            "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_10.webp",
-                            "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_11.webp",
-                            "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_12.webp",
-                            "projects/presentation/Lawazem_Company_Profile_V2/Lawazem_Company_Profile_V2_13.webp"
-                        ],
-                        "description": "Corporate presentation and company profile design."
-                    },
-                    {
-                        "title": "Maya Alhyah",
-                        "year": "2026",
-                        "role": "COMPANY PROFILE",
-                        "cover": "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_01.webp",
-                        "gallery": [
-                            "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_01.webp",
-                            "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_02.webp",
-                            "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_03.webp",
-                            "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_04.webp",
-                            "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_05.webp",
-                            "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_06.webp",
-                            "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_07.webp",
-                            "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_08.webp",
-                            "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_09.webp",
-                            "projects/presentation/Maya_Alhyah_Company_Profile/Maya_Alhyah_Company_Profile_10.webp"
-                        ],
-                        "description": "Corporate presentation and company profile design."
-                    },
-                    {
-                        "title": "Palm",
-                        "year": "2026",
-                        "role": "COMPANY PROFILE",
-                        "cover": "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_01.webp",
-                        "gallery": [
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_01.webp",
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_02.webp",
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_03.webp",
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_04.webp",
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_05.webp",
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_06.webp",
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_07.webp",
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_08.webp",
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_09.webp",
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_10.webp",
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_11.webp",
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_12.webp",
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_13.webp",
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_14.webp",
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_15.webp",
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_16.webp",
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_17.webp",
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_18.webp",
-                            "projects/presentation/Palm_Company_Profile/Palm_Company_Profile_19.webp"
-                        ],
-                        "description": "Corporate presentation and company profile design."
-                    },
-                    {
-                        "title": "Seed Life",
-                        "year": "2026",
-                        "role": "COMPANY PROFILE",
-                        "cover": "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_01.webp",
-                        "gallery": [
-                            "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_01.webp",
-                            "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_02.webp",
-                            "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_03.webp",
-                            "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_04.webp",
-                            "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_05.webp",
-                            "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_06.webp",
-                            "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_07.webp",
-                            "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_08.webp",
-                            "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_09.webp",
-                            "projects/presentation/Seed_Life_Company_Profile/Seed_Life_Company_Profile_10.webp"
-                        ],
-                        "description": "Corporate presentation and company profile design."
-                    },
-                    {
-                        "title": "Seed Life V2",
-                        "year": "2026",
-                        "role": "COMPANY PROFILE",
-                        "cover": "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_01.webp",
-                        "gallery": [
-                            "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_01.webp",
-                            "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_02.webp",
-                            "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_03.webp",
-                            "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_04.webp",
-                            "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_05.webp",
-                            "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_06.webp",
-                            "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_07.webp",
-                            "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_08.webp",
-                            "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_09.webp",
-                            "projects/presentation/Seed_Life_Company_Profile_New/Seed_Life_Company_Profile_New_10.webp"
-                        ],
-                        "description": "Corporate presentation and company profile design."
-                    },
-                    {
-                        "title": "SHPL",
-                        "year": "2026",
-                        "role": "COMPANY PROFILE",
-                        "cover": "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_01.webp",
-                        "gallery": [
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_01.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_02.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_03.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_04.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_05.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_06.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_07.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_08.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_09.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_10.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_11.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_12.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_13.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_14.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_15.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_16.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_17.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_18.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_19.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_20.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_21.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_22.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_23.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_24.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_25.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_26.webp",
-                            "projects/presentation/SHPL_Company_Profile_EN/SHPL_Company_Profile_EN_27.webp"
-                        ],
-                        "description": "Corporate presentation and company profile design."
-                    },
-                    {
-                        "title": "VIII",
-                        "year": "2026",
-                        "role": "COMPANY PROFILE",
-                        "cover": "projects/presentation/VIII_Company_Profile/Artboard 1.webp",
-                        "gallery": [
-                            "projects/presentation/VIII_Company_Profile/Artboard 1.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 2.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 3.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 4.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 5.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 6.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 7.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 8.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 9.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 10.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 11.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 12.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 13.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 14.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 15.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 16.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 17.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 18.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 19.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 20.webp",
-                            "projects/presentation/VIII_Company_Profile/Artboard 21.webp"
-                        ],
-                        "description": "Corporate presentation and company profile design."
-                    }
+                }
             ]
         },
         {
