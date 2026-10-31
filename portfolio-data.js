@@ -327,6 +327,20 @@ window.portfolioData = {
                         "projects/social/taj_spa/lavender_moroccan_bath.webp"
                     ],
                     "description": "Social media campaign designs and visual assets."
+                },
+                {
+                    "title": "Mohammed Alojaymi",
+                    "year": "2026",
+                    "role": "SOCIAL MEDIA DESIGN",
+                    "cover": "projects/social/mohammed_alojaymi/understanding_yourself.webp",
+                    "gallery": [
+                        "projects/social/mohammed_alojaymi/understanding_yourself.webp",
+                        "projects/social/mohammed_alojaymi/hidden_things.webp",
+                        "projects/social/mohammed_alojaymi/discovering_ourselves.webp",
+                        "projects/social/mohammed_alojaymi/choose_your_identity.webp",
+                        "projects/social/mohammed_alojaymi/different_experiences.webp"
+                    ],
+                    "description": "Social media campaign designs and visual assets."
                 }
             ]
         },
