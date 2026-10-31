@@ -910,6 +910,32 @@ window.portfolioData = {
                         "projects/branding/clara/20_closing.webp"
                     ],
                     "description": "Brand identity for a scented shower filter, from logo and water palette to packaging, web and social."
+                },
+                {
+                    "title": "Masjid Hamada",
+                    "year": "2026",
+                    "role": "BRAND IDENTITY",
+                    "cover": "projects/branding/masjid_hamada/01_cover.webp",
+                    "gallery": [
+                        "projects/branding/masjid_hamada/01_cover.webp",
+                        "projects/branding/masjid_hamada/02_faith_and_unity.webp",
+                        "projects/branding/masjid_hamada/03_1000_masjids.webp",
+                        "projects/branding/masjid_hamada/04_three_pillars.webp",
+                        "projects/branding/masjid_hamada/05_primary_logo.webp",
+                        "projects/branding/masjid_hamada/06_anatomy.webp",
+                        "projects/branding/masjid_hamada/07_colorways.webp",
+                        "projects/branding/masjid_hamada/08_palette.webp",
+                        "projects/branding/masjid_hamada/09_typography.webp",
+                        "projects/branding/masjid_hamada/10_ceiling.webp",
+                        "projects/branding/masjid_hamada/11_verse.webp",
+                        "projects/branding/masjid_hamada/12_six_prayers.webp",
+                        "projects/branding/masjid_hamada/13_instagram.webp",
+                        "projects/branding/masjid_hamada/14_carousel.webp",
+                        "projects/branding/masjid_hamada/15_business_cards.webp",
+                        "projects/branding/masjid_hamada/16_journey.webp",
+                        "projects/branding/masjid_hamada/17_closing.webp"
+                    ],
+                    "description": "Brand identity for a masjid and community initiative, from Arabic calligraphy logo and palette to social and stationery."
                 }
             ]
         }
