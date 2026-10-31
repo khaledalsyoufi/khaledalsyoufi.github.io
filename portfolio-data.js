@@ -313,6 +313,20 @@ window.portfolioData = {
                         "projects/social/dweib/website_should_work.webp"
                     ],
                     "description": "Social media campaign designs and visual assets."
+                },
+                {
+                    "title": "Taj Spa",
+                    "year": "2026",
+                    "role": "SOCIAL MEDIA DESIGN",
+                    "cover": "projects/social/taj_spa/founding_day_offers.webp",
+                    "gallery": [
+                        "projects/social/taj_spa/founding_day_offers.webp",
+                        "projects/social/taj_spa/national_day_moroccan_bath.webp",
+                        "projects/social/taj_spa/stress_shows_on_body.webp",
+                        "projects/social/taj_spa/clear_skin.webp",
+                        "projects/social/taj_spa/lavender_moroccan_bath.webp"
+                    ],
+                    "description": "Social media campaign designs and visual assets."
                 }
             ]
         },
