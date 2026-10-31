@@ -366,7 +366,7 @@ function initLightbox() {
         if (!isVideo) {
             if (lazy) media.loading = 'lazy';
             media.decoding = 'async';
-            media.alt = projectTitle.innerText ? `${projectTitle.innerText} — project image` : 'Project image';
+            media.alt = projectTitle.textContent ? `${projectTitle.textContent} — project image` : 'Project image';
         }
         if (isVideo) {
             media.loop = true;
