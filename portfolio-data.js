@@ -797,6 +797,63 @@ window.portfolioData = {
                         "description": "Corporate presentation and company profile design."
                     }
             ]
+        },
+        {
+            slug: 'branding',
+            title: 'BRANDING',
+            accent: 'IDENTITY',
+            description: 'Visual identity systems and brand guidelines, from logo and colour to typography and real-world applications.',
+            projects: [
+                {
+                    "title": "Khaled AlSyoufi",
+                    "year": "2026",
+                    "role": "BRAND IDENTITY",
+                    "cover": "projects/branding/khaled_alsyoufi/01_cover.webp",
+                    "gallery": [
+                        "projects/branding/khaled_alsyoufi/01_cover.webp",
+                        "projects/branding/khaled_alsyoufi/02_contents.webp",
+                        "projects/branding/khaled_alsyoufi/03_01_brand.webp",
+                        "projects/branding/khaled_alsyoufi/04_about.webp",
+                        "projects/branding/khaled_alsyoufi/05_personality_and_voice.webp",
+                        "projects/branding/khaled_alsyoufi/06_02_logo.webp",
+                        "projects/branding/khaled_alsyoufi/07_concept.webp",
+                        "projects/branding/khaled_alsyoufi/08_construction.webp",
+                        "projects/branding/khaled_alsyoufi/09_logo_system.webp",
+                        "projects/branding/khaled_alsyoufi/10_clear_space.webp",
+                        "projects/branding/khaled_alsyoufi/11_minimum_size.webp",
+                        "projects/branding/khaled_alsyoufi/12_colour_versions.webp",
+                        "projects/branding/khaled_alsyoufi/13_misuse.webp",
+                        "projects/branding/khaled_alsyoufi/14_03_colour.webp",
+                        "projects/branding/khaled_alsyoufi/15_colour_palette.webp",
+                        "projects/branding/khaled_alsyoufi/16_tints.webp",
+                        "projects/branding/khaled_alsyoufi/17_proportion.webp",
+                        "projects/branding/khaled_alsyoufi/18_contrast.webp",
+                        "projects/branding/khaled_alsyoufi/19_04_typography.webp",
+                        "projects/branding/khaled_alsyoufi/20_typefaces.webp",
+                        "projects/branding/khaled_alsyoufi/21_weights.webp",
+                        "projects/branding/khaled_alsyoufi/22_hierarchy.webp",
+                        "projects/branding/khaled_alsyoufi/23_05_visual_language.webp",
+                        "projects/branding/khaled_alsyoufi/24_star_and_pattern.webp",
+                        "projects/branding/khaled_alsyoufi/25_imagery.webp",
+                        "projects/branding/khaled_alsyoufi/26_materials.webp",
+                        "projects/branding/khaled_alsyoufi/27_06_applications.webp",
+                        "projects/branding/khaled_alsyoufi/28_overview.webp",
+                        "projects/branding/khaled_alsyoufi/29_stationery.webp",
+                        "projects/branding/khaled_alsyoufi/30_business_cards.webp",
+                        "projects/branding/khaled_alsyoufi/31_stamps.webp",
+                        "projects/branding/khaled_alsyoufi/32_web_and_social.webp",
+                        "projects/branding/khaled_alsyoufi/33_screens.webp",
+                        "projects/branding/khaled_alsyoufi/34_apparel.webp",
+                        "projects/branding/khaled_alsyoufi/35_caps.webp",
+                        "projects/branding/khaled_alsyoufi/36_bags.webp",
+                        "projects/branding/khaled_alsyoufi/37_stickers_and_tape.webp",
+                        "projects/branding/khaled_alsyoufi/38_desk_and_pocket.webp",
+                        "projects/branding/khaled_alsyoufi/39_outdoor.webp",
+                        "projects/branding/khaled_alsyoufi/40_closing.webp"
+                    ],
+                    "description": "Personal brand identity and guidelines."
+                }
+            ]
         }
     ],
     clients: [
