@@ -391,6 +391,22 @@ window.portfolioData = {
                         "projects/social/emad_rizq/rosalinda_ring.webp"
                     ],
                     "description": "Social media campaign designs and visual assets."
+                },
+                {
+                    "title": "Broca Bu'd",
+                    "year": "2026",
+                    "role": "SOCIAL MEDIA DESIGN",
+                    "cover": "projects/social/broca_bud/early_mistake.webp",
+                    "gallery": [
+                        "projects/social/broca_bud/early_mistake.webp",
+                        "projects/social/broca_bud/scope_before_pricing.webp",
+                        "projects/social/broca_bud/planning_delay.webp",
+                        "projects/social/broca_bud/luxury_not_specs.webp",
+                        "projects/social/broca_bud/every_discipline_timing.webp",
+                        "projects/social/broca_bud/compare_price_per_meter.webp",
+                        "projects/social/broca_bud/double_thickness.webp"
+                    ],
+                    "description": "Social media campaign designs and visual assets."
                 }
             ]
         },
