@@ -751,8 +751,8 @@ function renderClients() {
 
     const ITEM_HEIGHT = 68;
     const AUTOPLAY_DELAY = 3500;
-    // Same breakpoint as the bottom channel strip in components.css
-    const horizontalDial = window.matchMedia('(max-width: 900px)');
+    // Same condition as the channel strip in components.css
+    const horizontalDial = window.matchMedia('(max-width: 900px), (max-height: 500px) and (orientation: landscape)');
 
     dialTrack.innerHTML = '';
     const itemElements = [];

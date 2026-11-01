@@ -1607,8 +1607,8 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
 
 /* Responsive Adaptations */
 /* Phones & tablets: the guide sits centred with the channels as a horizontal strip
-   along the bottom. selectChannel() switches to translateX at this same width. */
-@media (max-width: 900px) {
+   along the bottom. selectChannel() switches to translateX at this same condition. */
+@media (max-width: 900px), (max-height: 500px) and (orientation: landscape) {
     .tv-epg-overlay {
         background: rgba(0, 0, 0, 0.74);
     }
@@ -1790,6 +1790,15 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
     .tv-timeline-end {
         font-size: 0.88rem;
     }
+
+    /* "PRESENTATION" is the widest single word and can't wrap past its toggle */
+    .service-header {
+        gap: 0.75rem;
+    }
+
+    .service-title {
+        font-size: 1.3rem;
+    }
 }
 
 /* Small phones: the guide and the strip have to share very little height */
@@ -1819,6 +1828,86 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
 
     .tv-featured-brand-logo.is-portrait {
         max-height: 92px;
+    }
+}
+
+/* Phones on their side: too short to stack, so the strip moves beside the guide */
+@media (max-height: 500px) and (orientation: landscape) {
+    .tv-epg-stage {
+        --dial-strip-width: min(46vw - 72px, 300px);
+        flex-direction: row;
+        justify-content: center;
+        gap: 1.5rem;
+        padding: 3.25rem 5vw 0.5rem;
+    }
+
+    .tv-epg-info-panel {
+        flex: 1;
+        width: auto;
+    }
+
+    .tv-guide-main {
+        gap: 2px;
+        margin-bottom: 6px;
+    }
+
+    .tv-timeline-row {
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+
+    .tv-brand-logo-wrap {
+        height: 60px;
+        margin-bottom: 0;
+    }
+
+    .tv-featured-brand-logo {
+        max-height: 44px;
+    }
+
+    .tv-featured-brand-logo.is-portrait {
+        max-height: 60px;
+    }
+
+    .tv-guide-title {
+        height: 2rem;
+        font-size: 1.5rem;
+        line-height: 2rem;
+    }
+
+    .tv-timeline-end {
+        height: 2.3rem;
+        font-size: 0.85rem;
+        line-height: 1.15rem;
+    }
+
+    .tv-guide-controls {
+        margin-bottom: 4px;
+    }
+}
+
+/* The smallest phones on their side: the longest category still gets two lines */
+@media (max-width: 640px) and (max-height: 500px) and (orientation: landscape) {
+    .tv-timeline-end {
+        font-size: 0.72rem;
+    }
+}
+
+/* Fingers need a bigger target than the icons show; the layout stays as drawn */
+@media (hover: none), (pointer: coarse) {
+    .tv-ctrl-btn {
+        position: relative;
+    }
+
+    .tv-ctrl-btn::after,
+    .tv-dial-chevron::after {
+        content: '';
+        position: absolute;
+        inset: -8px;
+    }
+
+    .tv-dial-chevron::after {
+        inset: -6px;
     }
 }
 
@@ -4685,6 +4774,23 @@ body.view-mode .vhs-about.page-view.is-visible {
 @media (prefers-reduced-motion: reduce) {
     .vhs-about-line {
         transform: none !important;
+    }
+}
+
+/* Phones on their side: there is no height for text behind the tape, so the tape
+   holds the left half and the single column scrolls in the right half. */
+@media (max-width: 1024px) and (max-height: 500px) and (orientation: landscape) {
+    .vhs-about .vhs-sleeve {
+        left: 27%;
+        width: min(44vw, 110vh);
+    }
+
+    .vhs-about-text {
+        left: 52%;
+    }
+
+    .vhs-about-reel {
+        padding-top: 3.5rem;
     }
 }
 
