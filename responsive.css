@@ -27,6 +27,10 @@
         font-size: min(8vw, 4.6rem);
     }
 
+    .visual-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
     .project-block {
         grid-template-columns: 1fr;
     }
@@ -155,7 +159,7 @@
     }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
     .scroll-progress {
         display: none !important;
     }
@@ -189,9 +193,7 @@
         transform: none !important;
         display: block !important;
     }
-}
 
-@media (max-width: 900px) {
     .lightbox-container {
         padding: 6rem 5vw 4rem;
         gap: 2rem;
@@ -253,13 +255,9 @@
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
     .grid-lines {
-        background-size: calc((100% - 8vw) / 4) calc(100% / 3);
-    }
-
-    .visual-grid {
-        grid-template-columns: repeat(2, 1fr);
+        background-size: calc((100% - 8vw) / 2) calc(100% / 2);
     }
 
     .custom-cursor {
@@ -326,18 +324,12 @@
     }
 
     .service-header {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         padding: 1.5rem 0;
     }
 
     .service-toggle {
         font-size: 1rem;
-    }
-
-    .visual-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
     }
 
     .visual-item {
@@ -445,7 +437,7 @@
     }
 
     .contact-cta .display-title {
-        font-size: 2rem;
+        font-size: 1.5rem;
     }
 
     .scroll-btn {
@@ -474,12 +466,6 @@
     .footer-dot {
         display: none;
     }
-}
-
-@media (max-width: 480px) {
-    .grid-lines {
-        background-size: calc((100% - 8vw) / 2) calc(100% / 2);
-    }
 
     .container {
         padding: 0 4vw;
@@ -498,11 +484,25 @@
         margin-top: 1.5rem;
     }
 
-    .service-header {
-        font-size: 1.2rem;
+}
+
+/* Phones on their side: the images need the height, so the card shrinks to its title */
+@media (max-width: 1024px) and (max-height: 500px) and (orientation: landscape) {
+    .lightbox-meta-overlay {
+        margin: 0.4rem auto !important;
+        padding: 0.5rem 1rem !important;
     }
 
-    .contact-cta .display-title {
-        font-size: 1.5rem;
+    .lightbox-meta-overlay .project-line,
+    .lightbox-meta-overlay .project-desc {
+        display: none !important;
+    }
+
+    .lightbox-meta-overlay .project-meta {
+        margin-bottom: 0.15rem;
+    }
+
+    .project-title.display-title {
+        margin-bottom: 0;
     }
 }

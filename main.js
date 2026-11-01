@@ -353,6 +353,12 @@ function initLightbox() {
     const metaOverlay = lightbox.querySelector('.lightbox-meta-overlay');
 
     const VIDEO_SRC = /\.(mp4|webm|ogg)$/i;
+    const phoneScreen = window.matchMedia('(max-width: 600px), (max-height: 500px) and (orientation: landscape)');
+
+    // Branding pages are 1920px presentation slides; phones get the 960px set beside them.
+    const screenSrc = (src) => (phoneScreen.matches && src.startsWith('projects/branding/')
+        ? src.replace(/([^/]+)$/, 'mobile/$1')
+        : src);
 
     let currentImages = [];
     let lastFocused = null;
@@ -363,9 +369,11 @@ function initLightbox() {
     const createMedia = (src, poster = '', lazy = false) => {
         const isVideo = VIDEO_SRC.test(src);
         const media = document.createElement(isVideo ? 'video' : 'img');
-        media.src = src;
+        media.src = isVideo ? src : screenSrc(src);
         media.className = 'lightbox-img';
         if (!isVideo) {
+            // A page added without a phone version still shows the full one.
+            media.addEventListener('error', () => { media.src = src; }, { once: true });
             if (lazy) media.loading = 'lazy';
             media.decoding = 'async';
             media.alt = projectTitle.textContent ? `${projectTitle.textContent} — project image` : 'Project image';
@@ -752,7 +760,7 @@ function renderClients() {
     const ITEM_HEIGHT = 68;
     const AUTOPLAY_DELAY = 3500;
     // Same condition as the channel strip in components.css
-    const horizontalDial = window.matchMedia('(max-width: 900px), (max-height: 500px) and (orientation: landscape)');
+    const horizontalDial = window.matchMedia('(max-width: 1024px), (max-height: 500px) and (orientation: landscape)');
 
     dialTrack.innerHTML = '';
     const itemElements = [];
@@ -789,7 +797,7 @@ function renderClients() {
     });
 
     // Phones don't need the 1920px stock frames.
-    const backdropUrl = (url) => (window.innerWidth <= 900 ? url.replace('w=1920', 'w=1080') : url);
+    const backdropUrl = (url) => (window.innerWidth <= 1024 ? url.replace('w=1920', 'w=1080') : url);
 
     // Dynamic Stock Backdrop Switcher with Slow-Mo Ken Burns Zoom In
     let activeSlideKey = 'A';

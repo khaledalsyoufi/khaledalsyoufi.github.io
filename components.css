@@ -407,7 +407,7 @@ body.has-custom-cursor .custom-cursor {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100vh;
+    height: 100svh;
     padding: 3vw 4vw;
     pointer-events: none;
     z-index: 960;
@@ -514,7 +514,7 @@ body.has-custom-cursor .custom-cursor {
 
 /* Hero Section */
 .hero {
-    height: 100vh;
+    height: 100svh;
     display: flex;
     align-items: center;
 }
@@ -1608,7 +1608,7 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
 /* Responsive Adaptations */
 /* Phones & tablets: the guide sits centred with the channels as a horizontal strip
    along the bottom. selectChannel() switches to translateX at this same condition. */
-@media (max-width: 900px), (max-height: 500px) and (orientation: landscape) {
+@media (max-width: 1024px), (max-height: 500px) and (orientation: landscape) {
     .tv-epg-overlay {
         background: rgba(0, 0, 0, 0.74);
     }
@@ -1802,7 +1802,7 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
 }
 
 /* Small phones: the guide and the strip have to share very little height */
-@media (max-width: 900px) and (max-height: 680px) {
+@media (max-width: 1024px) and (max-height: 680px) {
     .tv-epg-stage {
         gap: 0.75rem;
         padding: 4.5rem 5vw 0.75rem;
@@ -1887,7 +1887,7 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
 }
 
 /* The smallest phones on their side: the longest category still gets two lines */
-@media (max-width: 640px) and (max-height: 500px) and (orientation: landscape) {
+@media (max-width: 600px) and (max-height: 500px) and (orientation: landscape) {
     .tv-timeline-end {
         font-size: 0.72rem;
     }
@@ -2182,7 +2182,7 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
 
 /* Image projects: a scrolling column of images beside the project card. The card sits
    outside the scroller, so it holds still. Phones keep the card under the column. */
-@media (min-width: 901px) {
+@media (min-width: 1025px) {
     .lightbox.is-stack {
         --stack-card: clamp(260px, 24vw, 340px);
     }
@@ -2674,7 +2674,7 @@ body.tech-editorial::after {
 }
 
 /* the fixed UI sits on the glass, so it stays crisp */
-@media (max-width: 900px), (prefers-reduced-motion: reduce) {
+@media (max-width: 1024px), (prefers-reduced-motion: reduce) {
     body.tech-editorial::before,
     body.tech-editorial::after {
         display: none;
@@ -3966,7 +3966,7 @@ body.glitching-in .crt::before {
     }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
     .hero-floating-img {
         max-width: clamp(320px, 75vw, 420px);
         margin: 0 auto;
@@ -4372,7 +4372,7 @@ body.view-mode .vhs-about.page-view.is-visible {
     position: fixed;
     inset: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100svh;
     overflow: hidden;
     background: #080808;
     z-index: 20;
@@ -4791,6 +4791,30 @@ body.view-mode .vhs-about.page-view.is-visible {
 
     .vhs-about-reel {
         padding-top: 3.5rem;
+    }
+}
+
+/* Very wide screens: type grows with the root size, and the layout opens up with it */
+@media (min-width: 1921px) {
+    html {
+        font-size: clamp(16px, 0.83vw, 22px);
+    }
+
+    .container {
+        max-width: min(86vw, 2200px);
+    }
+
+    .hero-floating-img,
+    .vhs-about .vhs-sleeve {
+        max-width: min(27vw, 720px);
+    }
+
+    .vhs-about-reel {
+        max-width: none;
+    }
+
+    .vhs-about-pair {
+        max-width: min(74vw, 1900px);
     }
 }
 
