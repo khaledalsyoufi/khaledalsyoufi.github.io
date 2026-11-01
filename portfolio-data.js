@@ -994,6 +994,35 @@ window.portfolioData = {
                         "projects/branding/zemamk/20_closing.webp"
                     ],
                     "description": "Brand identity for an e-commerce analytics platform, from logo and palette to campaign, stationery and dashboard."
+                },
+                {
+                    "title": "MamaZone",
+                    "year": "2026",
+                    "role": "BRAND IDENTITY",
+                    "cover": "projects/branding/mamazone/01_cover.webp",
+                    "gallery": [
+                        "projects/branding/mamazone/01_cover.webp",
+                        "projects/branding/mamazone/02_everything.webp",
+                        "projects/branding/mamazone/03_primary_logo.webp",
+                        "projects/branding/mamazone/04_concept.webp",
+                        "projects/branding/mamazone/05_moment_inside.webp",
+                        "projects/branding/mamazone/06_anatomy.webp",
+                        "projects/branding/mamazone/07_stacked_logo.webp",
+                        "projects/branding/mamazone/08_colorways.webp",
+                        "projects/branding/mamazone/09_palette.webp",
+                        "projects/branding/mamazone/10_typography.webp",
+                        "projects/branding/mamazone/11_promises.webp",
+                        "projects/branding/mamazone/12_every_bag.webp",
+                        "projects/branding/mamazone/13_campaign.webp",
+                        "projects/branding/mamazone/14_safe_products.webp",
+                        "projects/branding/mamazone/15_instagram.webp",
+                        "projects/branding/mamazone/16_stationery.webp",
+                        "projects/branding/mamazone/17_website.webp",
+                        "projects/branding/mamazone/18_gallery.webp",
+                        "projects/branding/mamazone/19_one_place.webp",
+                        "projects/branding/mamazone/20_closing.webp"
+                    ],
+                    "description": "Brand identity for an online baby and mother store, from logo and palette to campaign, stationery and website."
                 }
             ]
         }
