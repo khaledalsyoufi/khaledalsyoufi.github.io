@@ -1023,6 +1023,35 @@ window.portfolioData = {
                         "projects/branding/mamazone/20_closing.webp"
                     ],
                     "description": "Brand identity for an online baby and mother store, from logo and palette to campaign, stationery and website."
+                },
+                {
+                    "title": "Yellow Bike",
+                    "year": "2026",
+                    "role": "BRAND IDENTITY",
+                    "cover": "projects/branding/yellow_bike/01_cover.webp",
+                    "gallery": [
+                        "projects/branding/yellow_bike/01_cover.webp",
+                        "projects/branding/yellow_bike/02_journey.webp",
+                        "projects/branding/yellow_bike/03_primary_logo.webp",
+                        "projects/branding/yellow_bike/04_wheel_and_cup.webp",
+                        "projects/branding/yellow_bike/05_anatomy.webp",
+                        "projects/branding/yellow_bike/06_the_wheel.webp",
+                        "projects/branding/yellow_bike/07_yellow_bike.webp",
+                        "projects/branding/yellow_bike/08_clear_space.webp",
+                        "projects/branding/yellow_bike/09_colorways.webp",
+                        "projects/branding/yellow_bike/10_palette.webp",
+                        "projects/branding/yellow_bike/11_typography.webp",
+                        "projects/branding/yellow_bike/12_stop_bean.webp",
+                        "projects/branding/yellow_bike/13_stop_roast.webp",
+                        "projects/branding/yellow_bike/14_stop_brew.webp",
+                        "projects/branding/yellow_bike/15_stop_cup.webp",
+                        "projects/branding/yellow_bike/16_cups_and_store.webp",
+                        "projects/branding/yellow_bike/17_coffee_bags.webp",
+                        "projects/branding/yellow_bike/18_paper_bag.webp",
+                        "projects/branding/yellow_bike/19_instagram.webp",
+                        "projects/branding/yellow_bike/20_closing.webp"
+                    ],
+                    "description": "Brand identity for a coffee brand, from logo and palette to cups, packaging and storefront."
                 }
             ]
         }
