@@ -808,7 +808,7 @@ window.portfolioData = {
                     "title": "Khaled AlSyoufi",
                     "year": "2026",
                     "role": "BRAND IDENTITY",
-                    "cover": "projects/branding/khaled_alsyoufi/thumbnail.webp",
+                    "cover": "projects/branding/khaled_alsyoufi/logo_thumbnail.webp",
                     "ratio": "16 / 9",
                     "gallery": [
                         "projects/branding/khaled_alsyoufi/01_cover.webp",
@@ -858,7 +858,7 @@ window.portfolioData = {
                     "title": "Orouq Alrukham",
                     "year": "2026",
                     "role": "BRAND IDENTITY",
-                    "cover": "projects/branding/orouq_alrukham/thumbnail.webp",
+                    "cover": "projects/branding/orouq_alrukham/logo_thumbnail.webp",
                     "ratio": "16 / 9",
                     "gallery": [
                         "projects/branding/orouq_alrukham/01_cover.webp",
@@ -888,7 +888,7 @@ window.portfolioData = {
                     "title": "Clara",
                     "year": "2026",
                     "role": "BRAND IDENTITY",
-                    "cover": "projects/branding/clara/thumbnail.webp",
+                    "cover": "projects/branding/clara/logo_thumbnail.webp",
                     "ratio": "16 / 9",
                     "gallery": [
                         "projects/branding/clara/01_cover.webp",
@@ -918,7 +918,7 @@ window.portfolioData = {
                     "title": "Masjid Hamada",
                     "year": "2026",
                     "role": "BRAND IDENTITY",
-                    "cover": "projects/branding/masjid_hamada/thumbnail.webp",
+                    "cover": "projects/branding/masjid_hamada/logo_thumbnail.webp",
                     "ratio": "16 / 9",
                     "gallery": [
                         "projects/branding/masjid_hamada/01_cover.webp",
@@ -945,7 +945,7 @@ window.portfolioData = {
                     "title": "Glorify",
                     "year": "2026",
                     "role": "BRAND IDENTITY",
-                    "cover": "projects/branding/glorify/thumbnail.webp",
+                    "cover": "projects/branding/glorify/logo_thumbnail.webp",
                     "ratio": "16 / 9",
                     "gallery": [
                         "projects/branding/glorify/01_cover.webp",
@@ -975,7 +975,7 @@ window.portfolioData = {
                     "title": "Zemamk",
                     "year": "2026",
                     "role": "BRAND IDENTITY",
-                    "cover": "projects/branding/zemamk/thumbnail.webp",
+                    "cover": "projects/branding/zemamk/logo_thumbnail.webp",
                     "ratio": "16 / 9",
                     "gallery": [
                         "projects/branding/zemamk/01_cover.webp",
@@ -1005,7 +1005,7 @@ window.portfolioData = {
                     "title": "MamaZone",
                     "year": "2026",
                     "role": "BRAND IDENTITY",
-                    "cover": "projects/branding/mamazone/thumbnail.webp",
+                    "cover": "projects/branding/mamazone/logo_thumbnail.webp",
                     "ratio": "16 / 9",
                     "gallery": [
                         "projects/branding/mamazone/01_cover.webp",
@@ -1035,7 +1035,7 @@ window.portfolioData = {
                     "title": "Yellow Bike",
                     "year": "2026",
                     "role": "BRAND IDENTITY",
-                    "cover": "projects/branding/yellow_bike/thumbnail.webp",
+                    "cover": "projects/branding/yellow_bike/logo_thumbnail.webp",
                     "ratio": "16 / 9",
                     "gallery": [
                         "projects/branding/yellow_bike/01_cover.webp",
