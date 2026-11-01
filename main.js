@@ -114,6 +114,8 @@ function renderServices() {
             }
             media.dataset.title = project.title;
             media.dataset.role = project.role;
+            // A square logo thumbnail says nothing about the shape of the pages behind it.
+            if (project.ratio) media.dataset.ratio = project.ratio;
             media.dataset.gallery = project.gallery.join(',');
             media.dataset.desc = project.description;
 
@@ -450,8 +452,9 @@ function initLightbox() {
                 const mediaEl = createMedia(src, currentPoster, index > 1);
                 mediaEl.classList.add('active');
                 // Holds each image's space until it loads, so the column doesn't jump.
-                if (isStack && img.naturalWidth) {
-                    mediaEl.style.aspectRatio = `auto ${img.naturalWidth} / ${img.naturalHeight}`;
+                if (isStack) {
+                    const ratio = img.dataset.ratio || `${img.naturalWidth} / ${img.naturalHeight}`;
+                    mediaEl.style.aspectRatio = `auto ${ratio}`;
                 }
                 lightboxContainer.appendChild(mediaEl);
                 startPlayback(mediaEl);

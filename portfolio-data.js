@@ -808,7 +808,8 @@ window.portfolioData = {
                     "title": "Khaled AlSyoufi",
                     "year": "2026",
                     "role": "BRAND IDENTITY",
-                    "cover": "projects/branding/khaled_alsyoufi/01_cover.webp",
+                    "cover": "projects/branding/khaled_alsyoufi/thumbnail.webp",
+                    "ratio": "16 / 9",
                     "gallery": [
                         "projects/branding/khaled_alsyoufi/01_cover.webp",
                         "projects/branding/khaled_alsyoufi/02_contents.webp",
@@ -857,7 +858,8 @@ window.portfolioData = {
                     "title": "Orouq Alrukham",
                     "year": "2026",
                     "role": "BRAND IDENTITY",
-                    "cover": "projects/branding/orouq_alrukham/01_cover.webp",
+                    "cover": "projects/branding/orouq_alrukham/thumbnail.webp",
+                    "ratio": "16 / 9",
                     "gallery": [
                         "projects/branding/orouq_alrukham/01_cover.webp",
                         "projects/branding/orouq_alrukham/02_mountain_to_home.webp",
@@ -886,7 +888,8 @@ window.portfolioData = {
                     "title": "Clara",
                     "year": "2026",
                     "role": "BRAND IDENTITY",
-                    "cover": "projects/branding/clara/01_cover.webp",
+                    "cover": "projects/branding/clara/thumbnail.webp",
+                    "ratio": "16 / 9",
                     "gallery": [
                         "projects/branding/clara/01_cover.webp",
                         "projects/branding/clara/02_the_idea.webp",
@@ -915,7 +918,8 @@ window.portfolioData = {
                     "title": "Masjid Hamada",
                     "year": "2026",
                     "role": "BRAND IDENTITY",
-                    "cover": "projects/branding/masjid_hamada/01_cover.webp",
+                    "cover": "projects/branding/masjid_hamada/thumbnail.webp",
+                    "ratio": "16 / 9",
                     "gallery": [
                         "projects/branding/masjid_hamada/01_cover.webp",
                         "projects/branding/masjid_hamada/02_faith_and_unity.webp",
@@ -941,7 +945,8 @@ window.portfolioData = {
                     "title": "Glorify",
                     "year": "2026",
                     "role": "BRAND IDENTITY",
-                    "cover": "projects/branding/glorify/01_cover.webp",
+                    "cover": "projects/branding/glorify/thumbnail.webp",
+                    "ratio": "16 / 9",
                     "gallery": [
                         "projects/branding/glorify/01_cover.webp",
                         "projects/branding/glorify/02_art_and_detail.webp",
@@ -970,7 +975,8 @@ window.portfolioData = {
                     "title": "Zemamk",
                     "year": "2026",
                     "role": "BRAND IDENTITY",
-                    "cover": "projects/branding/zemamk/01_cover.webp",
+                    "cover": "projects/branding/zemamk/thumbnail.webp",
+                    "ratio": "16 / 9",
                     "gallery": [
                         "projects/branding/zemamk/01_cover.webp",
                         "projects/branding/zemamk/02_control.webp",
@@ -999,7 +1005,8 @@ window.portfolioData = {
                     "title": "MamaZone",
                     "year": "2026",
                     "role": "BRAND IDENTITY",
-                    "cover": "projects/branding/mamazone/01_cover.webp",
+                    "cover": "projects/branding/mamazone/thumbnail.webp",
+                    "ratio": "16 / 9",
                     "gallery": [
                         "projects/branding/mamazone/01_cover.webp",
                         "projects/branding/mamazone/02_everything.webp",
@@ -1028,7 +1035,8 @@ window.portfolioData = {
                     "title": "Yellow Bike",
                     "year": "2026",
                     "role": "BRAND IDENTITY",
-                    "cover": "projects/branding/yellow_bike/01_cover.webp",
+                    "cover": "projects/branding/yellow_bike/thumbnail.webp",
+                    "ratio": "16 / 9",
                     "gallery": [
                         "projects/branding/yellow_bike/01_cover.webp",
                         "projects/branding/yellow_bike/02_journey.webp",
