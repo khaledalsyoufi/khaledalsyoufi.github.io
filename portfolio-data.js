@@ -1060,6 +1060,30 @@ window.portfolioData = {
                         "projects/branding/yellow_bike/20_closing.webp"
                     ],
                     "description": "Brand identity for a coffee brand, from logo and palette to cups, packaging and storefront."
+                },
+                {
+                    "title": "Madak Alteeb",
+                    "year": "2026",
+                    "role": "BRAND IDENTITY",
+                    "cover": "projects/branding/madak_alteeb/logo_thumbnail.webp",
+                    "ratio": "16 / 9",
+                    "gallery": [
+                        "projects/branding/madak_alteeb/01_cover.webp",
+                        "projects/branding/madak_alteeb/02_about.webp",
+                        "projects/branding/madak_alteeb/03_moments.webp",
+                        "projects/branding/madak_alteeb/04_the_idea.webp",
+                        "projects/branding/madak_alteeb/05_symbol_origin.webp",
+                        "projects/branding/madak_alteeb/06_primary_logo.webp",
+                        "projects/branding/madak_alteeb/07_colorways.webp",
+                        "projects/branding/madak_alteeb/08_her_scent.webp",
+                        "projects/branding/madak_alteeb/09_palette.webp",
+                        "projects/branding/madak_alteeb/10_typography.webp",
+                        "projects/branding/madak_alteeb/11_campaign.webp",
+                        "projects/branding/madak_alteeb/12_business_cards.webp",
+                        "projects/branding/madak_alteeb/13_pattern.webp",
+                        "projects/branding/madak_alteeb/14_closing.webp"
+                    ],
+                    "description": "Brand identity for a Saudi oud and perfume house for women, from logo and palette to campaign, business cards and pattern."
                 }
             ]
         }
