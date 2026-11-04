@@ -1119,10 +1119,10 @@ window.portfolioData = {
         { name: 'Orouq Alrukham', logo: 'public/images/clients/orouq_alrukham.webp', year: '2026', category: 'NATURAL MARBLE & STONE', bg: 'projects/branding/orouq_alrukham/19_billboard.webp' },
         { name: 'Clara', logo: 'public/images/clients/clara.webp', year: '2026', category: 'SCENTED SHOWER FILTERS', bg: 'projects/branding/clara/12_shower.webp' },
         { name: 'Masjid Hamada', logo: 'public/images/clients/masjid_hamada.webp', year: '2026', category: 'MASJID & COMMUNITY INITIATIVE', bg: 'projects/branding/masjid_hamada/10_ceiling.webp' },
-        { name: 'Glorify', logo: 'public/images/clients/glorify.webp', year: '2026', category: 'INTERIOR DESIGN STUDIO', isPortrait: true, bg: 'projects/branding/glorify/19_carved.webp' },
+        { name: 'Glorify', logo: 'public/images/clients/glorify.webp', year: '2026', category: 'INTERIOR DESIGN STUDIO', bg: 'projects/branding/glorify/19_carved.webp' },
         { name: 'Zemamk', logo: 'public/images/clients/zemamk.webp', year: '2026', category: 'E-COMMERCE ANALYTICS PLATFORM', bg: 'projects/branding/zemamk/15_wall_sign.webp' },
         { name: 'MamaZone', logo: 'public/images/clients/mamazone.webp', year: '2026', category: 'BABY & MOTHER ONLINE STORE', bg: 'projects/branding/mamazone/05_moment_inside.webp' },
         { name: 'Yellow Bike', logo: 'public/images/clients/yellow_bike.webp', year: '2026', category: 'SPECIALTY COFFEE BRAND', bg: 'projects/branding/yellow_bike/16_cups_and_store.webp' },
-        { name: 'Madak Alteeb', logo: 'public/images/clients/madak_alteeb.webp', year: '2026', category: 'OUD & PERFUMES FOR WOMEN', isPortrait: true, bg: 'projects/branding/madak_alteeb/11_campaign.webp' }
+        { name: 'Madak Alteeb', logo: 'public/images/clients/madak_alteeb.webp', year: '2026', category: 'OUD & PERFUMES FOR WOMEN', bg: 'projects/branding/madak_alteeb/11_campaign.webp' }
     ]
 };
