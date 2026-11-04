@@ -4,7 +4,7 @@
    - SplitText / ScrambleText heading reveals
    - VHS "channel change" page transition
    - WebGL VHS shader on project thumbnails (hover + scroll velocity)
-   - Synthesised sound (off until the visitor turns it on)
+   - Synthesised sound (on by default, starts with the visitor's first tap/click/key)
 
    Everything here is optional: if a CDN library fails to load, or the visitor
    prefers reduced motion, the site keeps working exactly as before.
@@ -48,6 +48,9 @@
         let enabled = false;
         let lastHover = 0;
         let lastKey = 0;
+        // Phones and tablets get a lighter engine: the full room reverb and
+        // oversampled saturation overrun the audio thread on mobile and stutter.
+        const lite = !finePointer;
 
         /* ---------- engine ---------- */
 
@@ -87,7 +90,11 @@
             if (ctx) return true;
             const AudioCtx = window.AudioContext || window.webkitAudioContext;
             if (!AudioCtx) return false;
-            ctx = new AudioCtx();
+            try {
+                ctx = new AudioCtx({ latencyHint: lite ? 'balanced' : 'interactive' });
+            } catch (_) {
+                ctx = new AudioCtx();
+            }
             noise = makeNoise(3);
 
             out = ctx.createGain();
@@ -104,7 +111,7 @@
             tape = ctx.createGain();
             const shaper = ctx.createWaveShaper();
             shaper.curve = makeCurve(1.6);
-            shaper.oversample = '2x';
+            shaper.oversample = lite ? 'none' : '2x';
             const wobble = ctx.createDelay(0.05);
             wobble.delayTime.value = 0.012;
             const wow = ctx.createOscillator();
@@ -125,11 +132,11 @@
             tone.Q.value = 0.5;
             tape.connect(shaper).connect(wobble).connect(tone).connect(out);
 
-            // Room send.
+            // Room send (shorter, mono-cheap tail on mobile).
             room = ctx.createGain();
-            room.gain.value = 0.22;
+            room.gain.value = lite ? 0.16 : 0.22;
             const verb = ctx.createConvolver();
-            verb.buffer = makeImpulse(1.1, 3.2);
+            verb.buffer = makeImpulse(lite ? 0.45 : 1.1, 3.2);
             const verbTone = ctx.createBiquadFilter();
             verbTone.type = 'lowpass';
             verbTone.frequency.value = 3200;
@@ -384,7 +391,8 @@
         let reelSpeed = 0;   // 0..1 from the reel's spring velocity (px/s)
         let lastTickY = 0;
         let lastTickT = 0;
-        const TICK_EVERY = 60; // px of reel travel per tape-counter tick
+        const TICK_EVERY = lite ? 90 : 60; // px of reel travel per tape-counter tick
+        const TICK_GAP = lite ? 70 : 35;   // ms between ticks at most
         const REEL_FULL = 1400; // px/s that counts as a hard flick on the reel
 
         // Tape counter: a dry plastic tick with a little body, brighter the faster the reel runs.
@@ -393,7 +401,7 @@
             const pan = (Math.random() - 0.5) * 0.25;
             // Kept at the hover scrub's level so it sits with the rest of the deck.
             burst({ at: t, freq: 2000 + s * 1800, q: 4, peak: 0.035 + s * 0.025, attack: 0.001, release: 0.02, pan });
-            osc({ at: t, freq: 520 + s * 260, type: 'triangle', peak: 0.012, attack: 0.001, release: 0.03, pan });
+            if (!lite) osc({ at: t, freq: 520 + s * 260, type: 'triangle', peak: 0.012, attack: 0.001, release: 0.03, pan });
         };
 
         let lastY = window.scrollY;
@@ -403,7 +411,7 @@
 
         const scrollFrame = (t) => {
             scrollRaf = null;
-            if (!enabled || !scrollVoice) return;
+            if (!enabled || !scrollVoice || !ctx || ctx.state !== 'running') return;
             const dt = Math.max(1, t - lastT);
             const y = window.scrollY;
             const pageRaw = Math.min(1, Math.abs(y - lastY) / dt / 4); // px per ms, ~4 is a hard flick
@@ -413,8 +421,11 @@
             speed += (raw - speed) * (raw > speed ? 0.25 : 0.08);
             if (speed < 0.003) speed = 0;
 
-            const at = now();
             const s = speed;
+            // Nothing to change: don't flood the audio thread with automation every frame.
+            if (s === 0 && scrollVoice.level === 0) return;
+            scrollVoice.level = s;
+            const at = now();
             scrollVoice.band.frequency.setTargetAtTime(500 + s * 3800, at, 0.05);
             scrollVoice.noiseGain.gain.setTargetAtTime(s * 0.07, at, 0.05);
             scrollVoice.motor.frequency.setTargetAtTime(50 + s * 260, at, 0.05);
@@ -444,7 +455,7 @@
             if (Math.abs(reelY - lastTickY) >= TICK_EVERY) {
                 lastTickY = reelY;
                 const t = performance.now();
-                if (t - lastTickT > 35 && audible() && ctx) {
+                if (t - lastTickT > TICK_GAP && audible() && ctx && ctx.state === 'running') {
                     lastTickT = t;
                     counterTick(reelSpeed);
                 }
@@ -464,7 +475,14 @@
             });
         };
 
-        const setEnabled = (on, event) => {
+        // Remember an explicit "off"; everyone else starts with sound on.
+        const PREF_KEY = 'vhs-sound';
+        try { enabled = localStorage.getItem(PREF_KEY) !== 'off'; } catch (_) { enabled = true; }
+        const savePref = () => {
+            try { localStorage.setItem(PREF_KEY, enabled ? 'on' : 'off'); } catch (_) {}
+        };
+
+        const setEnabled = (on, event, { quiet = false } = {}) => {
             if (on && !ensureContext()) return;
             enabled = on;
             if (ctx) {
@@ -478,7 +496,7 @@
                 applyLevel(0.4);
             }
             syncToggles();
-            if (audible()) {
+            if (audible() && !quiet) {
                 sounds.powerOn({ pan: panFromX(event?.clientX) });
             }
         };
@@ -508,8 +526,24 @@
             btn.addEventListener('click', (event) => {
                 event.stopPropagation();
                 setEnabled(!enabled, event);
+                savePref();
             });
         });
+
+        // Browsers only let audio start from a gesture, so the deck switches on with the
+        // visitor's first tap, click or key anywhere on the site. touchend/pointerup are
+        // the events iOS and Android accept; pointerdown covers mouse and keyboard users.
+        const unlockEvents = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];
+        const unlock = () => {
+            if (ctx && ctx.state === 'running') {
+                unlockEvents.forEach((type) => document.removeEventListener(type, unlock, true));
+                return;
+            }
+            if (!enabled) return;
+            setEnabled(true, null, { quiet: true });
+            if (ctx && ctx.state !== 'running') ctx.resume().catch(() => {});
+        };
+        unlockEvents.forEach((type) => document.addEventListener(type, unlock, { capture: true, passive: true }));
 
         /* ---------- interface hooks ---------- */
 

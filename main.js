@@ -1951,6 +1951,8 @@ function initInfoReelScroll() {
     let infoFlipCount = 0;
     const doInfoFlip = () => {
         infoFlipCount++;
+        // Same cassette-flip sound as the Home tape (effects.js plays it there via a class).
+        if (window.vhsSound) window.vhsSound.play('flip', { pan: 0 });
         window.clearTimeout(settleTimer);
         targetTapeAngle = 180 * Math.round((targetTapeAngle + 180) / 180);
         startAnimation();
