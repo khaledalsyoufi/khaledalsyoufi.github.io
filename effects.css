@@ -1,0 +1,232 @@
+/* ==========================================================================
+   Motion layer styles (see effects.js)
+   ========================================================================== */
+
+/* Lenis: native smooth scrolling would fight the eased scroll */
+html.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+
+html.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+
+/* --------------------------------------------------------------------------
+   Split headings
+   -------------------------------------------------------------------------- */
+.split-word {
+    /* SplitText's mask wrapper: keeps descenders and the accent span intact */
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+}
+
+.split-char {
+    will-change: transform;
+}
+
+/* --------------------------------------------------------------------------
+   VHS channel-change transition
+   -------------------------------------------------------------------------- */
+.vhs-switch {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    visibility: hidden;
+}
+
+.vhs-switch.is-active {
+    visibility: visible;
+    pointer-events: auto; /* no stray clicks while the picture is gone */
+}
+
+.vhs-switch-noise {
+    position: absolute;
+    inset: -10% 0;
+    width: 100%;
+    height: 120%;
+    image-rendering: pixelated;
+    opacity: 0;
+    mix-blend-mode: normal;
+    filter: contrast(1.25) brightness(0.9);
+}
+
+/* A bright horizontal sync line that flashes when the channel locks */
+.vhs-switch-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 2px;
+    background: var(--text-color);
+    box-shadow: 0 0 18px 4px rgba(244, 242, 238, 0.35);
+    opacity: 0;
+    transform: scaleX(0.2);
+}
+
+.vhs-switch.is-active .vhs-switch-bar {
+    animation: vhsSyncLine 0.66s steps(10) forwards;
+}
+
+@keyframes vhsSyncLine {
+    0%   { opacity: 0; transform: scaleX(0.2) translateY(0); }
+    30%  { opacity: 1; transform: scaleX(1) translateY(-30vh); }
+    55%  { opacity: 0.8; transform: scaleX(1) translateY(10vh); }
+    100% { opacity: 0; transform: scaleX(1) translateY(45vh); }
+}
+
+/* On-screen display: "CH 02  SELECTED WORKS" */
+.vhs-switch-osd {
+    position: fixed;
+    top: calc(3vw + 2.4rem);
+    right: 4vw;
+    display: flex;
+    gap: 0.9em;
+    align-items: baseline;
+    font-size: clamp(1rem, 1.6vw, 1.5rem);
+    letter-spacing: 0.08em;
+    color: var(--accent-color);
+    text-shadow: 2px 0 rgba(255, 0, 60, 0.45), -2px 0 rgba(0, 200, 255, 0.45), 0 0 12px rgba(102, 232, 183, 0.4);
+    opacity: 0;
+    visibility: hidden;
+}
+
+.vhs-switch-osd.is-visible {
+    visibility: visible;
+    animation: vhsOsdBlink 1.5s steps(1) forwards;
+}
+
+.vhs-switch-ch {
+    font-size: 1.6em;
+}
+
+@keyframes vhsOsdBlink {
+    0%   { opacity: 1; }
+    8%   { opacity: 0; }
+    14%  { opacity: 1; }
+    88%  { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* The old page smears sideways as the static rolls in */
+body.vhs-switching .page-view.is-visible {
+    animation: vhsTear 0.17s steps(4) forwards;
+}
+
+@keyframes vhsTear {
+    0%   { transform: none; filter: none; }
+    50%  { transform: translateX(-1.2%) skewX(-2deg); filter: saturate(1.6) hue-rotate(-12deg); }
+    100% { transform: translateX(2%) skewX(3deg); filter: saturate(2) hue-rotate(20deg) blur(1px); }
+}
+
+/* --------------------------------------------------------------------------
+   WebGL thumbnails
+   -------------------------------------------------------------------------- */
+.vhs-tile {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none; /* clicks still reach the <img> that opens the gallery */
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.visual-img-wrapper.gl-on .vhs-tile {
+    opacity: 1;
+}
+
+/* The image stays in place for layout, clicks and the lightbox, just unseen */
+.visual-img-wrapper.gl-on img {
+    opacity: 0;
+}
+
+.visual-item:hover .visual-img-wrapper.gl-on img {
+    transform: none;
+}
+
+/* --------------------------------------------------------------------------
+   Sound toggle
+   -------------------------------------------------------------------------- */
+/* Desktop only: below 1025px the corner is hidden and the menu carries the toggle */
+@media (min-width: 1025px) {
+    .nav-tr {
+        display: flex;
+        align-items: center;
+        gap: 1.4rem;
+    }
+}
+
+.sound-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55em;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--muted-color);
+    font: inherit;
+    font-family: var(--mono-font);
+    font-size: inherit;
+    letter-spacing: inherit;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.sound-toggle:hover,
+.sound-toggle.is-on {
+    color: var(--text-color);
+}
+
+.sound-toggle:focus-visible {
+    outline: 1px solid var(--accent-color);
+    outline-offset: 4px;
+}
+
+.sound-bars {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 0.9em;
+}
+
+.sound-bars i {
+    display: block;
+    width: 2px;
+    height: 25%;
+    background: currentColor;
+    transition: height 0.3s ease;
+}
+
+.sound-toggle.is-on .sound-bars i {
+    background: var(--accent-color);
+    animation: soundBar 0.9s ease-in-out infinite alternate;
+}
+
+.sound-toggle.is-on .sound-bars i:nth-child(2) { animation-delay: -0.3s; }
+.sound-toggle.is-on .sound-bars i:nth-child(3) { animation-delay: -0.6s; }
+.sound-toggle.is-on .sound-bars i:nth-child(4) { animation-delay: -0.15s; }
+
+@keyframes soundBar {
+    from { height: 20%; }
+    to   { height: 100%; }
+}
+
+.sound-toggle--menu {
+    margin: 0 0 1.5rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sound-toggle.is-on .sound-bars i {
+        animation: none;
+        height: 70%;
+    }
+
+    .vhs-switch,
+    body.vhs-switching .page-view.is-visible {
+        animation: none;
+    }
+}

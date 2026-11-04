@@ -3,6 +3,15 @@ if (history.scrollRestoration) {
     history.scrollRestoration = 'manual';
 }
 
+// Lenis owns the scroll when it is running; a native smooth scroll would fight it.
+function smoothScrollToEl(el) {
+    if (window.lenis && !window.lenis.isStopped) {
+        window.lenis.scrollTo(el, { offset: 0, duration: 1.1 });
+    } else {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
 function renderServices() {
     const servicesList = document.getElementById('servicesList');
     const services = window.portfolioData?.services;
@@ -214,7 +223,7 @@ function renderServices() {
                         });
                         syncHeight();
                         // Scroll back to button position if needed
-                        serviceItemEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        smoothScrollToEl(serviceItemEl);
                     }, 400);
                 }
 
@@ -261,7 +270,7 @@ function initServices() {
             if (!item.classList.contains('expanded')) return;
             const { top } = item.getBoundingClientRect();
             if (top < 0 || top > window.innerHeight * 0.6) {
-                item.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                smoothScrollToEl(item);
             }
         }, 620);
     };
@@ -410,6 +419,296 @@ function initLightbox() {
         }
     };
 
+    /* Image projects read as an editorial column: the project header scrolls away
+       with the first image, a slim bar takes over at the top, a side index (desktop)
+       shows and jumps to each image, and a hairline tracks progress. */
+    const pad2 = (n) => String(n).padStart(2, '0');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let stackCleanup = null;
+
+    const teardownStack = () => {
+        if (stackCleanup) {
+            stackCleanup();
+            stackCleanup = null;
+        }
+    };
+
+    const buildStack = (meta) => {
+        const media = [...lightboxContainer.querySelectorAll('.lightbox-img')];
+        const total = media.length;
+        const title = meta.title || 'Untitled project';
+
+        // Header at the top of the column
+        const head = document.createElement('header');
+        head.className = 'stack-head';
+        const kicker = document.createElement('p');
+        kicker.className = 'stack-kicker mono';
+        kicker.textContent = `${meta.role || 'DESIGN'} / ${total} ${total === 1 ? 'IMAGE' : 'IMAGES'}`;
+        const heading = document.createElement('h2');
+        heading.className = 'stack-title';
+        heading.textContent = title;
+        head.append(kicker, heading);
+        if (meta.desc) {
+            const desc = document.createElement('p');
+            desc.className = 'stack-desc';
+            desc.textContent = meta.desc;
+            head.append(desc);
+        }
+        // Portrait sets (social posts) read as a feed grid; each post opens large.
+        const isFeed = lightbox.classList.contains('is-portrait') && total > 1;
+        lightbox.classList.toggle('is-feed', isFeed);
+        const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+        const hint = document.createElement('p');
+        hint.className = 'stack-hint mono';
+        hint.setAttribute('aria-hidden', 'true');
+        hint.textContent = isFeed ? (finePointer ? 'CLICK A POST TO ENLARGE' : 'TAP A POST TO ENLARGE') : 'SCROLL ↓';
+        head.append(hint);
+        lightboxContainer.prepend(head);
+
+        const grid = document.createElement('div');
+        grid.className = 'stack-grid';
+        head.after(grid);
+
+        // Each image in a numbered frame
+        const frames = media.map((el, i) => {
+            const frame = document.createElement('figure');
+            frame.className = 'stack-frame';
+            frame.style.setProperty('--stagger', `${(i % 3) * 90}ms`);
+            const num = document.createElement('figcaption');
+            num.className = 'stack-num mono';
+            num.textContent = `${pad2(i + 1)} / ${pad2(total)}`;
+            frame.append(num, el);
+            grid.append(frame);
+            if (isFeed) {
+                frame.tabIndex = 0;
+                frame.setAttribute('role', 'button');
+                frame.setAttribute('aria-label', `Enlarge image ${i + 1} of ${total}`);
+            }
+            return frame;
+        });
+
+        // Enlarged view for feed posts: arrows, keyboard and swipe.
+        let viewer = null;
+        let viewerIndex = 0;
+        let viewerReturn = null;
+
+        const showInViewer = (i) => {
+            viewerIndex = (i + total) % total;
+            const src = media[viewerIndex];
+            const img = viewer.querySelector('.stack-viewer-img');
+            img.src = src.currentSrc || src.src;
+            img.alt = src.alt;
+            viewer.querySelector('.stack-viewer-count').textContent = `${pad2(viewerIndex + 1)} / ${pad2(total)}`;
+            // Nudge the grid along so closing lands on the post just viewed.
+            const frame = frames[viewerIndex];
+            const top = frame.offsetTop - lightboxContainer.clientHeight / 2 + frame.offsetHeight / 2;
+            lightboxContainer.scrollTop = Math.max(0, top);
+        };
+
+        const closeViewer = () => {
+            if (!viewer || !viewer.classList.contains('is-open')) return;
+            viewer.classList.remove('is-open');
+            viewer.setAttribute('aria-hidden', 'true');
+            const back = frames[viewerIndex] || viewerReturn;
+            if (back) back.focus({ preventScroll: true });
+        };
+
+        const openViewer = (i) => {
+            viewer.classList.add('is-open');
+            viewer.removeAttribute('aria-hidden');
+            showInViewer(i);
+            viewer.querySelector('.stack-viewer-close').focus({ preventScroll: true });
+        };
+
+        const onViewerKey = (event) => {
+            if (!viewer || !viewer.classList.contains('is-open')) return;
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                event.stopPropagation(); // keep the gallery itself open
+                closeViewer();
+            } else if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                showInViewer(viewerIndex + 1);
+            } else if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                showInViewer(viewerIndex - 1);
+            }
+        };
+
+        if (isFeed) {
+            viewer = document.createElement('div');
+            viewer.className = 'stack-viewer';
+            viewer.setAttribute('aria-hidden', 'true');
+            viewer.innerHTML = `
+                <button type="button" class="stack-viewer-close mono" aria-label="Back to all posts">[ BACK ]</button>
+                <div class="stack-viewer-stage"><img class="stack-viewer-img" alt="" draggable="false"></div>
+                <div class="stack-viewer-nav mono">
+                    <button type="button" class="stack-viewer-prev" aria-label="Previous image">&larr; PREV</button>
+                    <span class="stack-viewer-count" aria-live="polite"></span>
+                    <button type="button" class="stack-viewer-next" aria-label="Next image">NEXT &rarr;</button>
+                </div>`;
+            lightbox.append(viewer);
+
+            viewer.querySelector('.stack-viewer-close').addEventListener('click', (event) => {
+                event.stopPropagation();
+                closeViewer();
+            });
+            viewer.querySelector('.stack-viewer-prev').addEventListener('click', (event) => {
+                event.stopPropagation();
+                showInViewer(viewerIndex - 1);
+            });
+            viewer.querySelector('.stack-viewer-next').addEventListener('click', (event) => {
+                event.stopPropagation();
+                showInViewer(viewerIndex + 1);
+            });
+            // Clicking the empty backdrop goes back to the grid, not out of the project.
+            viewer.addEventListener('click', (event) => {
+                event.stopPropagation();
+                if (event.target === viewer || event.target.classList.contains('stack-viewer-stage')) closeViewer();
+            });
+
+            // Swipe left/right on touch screens.
+            let startX = null;
+            let startY = null;
+            viewer.addEventListener('pointerdown', (event) => {
+                if (event.pointerType === 'mouse') return;
+                startX = event.clientX;
+                startY = event.clientY;
+            });
+            viewer.addEventListener('pointerup', (event) => {
+                if (startX === null) return;
+                const dx = event.clientX - startX;
+                const dy = event.clientY - startY;
+                startX = null;
+                if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+                    showInViewer(viewerIndex + (dx < 0 ? 1 : -1));
+                }
+            });
+
+            frames.forEach((frame, i) => {
+                frame.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    viewerReturn = frame;
+                    openViewer(i);
+                });
+                frame.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        viewerReturn = frame;
+                        openViewer(i);
+                    }
+                });
+            });
+
+            window.addEventListener('keydown', onViewerKey, true);
+        }
+
+        // Fixed UI: progress hairline, slim bar, side index
+        const ui = document.createElement('div');
+        ui.className = 'stack-ui';
+        const progress = document.createElement('div');
+        progress.className = 'stack-progress';
+        progress.setAttribute('aria-hidden', 'true');
+        const progressFill = document.createElement('span');
+        progress.append(progressFill);
+
+        const bar = document.createElement('div');
+        bar.className = 'stack-bar mono';
+        bar.setAttribute('aria-hidden', 'true');
+        const barTitle = document.createElement('span');
+        barTitle.className = 'stack-bar-title';
+        barTitle.textContent = title;
+        const barCount = document.createElement('span');
+        barCount.className = 'stack-bar-count';
+        bar.append(barTitle, barCount);
+
+        const index = document.createElement('nav');
+        index.className = 'stack-index mono';
+        index.setAttribute('aria-label', 'Images in this project');
+        const barOffset = () => (bar.offsetHeight || 64) + 16;
+        const buttons = frames.map((frame, i) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'stack-index-btn';
+            btn.textContent = pad2(i + 1);
+            btn.setAttribute('aria-label', `Image ${i + 1} of ${total}`);
+            btn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                lightboxContainer.scrollTo({
+                    top: frame.offsetTop - barOffset(),
+                    behavior: reduceMotion ? 'auto' : 'smooth'
+                });
+            });
+            index.append(btn);
+            return btn;
+        });
+
+        ui.append(progress, bar, index);
+        lightbox.append(ui);
+
+        // Which image is on screen, how far through, whether the header has gone
+        let current = -1;
+        const setCurrent = (i) => {
+            if (i === current) return;
+            current = i;
+            barCount.textContent = `${pad2(i + 1)} / ${pad2(total)}`;
+            buttons.forEach((btn, n) => {
+                btn.classList.toggle('is-current', n === i);
+                if (n === i) btn.setAttribute('aria-current', 'true');
+                else btn.removeAttribute('aria-current');
+            });
+        };
+
+        let ticking = false;
+        const update = () => {
+            ticking = false;
+            const top = lightboxContainer.scrollTop;
+            const max = lightboxContainer.scrollHeight - lightboxContainer.clientHeight;
+            progressFill.style.transform = `scaleX(${max > 0 ? Math.min(1, top / max) : 0})`;
+            lightbox.classList.toggle('is-scrolled', top > head.offsetHeight * 0.6);
+            const probe = top + lightboxContainer.clientHeight * 0.45;
+            let i = 0;
+            frames.forEach((frame, n) => {
+                if (frame.offsetTop <= probe) i = n;
+            });
+            setCurrent(i);
+        };
+        const onScroll = () => {
+            if (!ticking) {
+                ticking = true;
+                requestAnimationFrame(update);
+            }
+        };
+        lightboxContainer.addEventListener('scroll', onScroll, { passive: true });
+        lightboxContainer.scrollTop = 0;
+        update();
+
+        // Frames ease in as they arrive
+        let io = null;
+        if (reduceMotion || !('IntersectionObserver' in window)) {
+            frames.forEach((frame) => frame.classList.add('is-in'));
+        } else {
+            io = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('is-in');
+                    io.unobserve(entry.target);
+                });
+            }, { root: lightboxContainer, rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+            frames.forEach((frame) => io.observe(frame));
+        }
+
+        stackCleanup = () => {
+            lightboxContainer.removeEventListener('scroll', onScroll);
+            window.removeEventListener('keydown', onViewerKey, true);
+            if (io) io.disconnect();
+            ui.remove();
+            if (viewer) viewer.remove();
+            lightbox.classList.remove('is-scrolled', 'is-feed');
+        };
+    };
+
     // Open Lightbox
     document.querySelectorAll('.visual-item img, .visual-item video').forEach(img => {
         img.addEventListener('click', (e) => {
@@ -468,6 +767,9 @@ function initLightbox() {
                 startPlayback(mediaEl);
             });
 
+            teardownStack();
+            if (isStack) buildStack(metadata);
+
             lastFocused = document.activeElement;
             // Focus on the column lets the arrow keys and space scroll it straight away.
             const focusTarget = isStack ? lightboxContainer : closeBtn;
@@ -516,6 +818,7 @@ function initLightbox() {
         lightbox.classList.remove('active');
         document.body.classList.remove('no-scroll');
         closeTimer = setTimeout(() => {
+            teardownStack();
             lightboxContainer.innerHTML = '';
             if (metaCount) {
                 metaCount.innerText = '';
@@ -553,10 +856,39 @@ function initCustomCursor() {
 
     const interactiveSelector = 'a, button, .service-header, .visual-item, .hero-card, .modal-btn, .modal-close-btn, .tv-dial-item, .tv-top-menu, .tv-ctrl-btn';
 
-    // Track mouse movement
+    // Track mouse movement. The cursor eases toward the pointer instead of
+    // snapping to it; `translate` leaves the rotating `transform` alone.
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ease = reducedMotion ? 1 : 0.18;
+    const target = { x: -100, y: -100 };
+    const pos = { x: -100, y: -100 };
+    let rafId = null;
+    let seen = false;
+
+    cursor.style.left = '0px';
+    cursor.style.top = '0px';
+
+    const render = () => {
+        pos.x += (target.x - pos.x) * ease;
+        pos.y += (target.y - pos.y) * ease;
+        cursor.style.translate = `${pos.x.toFixed(2)}px ${pos.y.toFixed(2)}px`;
+        if (Math.abs(target.x - pos.x) > 0.1 || Math.abs(target.y - pos.y) > 0.1) {
+            rafId = requestAnimationFrame(render);
+        } else {
+            rafId = null;
+        }
+    };
+
     document.addEventListener('mousemove', (e) => {
-        cursor.style.left = e.clientX + 'px';
-        cursor.style.top = e.clientY + 'px';
+        target.x = e.clientX;
+        target.y = e.clientY;
+        if (!seen) {
+            // First move: appear under the pointer rather than gliding in from a corner.
+            seen = true;
+            pos.x = target.x;
+            pos.y = target.y;
+        }
+        if (rafId === null) rafId = requestAnimationFrame(render);
     });
 
     // Delegate hover state so dynamically rendered items are covered too.
@@ -1183,7 +1515,15 @@ function initSectionViews() {
 
         isTransitioning = true;
         try {
-            if (window.portfolioLoader && typeof window.portfolioLoader.showTransition === 'function') {
+            if (typeof window.vhsTransition === 'function') {
+                // Channel-change static (effects.js); the loader bar stays the fallback.
+                await window.vhsTransition({
+                    targetView: nextView,
+                    onMidpoint: () => {
+                        applyView(nextView, options);
+                    }
+                });
+            } else if (window.portfolioLoader && typeof window.portfolioLoader.showTransition === 'function') {
                 await window.portfolioLoader.showTransition({
                     duration: 420,
                     targetView: nextView,

@@ -1,0 +1,552 @@
+/* ==========================================================================
+   Image-project gallery (lightbox .is-stack)
+   An editorial column: header that scrolls away, numbered full-width frames,
+   a slim bar + progress hairline at the top, and a side index on desktop.
+   Loaded after responsive.css, so it can override the older stack rules.
+   ========================================================================== */
+
+.lightbox.is-stack {
+    --stack-gutter: 5vw;
+    --stack-index: 72px;
+    --stack-width: 1180px;
+    background: rgba(10, 10, 10, 0.94);
+}
+
+.lightbox.is-stack.is-portrait {
+    --stack-width: 760px;
+}
+
+/* The old pinned card is replaced by the header inside the column */
+.lightbox.is-stack .lightbox-meta-overlay {
+    display: none !important;
+}
+
+/* ---------- Column ---------- */
+.lightbox.is-stack .lightbox-container {
+    display: block !important;
+    height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    padding: 0 calc(var(--stack-gutter) + var(--stack-index)) 8rem var(--stack-gutter) !important;
+    transform: none !important;
+    scrollbar-width: none;
+    overscroll-behavior: contain;
+}
+
+.lightbox.is-stack .lightbox-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* ---------- Header ---------- */
+.stack-head {
+    max-width: var(--stack-width);
+    margin: 0 auto;
+    padding: clamp(7rem, 16vh, 10rem) 0 clamp(3rem, 7vh, 5rem);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+        "kicker"
+        "title"
+        "desc"
+        "hint";
+    row-gap: 1.4rem;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease 0.15s, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+}
+
+.lightbox.active .stack-head {
+    opacity: 1;
+    transform: none;
+}
+
+.stack-kicker {
+    grid-area: kicker;
+    margin: 0;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    color: var(--accent-color);
+}
+
+.stack-title {
+    grid-area: title;
+    margin: 0;
+    font-family: var(--display-font);
+    font-size: clamp(2.6rem, 6.2vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: 0.01em;
+    color: var(--text-color);
+    text-transform: uppercase;
+    overflow-wrap: break-word; /* only split a word that can't fit on its own */
+}
+
+.stack-desc {
+    grid-area: desc;
+    max-width: 36rem;
+    margin: 0;
+    padding-left: 1.2rem;
+    border-left: 1px solid var(--border-color);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--muted-color);
+}
+
+.stack-hint {
+    grid-area: hint;
+    margin: 0.4rem 0 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    color: var(--muted-color);
+    animation: stackHint 2.4s ease-in-out infinite;
+}
+
+@keyframes stackHint {
+    0%, 100% { transform: translateY(0); opacity: 0.55; }
+    50%      { transform: translateY(5px); opacity: 1; }
+}
+
+/* ---------- Frames ---------- */
+.stack-frame {
+    position: relative;
+    max-width: var(--stack-width);
+    margin: 0 auto clamp(2.5rem, 6vh, 4.5rem);
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stack-frame.is-in {
+    opacity: 1;
+    transform: none;
+}
+
+.stack-num {
+    display: block;
+    margin: 0 0 0.7rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    color: var(--muted-color);
+}
+
+.lightbox.is-stack .stack-frame .lightbox-img {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+    object-fit: contain !important;
+    border: 1px solid var(--border-color);
+    border-radius: 0 !important;
+    background: rgba(244, 242, 238, 0.03);
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+/* ---------- Fixed UI ---------- */
+.stack-ui {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1500;
+}
+
+.stack-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(244, 242, 238, 0.08);
+}
+
+.stack-progress span {
+    display: block;
+    height: 100%;
+    background: var(--accent-color);
+    transform: scaleX(0);
+    transform-origin: left center;
+}
+
+/* Appears once the header has scrolled away */
+.stack-bar {
+    position: absolute;
+    top: 2px;
+    left: 0;
+    right: 0;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    padding: 0 calc(3vw + 9rem) 0 var(--stack-gutter);
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    color: var(--text-color);
+    background: linear-gradient(to bottom, rgba(10, 10, 10, 0.96) 55%, rgba(10, 10, 10, 0));
+    opacity: 0;
+    transform: translateY(-100%);
+    transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lightbox.is-scrolled .stack-bar {
+    opacity: 1;
+    transform: none;
+}
+
+.stack-bar-title {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+}
+
+.stack-bar-count {
+    flex: none;
+    color: var(--accent-color);
+}
+
+/* Side index */
+.stack-index {
+    position: absolute;
+    top: 50%;
+    right: calc(var(--stack-gutter) * 0.5);
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.15rem;
+    max-height: 70vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+    pointer-events: auto;
+}
+
+.stack-index::-webkit-scrollbar {
+    display: none;
+}
+
+.stack-index-btn {
+    position: relative;
+    padding: 0.2rem 0 0.2rem 1.6rem;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-family: var(--mono-font);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--muted-color);
+    cursor: pointer;
+    transition: color 0.25s ease;
+}
+
+.stack-index-btn::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 0.9rem;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0.35);
+    transform-origin: right center;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stack-index-btn:hover {
+    color: var(--text-color);
+}
+
+.stack-index-btn.is-current {
+    color: var(--accent-color);
+}
+
+.stack-index-btn.is-current::before {
+    transform: scaleX(1);
+}
+
+.stack-index-btn:focus-visible {
+    outline: 1px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* ---------- Feed grid (portrait sets: social posts) ---------- */
+.lightbox.is-stack.is-feed {
+    --stack-width: 1180px;
+    --stack-index: 0px;
+}
+
+.lightbox.is-feed .stack-index {
+    display: none;
+}
+
+.lightbox.is-feed .stack-grid {
+    max-width: var(--stack-width);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(0.75rem, 1.4vw, 1.25rem);
+}
+
+.lightbox.is-feed .stack-frame {
+    margin: 0;
+    cursor: zoom-in;
+    overflow: hidden;
+    transition-delay: var(--stagger, 0ms);
+}
+
+.lightbox.is-feed .stack-frame .lightbox-img {
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease !important;
+}
+
+.lightbox.is-feed .stack-frame:hover .lightbox-img {
+    transform: scale(1.03) !important;
+}
+
+.lightbox.is-feed .stack-frame:focus-visible {
+    outline: 1px solid var(--accent-color);
+    outline-offset: 3px;
+}
+
+/* Post number sits on the post, shown on hover */
+.lightbox.is-feed .stack-num {
+    position: absolute;
+    left: 0.6rem;
+    bottom: 0.6rem;
+    z-index: 2;
+    margin: 0;
+    padding: 0.3rem 0.5rem;
+    background: rgba(10, 10, 10, 0.75);
+    color: var(--text-color);
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+}
+
+.lightbox.is-feed .stack-frame:hover .stack-num,
+.lightbox.is-feed .stack-frame:focus-visible .stack-num {
+    opacity: 1;
+    transform: none;
+}
+
+/* Enlarged post */
+.stack-viewer {
+    position: absolute;
+    inset: 0;
+    z-index: 2100; /* above [ CLOSE ] */
+    display: flex;
+    flex-direction: column;
+    background: #0a0a0a;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0s linear 0.35s;
+}
+
+.stack-viewer.is-open {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.35s ease, visibility 0s;
+}
+
+.stack-viewer-close {
+    position: absolute;
+    top: 2rem;
+    right: 3vw;
+    z-index: 2;
+    padding: 1rem;
+    border: 0;
+    background: none;
+    color: var(--text-color);
+    font: inherit;
+    font-family: var(--mono-font);
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+}
+
+.stack-viewer-stage {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5.5rem 4vw 1rem;
+    cursor: zoom-out;
+}
+
+.stack-viewer-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border: 1px solid var(--border-color);
+    cursor: default;
+    user-select: none;
+    -webkit-user-drag: none;
+    transform: scale(0.97);
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stack-viewer.is-open .stack-viewer-img {
+    transform: none;
+}
+
+.stack-viewer-nav {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1.5rem, 5vw, 4rem);
+    padding: 1rem 4vw 2rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+}
+
+.stack-viewer-nav button {
+    padding: 0.8rem 0.4rem;
+    border: 0;
+    background: none;
+    color: var(--muted-color);
+    font: inherit;
+    letter-spacing: inherit;
+    cursor: pointer;
+    transition: color 0.25s ease;
+}
+
+.stack-viewer-nav button:hover {
+    color: var(--text-color);
+}
+
+.stack-viewer-close:focus-visible,
+.stack-viewer-nav button:focus-visible {
+    outline: 1px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+.stack-viewer-count {
+    min-width: 5.5em;
+    text-align: center;
+    color: var(--accent-color);
+}
+
+/* ---------- Tablet & phone ---------- */
+@media (max-width: 1024px) {
+    .lightbox.is-stack {
+        --stack-gutter: 4vw;
+        --stack-index: 0px;
+    }
+
+    .stack-index {
+        display: none;
+    }
+
+    .stack-head {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "kicker"
+            "title"
+            "desc"
+            "hint";
+        row-gap: 1.2rem;
+        padding: 6.5rem 0 2.5rem;
+    }
+
+    .stack-kicker {
+        margin-bottom: 0;
+        font-size: 0.72rem;
+    }
+
+    .stack-title {
+        font-size: clamp(2.2rem, 11vw, 3.6rem);
+    }
+
+    .stack-desc {
+        font-size: 0.9rem;
+    }
+
+    .stack-hint {
+        margin-top: 0.4rem;
+    }
+
+    .stack-frame {
+        margin-bottom: 1.6rem;
+    }
+
+    .stack-num {
+        margin-bottom: 0.5rem;
+        font-size: 0.68rem;
+    }
+
+    .stack-bar {
+        height: 56px;
+        padding-right: 7.5rem; /* room for [ CLOSE ] */
+        font-size: 0.72rem;
+    }
+
+    .lightbox.is-stack .lightbox-container {
+        padding-bottom: 5rem !important;
+    }
+
+    .lightbox.is-feed .stack-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.6rem;
+    }
+
+    /* No hover on touch: the number stays as a small tag */
+    .lightbox.is-feed .stack-num {
+        opacity: 1;
+        transform: none;
+        left: 0.4rem;
+        bottom: 0.4rem;
+        padding: 0.2rem 0.4rem;
+        font-size: 0.6rem;
+    }
+
+    .stack-viewer-close {
+        top: 1.2rem;
+        right: 1rem;
+        padding: 0.8rem;
+    }
+
+    .stack-viewer-stage {
+        padding: 4.5rem 3vw 0.5rem;
+    }
+
+    .stack-viewer-nav {
+        padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    }
+}
+
+/* Phones on their side: a slimmer header so images get the height */
+@media (max-width: 1024px) and (max-height: 500px) and (orientation: landscape) {
+    .stack-head {
+        padding: 4.5rem 0 1.5rem;
+    }
+
+    .stack-desc,
+    .stack-hint {
+        display: none;
+    }
+
+    .stack-title {
+        font-size: clamp(1.8rem, 6vw, 2.6rem);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .stack-head,
+    .stack-frame,
+    .stack-bar {
+        transition: none;
+    }
+
+    .stack-frame {
+        opacity: 1;
+        transform: none;
+    }
+
+    .stack-hint {
+        animation: none;
+    }
+}
