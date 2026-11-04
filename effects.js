@@ -379,6 +379,18 @@
             scrollVoice = { band, noiseGain, motor, motorGain, level: 0 };
         };
 
+        // The About reel scrolls itself, not the window: main.js reports its position.
+        let reelY = 0;
+        let lastTickY = 0;
+        const TICK_EVERY = 90; // px of reel travel per tape-counter tick
+
+        // Tape counter: a tiny, dry plastic tick, brighter the faster the reel runs.
+        const counterTick = (s) => {
+            const t = now();
+            burst({ at: t, freq: 2600 + s * 2200, q: 6, peak: 0.022 + s * 0.03, attack: 0.001, release: 0.014, pan: (Math.random() - 0.5) * 0.2 });
+            osc({ at: t, freq: 420 + s * 300, type: 'triangle', peak: 0.008, attack: 0.001, release: 0.02 });
+        };
+
         let lastY = window.scrollY;
         let lastT = performance.now();
         let speed = 0;
@@ -388,7 +400,7 @@
             scrollRaf = null;
             if (!enabled || !scrollVoice) return;
             const dt = Math.max(1, t - lastT);
-            const y = window.scrollY;
+            const y = window.scrollY + reelY;
             const raw = Math.min(1, Math.abs(y - lastY) / dt / 4); // px per ms, ~4 is a hard flick
             lastY = y;
             lastT = t;
@@ -405,11 +417,28 @@
             if (speed > 0) scrollRaf = requestAnimationFrame(scrollFrame);
         };
 
-        window.addEventListener('scroll', () => {
+        const kickScroll = () => {
             if (!enabled || scrollRaf !== null) return;
             lastT = performance.now();
             scrollRaf = requestAnimationFrame(scrollFrame);
-        }, { passive: true });
+        };
+        window.addEventListener('scroll', kickScroll, { passive: true });
+
+        window.addEventListener('vhs:reelscroll', (event) => {
+            const y = event.detail?.y;
+            if (typeof y !== 'number') return;
+            reelY = y;
+            if (!enabled) {
+                lastY = window.scrollY + reelY;
+                lastTickY = reelY;
+                return;
+            }
+            if (Math.abs(reelY - lastTickY) >= TICK_EVERY) {
+                lastTickY = reelY;
+                if (audible() && ctx) counterTick(speed);
+            }
+            kickScroll();
+        });
 
         /* ---------- toggle ---------- */
 
@@ -430,6 +459,9 @@
                 if (on) {
                     startAmbient();
                     startScrollVoice();
+                    // Start from where things are now, so turning sound on isn't a jump.
+                    lastY = window.scrollY + reelY;
+                    lastTickY = reelY;
                 }
                 applyLevel(0.4);
             }
