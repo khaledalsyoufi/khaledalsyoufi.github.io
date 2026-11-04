@@ -2139,7 +2139,7 @@ function initInfoReelScroll() {
         renderFrame();
 
         // effects.js turns the reel's travel into the tape whirr (the page itself doesn't scroll here).
-        window.dispatchEvent(new CustomEvent('vhs:reelscroll', { detail: { y: currentScroll } }));
+        window.dispatchEvent(new CustomEvent('vhs:reelscroll', { detail: { y: currentScroll, v: velocity } }));
 
         const isStillScrolling = currentScroll !== targetScroll || Math.abs(velocity) > 0.02;
         const isStillSpinning = currentTapeAngle !== targetTapeAngle || Math.abs(tapeVelocity) > 0.02;
