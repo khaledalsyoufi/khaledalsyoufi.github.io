@@ -356,33 +356,8 @@
 
         /* ---------- continuous voices ---------- */
 
-        // Tape hiss + mains hum: the deck idling.
+        // Tape hiss + mains hum: the deck idling (disabled to eliminate background static/hiss).
         const startAmbient = () => {
-            if (ambient) return;
-            const hiss = ctx.createBufferSource();
-            hiss.buffer = noise;
-            hiss.loop = true;
-            const hissFilter = ctx.createBiquadFilter();
-            hissFilter.type = 'highpass';
-            hissFilter.frequency.value = 4200;
-            const hissGain = ctx.createGain();
-            hissGain.gain.value = 0.003;
-            hiss.connect(hissFilter).connect(hissGain).connect(tape);
-
-            const hum = ctx.createOscillator();
-            hum.frequency.value = 50;
-            const humGain = ctx.createGain();
-            humGain.gain.value = 0.012;
-            const hum2 = ctx.createOscillator();
-            hum2.frequency.value = 100;
-            const hum2Gain = ctx.createGain();
-            hum2Gain.gain.value = 0.004;
-            hum.connect(humGain).connect(tape);
-            hum2.connect(hum2Gain).connect(tape);
-
-            hiss.start();
-            hum.start();
-            hum2.start();
             ambient = true;
         };
 
