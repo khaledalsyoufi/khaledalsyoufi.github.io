@@ -86,6 +86,23 @@
             return curve;
         };
 
+        // One tape-counter tick rendered ahead of time: on phones each tick is then a
+        // single buffer playback instead of a noise source, filter, panner and envelope.
+        let tickBuffer = null;
+        const makeTick = () => {
+            const length = Math.floor(ctx.sampleRate * 0.03);
+            const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            let lp = 0;
+            for (let i = 0; i < length; i++) {
+                const e = Math.exp(-i / (ctx.sampleRate * 0.004));
+                const n = Math.random() * 2 - 1;
+                lp += (n - lp) * 0.45;          // take the fizz off the top
+                data[i] = (n - lp) * e * 0.9;   // keep the click's bright body
+            }
+            return buffer;
+        };
+
         const ensureContext = () => {
             if (ctx) return true;
             const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -109,9 +126,21 @@
 
             // Tape bus: saturation -> wow/flutter (modulated delay) -> treble roll-off.
             tape = ctx.createGain();
+            if (lite) {
+                // Phones: just the treble roll-off. The saturation, modulated delay and
+                // convolution reverb run on every sample and starve the mobile audio thread.
+                const liteTone = ctx.createBiquadFilter();
+                liteTone.type = 'lowpass';
+                liteTone.frequency.value = 7500;
+                liteTone.Q.value = 0.5;
+                tape.connect(liteTone).connect(out);
+                room = null;
+                tickBuffer = makeTick();
+                return true;
+            }
             const shaper = ctx.createWaveShaper();
             shaper.curve = makeCurve(1.6);
-            shaper.oversample = lite ? 'none' : '2x';
+            shaper.oversample = '2x';
             const wobble = ctx.createDelay(0.05);
             wobble.delayTime.value = 0.012;
             const wow = ctx.createOscillator();
@@ -132,11 +161,11 @@
             tone.Q.value = 0.5;
             tape.connect(shaper).connect(wobble).connect(tone).connect(out);
 
-            // Room send (shorter, mono-cheap tail on mobile).
+            // Room send.
             room = ctx.createGain();
-            room.gain.value = lite ? 0.16 : 0.22;
+            room.gain.value = 0.22;
             const verb = ctx.createConvolver();
-            verb.buffer = makeImpulse(lite ? 0.45 : 1.1, 3.2);
+            verb.buffer = makeImpulse(1.1, 3.2);
             const verbTone = ctx.createBiquadFilter();
             verbTone.type = 'lowpass';
             verbTone.frequency.value = 3200;
@@ -153,7 +182,7 @@
         const voice = (pan = 0, dest = tape) => {
             const gain = ctx.createGain();
             gain.gain.value = 0;
-            if (ctx.createStereoPanner) {
+            if (!lite && ctx.createStereoPanner) {
                 const panner = ctx.createStereoPanner();
                 panner.pan.value = pan;
                 gain.connect(panner).connect(dest);
@@ -398,16 +427,27 @@
         // Tape counter: a dry plastic tick with a little body, brighter the faster the reel runs.
         const counterTick = (s) => {
             const t = now();
+            if (tickBuffer) {
+                const src = ctx.createBufferSource();
+                src.buffer = tickBuffer;
+                src.playbackRate.value = 0.9 + s * 0.6;
+                const g = ctx.createGain();
+                g.gain.value = 0.05 + s * 0.035;
+                src.connect(g).connect(tape);
+                src.start(t);
+                return;
+            }
             const pan = (Math.random() - 0.5) * 0.25;
             // Kept at the hover scrub's level so it sits with the rest of the deck.
             burst({ at: t, freq: 2000 + s * 1800, q: 4, peak: 0.035 + s * 0.025, attack: 0.001, release: 0.02, pan });
-            if (!lite) osc({ at: t, freq: 520 + s * 260, type: 'triangle', peak: 0.012, attack: 0.001, release: 0.03, pan });
+            osc({ at: t, freq: 520 + s * 260, type: 'triangle', peak: 0.012, attack: 0.001, release: 0.03, pan });
         };
 
         let lastY = window.scrollY;
         let lastT = performance.now();
         let speed = 0;
         let scrollRaf = null;
+        let lastParamT = 0;
 
         const scrollFrame = (t) => {
             scrollRaf = null;
@@ -424,6 +464,12 @@
             const s = speed;
             // Nothing to change: don't flood the audio thread with automation every frame.
             if (s === 0 && scrollVoice.level === 0) return;
+            // Phones: update the whirr ~30 times a second, not on every frame.
+            if (lite && s !== 0 && t - lastParamT < 33) {
+                scrollRaf = requestAnimationFrame(scrollFrame);
+                return;
+            }
+            lastParamT = t;
             scrollVoice.level = s;
             const at = now();
             scrollVoice.band.frequency.setTargetAtTime(500 + s * 3800, at, 0.05);
