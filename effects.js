@@ -391,8 +391,9 @@
         const counterTick = (s) => {
             const t = now();
             const pan = (Math.random() - 0.5) * 0.25;
-            burst({ at: t, freq: 2000 + s * 1800, q: 4, peak: 0.08 + s * 0.06, attack: 0.001, release: 0.02, pan });
-            osc({ at: t, freq: 520 + s * 260, type: 'triangle', peak: 0.035, attack: 0.001, release: 0.035, pan });
+            // Kept at the hover scrub's level so it sits with the rest of the deck.
+            burst({ at: t, freq: 2000 + s * 1800, q: 4, peak: 0.035 + s * 0.025, attack: 0.001, release: 0.02, pan });
+            osc({ at: t, freq: 520 + s * 260, type: 'triangle', peak: 0.012, attack: 0.001, release: 0.03, pan });
         };
 
         let lastY = window.scrollY;
@@ -412,14 +413,12 @@
             speed += (raw - speed) * (raw > speed ? 0.25 : 0.08);
             if (speed < 0.003) speed = 0;
 
-            // The reel moves in short spring-driven runs, so it gets a louder voice than page scroll.
-            const boost = reelSpeed > 0 ? 2.4 : 1;
             const at = now();
             const s = speed;
             scrollVoice.band.frequency.setTargetAtTime(500 + s * 3800, at, 0.05);
-            scrollVoice.noiseGain.gain.setTargetAtTime(s * 0.07 * boost, at, 0.05);
+            scrollVoice.noiseGain.gain.setTargetAtTime(s * 0.07, at, 0.05);
             scrollVoice.motor.frequency.setTargetAtTime(50 + s * 260, at, 0.05);
-            scrollVoice.motorGain.gain.setTargetAtTime(s * 0.03 * boost, at, 0.06);
+            scrollVoice.motorGain.gain.setTargetAtTime(s * 0.03, at, 0.06);
 
             if (speed > 0 || reelSpeed > 0) scrollRaf = requestAnimationFrame(scrollFrame);
         };
