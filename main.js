@@ -183,6 +183,11 @@ function renderServices() {
             toggleBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const isCollapsed = this.dataset.state === 'collapsed';
+
+                if (window.vhsSound) {
+                    window.vhsSound.play(isCollapsed ? 'viewMore' : 'viewLess');
+                }
+
                 const hiddenItems = grid.querySelectorAll('.hidden-project');
                 const serviceItemEl = this.closest('.service-item');
                 const contentEl = serviceItemEl.querySelector('.service-content');
@@ -1164,10 +1169,20 @@ function renderClients() {
         }
     }
 
+    let clientDialReady = false;
+
     // Channel Selection & Wheel Translation
     function selectChannel(targetIndex) {
         const nextIndex = (targetIndex + totalChannels) % totalChannels;
+        const indexChanged = nextIndex !== currentIndex;
+        const prevIndex = currentIndex;
         currentIndex = nextIndex;
+
+        if (clientDialReady && indexChanged && window.vhsSound) {
+            window.vhsSound.play('channelSwitch', {
+                dir: targetIndex >= prevIndex ? 1 : -1
+            });
+        }
 
         // 1. Smoothly translate track so active channel is centered
         // (a vertical wheel on desktop, a horizontal strip on phones)
@@ -1260,6 +1275,7 @@ function renderClients() {
 
     // Initial setup with Channel 8 centered
     selectChannel(currentIndex);
+    clientDialReady = true;
 
     // Chevron Arrows
     if (tvDialUp) {

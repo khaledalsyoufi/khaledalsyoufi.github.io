@@ -330,6 +330,31 @@
                 const t = now();
                 osc({ at: t, freq: up ? 1047 : 784, type: 'square', peak: 0.025, attack: 0.002, hold: 0.05, release: 0.02 });
                 osc({ at: t + 0.08, freq: up ? 1568 : 523, type: 'square', peak: 0.025, attack: 0.002, hold: 0.06, release: 0.03 });
+            },
+
+            // Expand project grid (View More): rising mechanical clack & latch.
+            viewMore: ({ pan = 0 } = {}) => {
+                const t = now();
+                burst({ at: t, freq: 2400, q: 2, peak: 0.12, attack: 0.001, release: 0.025, pan });
+                burst({ at: t + 0.035, freq: 3600, q: 2.5, peak: 0.14, attack: 0.001, release: 0.03, pan });
+                osc({ at: t, freq: 220, to: 440, type: 'triangle', peak: 0.04, attack: 0.002, release: 0.08, pan });
+            },
+
+            // Collapse project grid (View Less): descending mechanical latch.
+            viewLess: ({ pan = 0 } = {}) => {
+                const t = now();
+                burst({ at: t, freq: 3200, q: 2.5, peak: 0.12, attack: 0.001, release: 0.025, pan });
+                burst({ at: t + 0.035, freq: 1800, q: 2, peak: 0.10, attack: 0.001, release: 0.03, pan });
+                osc({ at: t, freq: 380, to: 160, type: 'triangle', peak: 0.035, attack: 0.002, release: 0.08, pan });
+            },
+
+            // Switch client channel: crisp retro rotary dial detent & relay clunk.
+            channelSwitch: ({ pan = 0, dir = 1 } = {}) => {
+                const t = now();
+                burst({ at: t, freq: dir >= 0 ? 2800 : 2200, q: 3, peak: 0.13, attack: 0.001, release: 0.02, pan });
+                burst({ at: t + 0.025, freq: dir >= 0 ? 1600 : 1200, q: 2, peak: 0.09, attack: 0.001, release: 0.035, pan });
+                osc({ at: t, freq: dir >= 0 ? 180 : 140, to: 65, type: 'triangle', peak: 0.08, attack: 0.002, release: 0.05, pan });
+                burst({ at: t + 0.01, freq: 4500, q: 1, type: 'highpass', peak: 0.025, attack: 0.001, release: 0.015, pan });
             }
         };
 
@@ -569,8 +594,8 @@
         /* ---------- interface hooks ---------- */
 
         // Clicks: elements with their own sound are left to the observers below.
-        const pressSelector = 'a, button, .tv-dial-item, .tv-ctrl-btn, .tv-top-menu';
-        const ownSound = '.sound-toggle, .service-header, .hero-card, .visual-item, .modal-btn, #lightbox';
+        const pressSelector = 'a, button, .tv-ctrl-btn, .tv-top-menu';
+        const ownSound = '.sound-toggle, .service-header, .hero-card, .visual-item, .modal-btn, #lightbox, .view-more-btn, .tv-dial-item, .tv-dial-chevron';
         document.addEventListener('click', (event) => {
             if (!enabled) return;
             if (event.target.closest(ownSound)) return;
