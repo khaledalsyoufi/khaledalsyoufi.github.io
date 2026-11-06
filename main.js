@@ -1459,7 +1459,7 @@ function initTilt3D() {
     targets.forEach(el => {
         const isClient = el.classList.contains('client-item');
         const intensity = isClient ? 20 : 12;
-        const scale = isClient ? 1.06 : 1.02;
+        const scale = isClient ? 1.06 : 1.03;
 
         el.addEventListener('mousemove', (e) => {
             const rect = el.getBoundingClientRect();
@@ -1467,15 +1467,91 @@ function initTilt3D() {
             const y = (e.clientY - rect.top) / rect.height;
             const tiltX = (y - 0.5) * -intensity;
             const tiltY = (x - 0.5) * intensity;
-            el.style.transform = `perspective(800px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(${scale},${scale},${scale})`;
+            const pY = el.style.getPropertyValue('--parallax-y') || '0px';
+            el.classList.add('tilting');
+            el.style.transform = `translate3d(0, ${pY}, 0) perspective(800px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(${scale},${scale},${scale})`;
             el.style.transition = 'transform 0.08s linear';
         });
 
         el.addEventListener('mouseleave', () => {
-            el.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)';
+            const pY = el.style.getPropertyValue('--parallax-y') || '0px';
+            el.classList.remove('tilting');
+            el.style.transform = `translate3d(0, ${pY}, 0)`;
             el.style.transition = 'transform 0.5s cubic-bezier(0.19, 1, 0.22, 1)';
         });
     });
+}
+
+// Selected Works Grid Scroll Parallax (Staggered Column Rhythm)
+function initGridParallax() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const visibleCards = new Set();
+    const cardObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                visibleCards.add(entry.target);
+            } else {
+                visibleCards.delete(entry.target);
+            }
+        });
+    }, { rootMargin: '120px 0px 120px 0px' });
+
+    const observeCards = () => {
+        document.querySelectorAll('.visual-item').forEach(card => cardObserver.observe(card));
+    };
+    observeCards();
+
+    // Re-observe when view changes to services or when accordions expand
+    window.addEventListener('viewchange', (e) => {
+        if (e.detail?.view === 'services') {
+            setTimeout(observeCards, 80);
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.service-header, .view-more-btn')) {
+            setTimeout(observeCards, 180);
+        }
+    });
+
+    let cardRaf = null;
+    const renderCards = () => {
+        cardRaf = null;
+        const vh = window.innerHeight;
+
+        visibleCards.forEach(card => {
+            const grid = card.parentElement;
+            if (!grid || !grid.classList.contains('visual-grid')) return;
+
+            const rect = card.getBoundingClientRect();
+            // 0 when enters at bottom, 1 when leaves at top
+            const progress = (vh - rect.top) / (vh + rect.height);
+            const centered = progress - 0.5; // -0.5 to 0.5
+
+            // Alternating column stagger for art-gallery rhythm
+            const idx = [...grid.children].indexOf(card);
+            const isOdd = (idx % 2) === 1;
+            const colShift = isOdd ? (centered * 22).toFixed(2) : (centered * -14).toFixed(2);
+            card.style.setProperty('--parallax-y', `${colShift}px`);
+
+            // If not actively hovering with 3D tilt, keep base translation synced
+            if (!card.classList.contains('tilting')) {
+                card.style.transform = `translate3d(0, ${colShift}px, 0)`;
+            }
+        });
+    };
+
+    const kickCards = () => {
+        if (cardRaf === null) {
+            cardRaf = requestAnimationFrame(renderCards);
+        }
+    };
+
+    window.addEventListener('scroll', kickCards, { passive: true });
+    if (window.lenis) {
+        window.lenis.on('scroll', kickCards);
+    }
 }
 
 function initSectionViews() {
@@ -2643,6 +2719,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTypewriter();
     initLightbox();
     initTilt3D();
+    initGridParallax();
     initMobileMenu();
     initTapeScale();
     initTapeTilt();

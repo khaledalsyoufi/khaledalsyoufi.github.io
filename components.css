@@ -982,6 +982,7 @@ body.view-mode .services.page-view.is-visible:not(.animate-in) .service-item {
     display: flex;
     flex-direction: column;
     will-change: transform;
+    transform: translate3d(0, var(--parallax-y, 0px), 0);
 }
 
 .visual-img-wrapper {
@@ -989,6 +990,46 @@ body.view-mode .services.page-view.is-visible:not(.animate-in) .service-item {
     overflow: hidden;
     border: 1px solid var(--border-color);
     position: relative;
+}
+
+/* Authentic VHS Card Glitch & Scanline Distortion on Hover */
+.visual-img-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.35) 0px,
+            rgba(0, 0, 0, 0.35) 1px,
+            transparent 1px,
+            transparent 3px
+        );
+    mix-blend-mode: overlay;
+    transition: opacity 0.25s ease;
+}
+
+.visual-item:hover .visual-img-wrapper::before {
+    opacity: 1;
+    animation: vhsCardTear 0.22s steps(2) infinite;
+}
+
+@keyframes vhsCardTear {
+    0% {
+        transform: translateY(0);
+        filter: drop-shadow(2px 0 0 rgba(255, 40, 40, 0.45)) drop-shadow(-2px 0 0 rgba(40, 210, 255, 0.4));
+    }
+    50% {
+        transform: translateY(-2px);
+        filter: drop-shadow(-2px 0 0 rgba(255, 40, 40, 0.4)) drop-shadow(2px 0 0 rgba(40, 210, 255, 0.45));
+    }
+    100% {
+        transform: translateY(1px);
+        filter: none;
+    }
 }
 
 .visual-item img, .visual-item video {
@@ -1000,8 +1041,8 @@ body.view-mode .services.page-view.is-visible:not(.animate-in) .service-item {
 
 /* The work carries the colour; the interface stays monochrome */
 .visual-item:hover img, .visual-item:hover video {
-    transform: scale(1.04);
-    filter: saturate(1.05);
+    transform: scale(1.08);
+    filter: saturate(1.1) contrast(1.05);
 }
 
 
