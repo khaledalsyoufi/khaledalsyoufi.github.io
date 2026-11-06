@@ -430,6 +430,80 @@
     color: var(--accent-color);
 }
 
+/* ---------- Desktop: project details and horizontal image strip ---------- */
+@media (min-width: 1025px) {
+    .lightbox.is-stack .lightbox-container {
+        display: flex !important;
+        align-items: center;
+        justify-content: flex-start;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        padding: 0 4vw 0 0 !important;
+        scrollbar-width: thin;
+        scrollbar-color: var(--muted-color) transparent;
+    }
+
+    .lightbox.is-stack .lightbox-container::-webkit-scrollbar {
+        display: block;
+        height: 5px;
+    }
+
+    .lightbox.is-stack .lightbox-container::-webkit-scrollbar-thumb {
+        background: var(--muted-color);
+    }
+
+    .lightbox.is-stack .stack-head {
+        flex: 0 0 clamp(260px, 27vw, 400px);
+        align-content: center;
+        height: 100%;
+        margin: 0;
+        padding: 6rem 3vw 6rem 5vw;
+        overflow-y: auto;
+        background: #0a0a0a;
+    }
+
+    .lightbox.is-stack .stack-title {
+        min-width: 0;
+        font-size: clamp(2rem, 3vw, 3.3rem);
+        overflow-wrap: normal;
+        word-break: keep-all;
+        hyphens: none;
+    }
+
+    .lightbox.is-stack .stack-grid,
+    .lightbox.is-stack.is-feed .stack-grid {
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        width: max-content;
+        max-width: none;
+        margin: 0;
+        gap: clamp(1rem, 2vw, 2rem);
+    }
+
+    .lightbox.is-stack .stack-frame,
+    .lightbox.is-stack.is-feed .stack-frame {
+        flex: 0 0 auto;
+        max-width: none;
+        margin: 0;
+    }
+
+    .lightbox.is-stack .stack-frame .lightbox-img {
+        width: auto !important;
+        height: min(68vh, 720px) !important;
+        max-width: none !important;
+    }
+
+    .lightbox.is-stack .stack-index,
+    .lightbox.is-stack .stack-bar {
+        display: none;
+    }
+
+    .lightbox.is-stack .stack-hint {
+        animation: none;
+    }
+}
+
 /* ---------- Tablet & phone ---------- */
 @media (max-width: 1024px) {
     .lightbox.is-stack {

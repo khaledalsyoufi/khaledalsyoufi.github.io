@@ -424,11 +424,10 @@ function initLightbox() {
         }
     };
 
-    /* Image projects read as an editorial column: the project header scrolls away
-       with the first image, a slim bar takes over at the top, a side index (desktop)
-       shows and jumps to each image, and a hairline tracks progress. */
+    /* Image projects use a horizontal gallery on desktop and a column on mobile. */
     const pad2 = (n) => String(n).padStart(2, '0');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const desktopGallery = window.matchMedia('(min-width: 1025px)');
     let stackCleanup = null;
 
     const teardownStack = () => {
@@ -467,13 +466,39 @@ function initLightbox() {
         const hint = document.createElement('p');
         hint.className = 'stack-hint mono';
         hint.setAttribute('aria-hidden', 'true');
-        hint.textContent = isFeed ? (finePointer ? 'CLICK A POST TO ENLARGE' : 'TAP A POST TO ENLARGE') : 'SCROLL ↓';
+        const updateHint = () => {
+            hint.textContent = desktopGallery.matches
+                ? (isFeed ? 'SCROLL → · CLICK TO ENLARGE' : 'SCROLL →')
+                : (isFeed ? (finePointer ? 'CLICK A POST TO ENLARGE' : 'TAP A POST TO ENLARGE') : 'SCROLL ↓');
+        };
+        updateHint();
         head.append(hint);
         lightboxContainer.prepend(head);
 
         const grid = document.createElement('div');
         grid.className = 'stack-grid';
         head.after(grid);
+
+        const fitTitle = () => {
+            heading.style.fontSize = '';
+            if (!desktopGallery.matches || !heading.clientWidth) return;
+            const style = getComputedStyle(heading);
+            const size = parseFloat(style.fontSize);
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            if (!context) return;
+            context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+            const spacing = parseFloat(style.letterSpacing) || 0;
+            const widest = Math.max(...title.toUpperCase().split(/\s+/).map((word) =>
+                context.measureText(word).width + word.length * spacing));
+            if (widest > heading.clientWidth) {
+                heading.style.fontSize = `${size * (heading.clientWidth - 1) / widest}px`;
+            }
+        };
+        fitTitle();
+        if (document.fonts) document.fonts.ready.then(() => {
+            if (heading.isConnected) fitTitle();
+        });
 
         // Each image in a numbered frame
         const frames = media.map((el, i) => {
@@ -507,8 +532,13 @@ function initLightbox() {
             viewer.querySelector('.stack-viewer-count').textContent = `${pad2(viewerIndex + 1)} / ${pad2(total)}`;
             // Nudge the grid along so closing lands on the post just viewed.
             const frame = frames[viewerIndex];
-            const top = frame.offsetTop - lightboxContainer.clientHeight / 2 + frame.offsetHeight / 2;
-            lightboxContainer.scrollTop = Math.max(0, top);
+            if (desktopGallery.matches) {
+                lightboxContainer.scrollLeft += frame.getBoundingClientRect().left
+                    - lightboxContainer.getBoundingClientRect().left;
+            } else {
+                const top = frame.offsetTop - lightboxContainer.clientHeight / 2 + frame.offsetHeight / 2;
+                lightboxContainer.scrollTop = Math.max(0, top);
+            }
         };
 
         const closeViewer = () => {
@@ -668,14 +698,19 @@ function initLightbox() {
         let ticking = false;
         const update = () => {
             ticking = false;
-            const top = lightboxContainer.scrollTop;
-            const max = lightboxContainer.scrollHeight - lightboxContainer.clientHeight;
-            progressFill.style.transform = `scaleX(${max > 0 ? Math.min(1, top / max) : 0})`;
-            lightbox.classList.toggle('is-scrolled', top > head.offsetHeight * 0.6);
-            const probe = top + lightboxContainer.clientHeight * 0.45;
+            const horizontal = desktopGallery.matches;
+            const position = horizontal ? lightboxContainer.scrollLeft : lightboxContainer.scrollTop;
+            const max = horizontal
+                ? lightboxContainer.scrollWidth - lightboxContainer.clientWidth
+                : lightboxContainer.scrollHeight - lightboxContainer.clientHeight;
+            progressFill.style.transform = `scaleX(${max > 0 ? Math.min(1, position / max) : 0})`;
+            lightbox.classList.toggle('is-scrolled', !horizontal && position > head.offsetHeight * 0.6);
+            const probe = horizontal
+                ? lightboxContainer.getBoundingClientRect().left + 20
+                : position + lightboxContainer.clientHeight * 0.45;
             let i = 0;
             frames.forEach((frame, n) => {
-                if (frame.offsetTop <= probe) i = n;
+                if ((horizontal ? frame.getBoundingClientRect().left : frame.offsetTop) <= probe) i = n;
             });
             setCurrent(i);
         };
@@ -685,7 +720,20 @@ function initLightbox() {
                 requestAnimationFrame(update);
             }
         };
+        const onWheel = (event) => {
+            if (!desktopGallery.matches || Math.abs(event.deltaX) >= Math.abs(event.deltaY)) return;
+            event.preventDefault();
+            lightboxContainer.scrollLeft += event.deltaY;
+        };
+        const onResize = () => {
+            updateHint();
+            fitTitle();
+            update();
+        };
         lightboxContainer.addEventListener('scroll', onScroll, { passive: true });
+        lightboxContainer.addEventListener('wheel', onWheel, { passive: false });
+        window.addEventListener('resize', onResize);
+        lightboxContainer.scrollLeft = 0;
         lightboxContainer.scrollTop = 0;
         update();
 
@@ -706,6 +754,8 @@ function initLightbox() {
 
         stackCleanup = () => {
             lightboxContainer.removeEventListener('scroll', onScroll);
+            lightboxContainer.removeEventListener('wheel', onWheel);
+            window.removeEventListener('resize', onResize);
             window.removeEventListener('keydown', onViewerKey, true);
             if (io) io.disconnect();
             ui.remove();
