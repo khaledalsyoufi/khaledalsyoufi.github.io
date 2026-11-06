@@ -1017,24 +1017,6 @@ body.view-mode .services.page-view.is-visible:not(.animate-in) .service-item {
     transition: var(--transition);
 }
 
-/* The measuring rule: a hairline that draws under the tile on hover */
-.visual-img-wrapper::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 2px;
-    background: var(--accent-color);
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 0.55s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.visual-item:hover .visual-img-wrapper::after,
-.visual-item:focus-visible .visual-img-wrapper::after {
-    transform: scaleX(1);
-}
 
 .visual-item:hover .visual-caption {
     opacity: 1;
@@ -2794,14 +2776,6 @@ body.glitching-in .page-view.is-visible {
 /* ==========================================================================
    Cassette covers — each project reads as a VHS box
    ========================================================================== */
-.visual-grid {
-    counter-reset: tape;
-}
-
-.visual-item {
-    counter-increment: tape;
-}
-
 .visual-img-wrapper {
     border-radius: 3px;
     border: 1px solid rgba(244, 242, 238, 0.22);
@@ -2810,25 +2784,6 @@ body.glitching-in .page-view.is-visible {
         inset 0 0 0 5px rgba(244, 242, 238, 0.08),
         0 14px 30px -16px rgba(0, 0, 0, 0.9);
     background: #0a0a0a;
-}
-
-
-/* the spine number */
-.visual-img-wrapper::after {
-    content: counter(tape, decimal-leading-zero);
-    position: absolute;
-    right: 8px;
-    bottom: 8px;
-    z-index: 3;
-    pointer-events: none;
-    font-family: var(--mono-font);
-    font-size: 0.62rem;
-    letter-spacing: 0.12em;
-    color: rgba(244, 242, 238, 0.8);
-    background: rgba(13, 13, 13, 0.68);
-    border: 1px solid rgba(244, 242, 238, 0.18);
-    border-radius: 2px;
-    padding: 1px 5px;
 }
 
 /* the tape label under the box */
