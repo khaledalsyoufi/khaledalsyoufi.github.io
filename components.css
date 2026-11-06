@@ -651,7 +651,7 @@ body.has-custom-cursor .custom-cursor {
 /* Stats Section */
 .hero-stats {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     margin-top: 4rem;
     width: 100%;
 }
@@ -696,6 +696,7 @@ body.has-custom-cursor .custom-cursor {
 }
 
 .stat-card-divider {
+    align-self: center;
     width: 1px;
     height: 80px;
     background: var(--border-color);

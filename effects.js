@@ -367,6 +367,14 @@
             sounds[name](opts);
         };
 
+        const typeKey = (back = false, interval = back ? 30 : 18) => {
+            if (!audible() || !ctx || document.hidden) return;
+            const t = performance.now();
+            if (t - lastKey < interval) return;
+            lastKey = t;
+            play('key', { back });
+        };
+
         // Fade the whole deck (ambient, scroll whirr, everything) in or out.
         const applyLevel = (fade = 0.4) => {
             if (!ctx) return;
@@ -570,12 +578,8 @@
                     if (next === length) return;
                     const back = next < length;
                     length = next;
-                    if (!enabled || document.hidden) return;
                     if (!title.closest('.page-view')?.classList.contains('is-visible')) return;
-                    const t = performance.now();
-                    if (t - lastKey < (back ? 30 : 18)) return;
-                    lastKey = t;
-                    play('key', { back });
+                    typeKey(back);
                 }).observe(title, { childList: true, characterData: true, subtree: true });
             }
         };
@@ -591,7 +595,7 @@
         });
 
         syncToggles();
-        return { play, isOn: () => enabled, isHeld: () => videoHold };
+        return { play, typeKey, isOn: () => enabled, isHeld: () => videoHold };
     })();
     window.vhsSound = sound;
 
@@ -670,7 +674,7 @@
     };
 
     // Mono labels: decode like an on-screen display tuning in.
-    const scrambleIn = (elements, baseDelay = 0) => {
+    const scrambleIn = (elements, baseDelay = 0, withSound = false) => {
         if (!window.ScrambleTextPlugin) return;
         elements.forEach((el, index) => {
             if (!el.dataset.originalText) {
@@ -678,6 +682,7 @@
                 if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', el.dataset.originalText);
             }
             gsap.killTweensOf(el);
+            let previousText = el.textContent;
             gsap.to(el, {
                 duration: 0.9,
                 delay: baseDelay + index * 0.08,
@@ -686,6 +691,13 @@
                     chars: SCRAMBLE_CHARS,
                     revealDelay: 0.2,
                     speed: 0.6
+                },
+                onUpdate: () => {
+                    if (!withSound || previousText === el.textContent) return;
+                    previousText = el.textContent;
+                    if (!el.closest('.page-view')?.classList.contains('is-visible')) return;
+                    const rect = el.getBoundingClientRect();
+                    if (rect.bottom > 0 && rect.top < window.innerHeight) sound.typeKey(false, 100);
                 }
             });
         });
@@ -702,7 +714,7 @@
         } else if (view === 'about') {
             const section = document.getElementById('about');
             if (!section) return;
-            scrambleIn([...section.querySelectorAll('.bio-kicker, .vhs-about-line')], delay);
+            scrambleIn([...section.querySelectorAll('.bio-kicker, .vhs-about-line')], delay, true);
         }
     };
 

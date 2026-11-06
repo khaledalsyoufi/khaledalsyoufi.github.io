@@ -64,6 +64,7 @@ function renderServices() {
         const content = document.createElement('div');
         content.className = 'service-content';
         content.id = `service-panel-${service.slug}`;
+        content.inert = true;
 
         const details = document.createElement('div');
         details.className = 'service-details mono';
@@ -256,6 +257,7 @@ function initServices() {
         item.classList.toggle('expanded', expanded);
         if (toggle) toggle.innerText = expanded ? '[ - ]' : '[ + ]';
         if (header) header.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        content.inert = !expanded;
         content.style.maxHeight = expanded ? `${content.scrollHeight}px` : '0px';
     };
 
