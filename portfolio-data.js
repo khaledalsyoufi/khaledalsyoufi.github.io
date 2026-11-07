@@ -10,6 +10,10 @@ window.portfolioData = {
             projects: [
                 {
                     title: "Madak Alteeb",
+                    client: "Madak Alteeb Fragrances · Saudi Arabia",
+                    challenge: "Establish a distinguished presence in the luxury Arabian perfume market by balancing traditional oud heritage with contemporary feminine elegance.",
+                    solution: "Crafted a bespoke emblem derived from rising incense smoke contours, paired with desert-dusk colorways, dual-script typography, and gold-foil packaging standards.",
+                    deliverables: [ "Visual Identity System", "Symbol Origin", "Packaging & Unboxing", "Dual-Script Typography", "Print Collateral" ],
                     year: "2026",
                     role: "BRAND IDENTITY",
                     cover: "projects/branding/madak_alteeb/logo_thumbnail.webp",
@@ -33,6 +37,10 @@ window.portfolioData = {
                 },
                 {
                     title: "Yellow Bike",
+                    client: "Yellow Bike Specialty Coffee",
+                    challenge: "Build an energetic, memorable identity for an urban specialty coffee brand targeting creatives, cyclists, and third-wave coffee purists.",
+                    solution: "Designed a bold high-contrast yellow-and-black visual language featuring modular bicycle-gear iconography, takeaway cup packaging, and cohesive architectural store signage.",
+                    deliverables: [ "Brand Identity", "Modular Iconography", "Packaging & Cups", "Storefront & Signage", "Social Grid" ],
                     year: "2026",
                     role: "BRAND IDENTITY",
                     cover: "projects/branding/yellow_bike/logo_thumbnail.webp",
@@ -62,6 +70,10 @@ window.portfolioData = {
                 },
                 {
                     title: "MamaZone",
+                    client: "MamaZone Mother & Baby Marketplace",
+                    challenge: "Convey unconditional maternal care, medical reliability, and organic tenderness for an online maternal and newborn essentials store.",
+                    solution: "Created an organic maternal silhouette emblem symbolizing a protective embrace, supported by pastel color psychology, accessible typography, and branded delivery boxes.",
+                    deliverables: [ "Brand Strategy & Identity", "Packaging & Delivery Tape", "Iconography Suite", "Stationery System", "Digital Guidelines" ],
                     year: "2026",
                     role: "BRAND IDENTITY",
                     cover: "projects/branding/mamazone/logo_thumbnail.webp",
@@ -91,6 +103,10 @@ window.portfolioData = {
                 },
                 {
                     title: "Zemamk",
+                    client: "Zemamk E-Commerce Analytics",
+                    challenge: "Transform intimidating data points, inventory turnover, and financial analytics into an empowering, executive-ready dashboard brand.",
+                    solution: "Formulated a sharp geometric identity based on data nodes and upward momentum, complemented by high-tech electric cyan accents and an intuitive UI design framework.",
+                    deliverables: [ "Brand Identity", "Data Visualization Suite", "Executive Pitch Deck", "Corporate Stationery", "UI Theme & Assets" ],
                     year: "2026",
                     role: "BRAND IDENTITY",
                     cover: "projects/branding/zemamk/logo_thumbnail.webp",
@@ -120,6 +136,10 @@ window.portfolioData = {
                 },
                 {
                     title: "Glorify",
+                    client: "Glorify Interior Design Studio",
+                    challenge: "Communicate architectural precision, spatial harmony, and refined luxury for an upscale residential and commercial interior studio.",
+                    solution: "Developed an architectural monogram based on golden-ratio symmetry, complemented by a tactile stationery suite and an editorial company profile.",
+                    deliverables: [ "Architectural Monogram", "Stationery Suite", "Editorial Profile", "Signage Specs", "Social Aesthetic" ],
                     year: "2026",
                     role: "BRAND IDENTITY",
                     cover: "projects/branding/glorify/logo_thumbnail.webp",
@@ -149,6 +169,10 @@ window.portfolioData = {
                 },
                 {
                     title: "Masjid Hamada",
+                    client: "Masjid Hamada Cultural Initiative",
+                    challenge: "Design a timeless spiritual brand for a historical community masjid that honors sacred Islamic tradition while engaging younger generations.",
+                    solution: "Created an elegant Arabic calligraphic emblem honoring classic architectural arches, complemented by geometric ceiling patterns and dignified community announcements.",
+                    deliverables: [ "Arabic Calligraphy", "Islamic Geometry", "Environmental Signage", "Donation Stationery", "Social Announcements" ],
                     year: "2026",
                     role: "BRAND IDENTITY",
                     cover: "projects/branding/masjid_hamada/logo_thumbnail.webp",
@@ -175,6 +199,10 @@ window.portfolioData = {
                 },
                 {
                     title: "Clara",
+                    client: "Clara Wellness & Water Tech",
+                    challenge: "Position an innovative scented shower filter as an essential daily self-care ritual emphasizing skin wellness, pure water, and mood enhancement.",
+                    solution: "Engineered a soothing, sensory visual identity centered on concentric water ripples, aromatic gradient swatches, and clean water-proof product packaging.",
+                    deliverables: [ "Visual Identity", "Scent Colorway System", "Packaging Design", "E-Commerce Mockups", "Campaign Socials" ],
                     year: "2026",
                     role: "BRAND IDENTITY",
                     cover: "projects/branding/clara/logo_thumbnail.webp",
@@ -204,6 +232,10 @@ window.portfolioData = {
                 },
                 {
                     title: "Orouq Alrukham",
+                    client: "Orouq Alrukham Natural Stone",
+                    challenge: "Express monolithic durability, natural geological beauty, and premium craftsmanship for a major natural marble fabrication company.",
+                    solution: "Constructed an organic vein-inspired logomark echoing natural stone fissures, balanced by deep slate textures, architectural serifs, and outdoor billboard systems.",
+                    deliverables: [ "Corporate Identity", "Stone Texture System", "Vehicle Wraps", "Outdoor Billboards", "Product Catalogs" ],
                     year: "2026",
                     role: "BRAND IDENTITY",
                     cover: "projects/branding/orouq_alrukham/logo_thumbnail.webp",
@@ -233,6 +265,10 @@ window.portfolioData = {
                 },
                 {
                     title: "Khaled AlSyoufi",
+                    client: "Khaled Alsyoufi · Personal Identity",
+                    challenge: "Build a distinctive personal brand that bridges high-concept retro-futuristic VHS aesthetics with disciplined, commercial graphic design mastery.",
+                    solution: "Created a kinetic monogram, dual-language typography hierarchy, and authentic CRT screen artifacts that embody 'Design that feels alive.'",
+                    deliverables: [ "Kinetic Monogram", "Design System", "Interactive Web Archive", "Print Portfolio", "Brand Guidelines" ],
                     year: "2026",
                     role: "BRAND IDENTITY",
                     cover: "projects/branding/khaled_alsyoufi/logo_thumbnail.webp",
@@ -758,6 +794,10 @@ window.portfolioData = {
             projects: [
                 {
                     title: "Apex System",
+                    client: "Apex System Technology",
+                    challenge: "Produce an authoritative 23-page corporate profile establishing international market trust for an enterprise technology and security firm.",
+                    solution: "Formulated a grid-locked editorial publication featuring technical axonometric illustrations, security tier matrices, and high-spec print finishing guidelines.",
+                    deliverables: [ "23-Page Corporate Profile", "Technical Diagrams", "Print Specification Book", "Interactive Digital PDF" ],
                     year: "2026",
                     role: "EDITORIAL & PRINT",
                     cover: "projects/presentation/apex_system_company_profile/1.webp",
@@ -790,6 +830,10 @@ window.portfolioData = {
                 },
                 {
                     title: "Glorify - Company Profile",
+                    client: "Glorify Interior Architecture",
+                    challenge: "Design a coffee-table-grade corporate profile showcasing residential portfolios, lighting design, and architectural materiality.",
+                    solution: "Crafted a spacious 10-page editorial layout emphasizing full-bleed spatial photography, generous whitespace, and restrained typographic accents.",
+                    deliverables: [ "Editorial Profile Design", "Material Swatch Layouts", "Project Case Showcases", "Print Production Guide" ],
                     year: "2026",
                     role: "EDITORIAL & PRINT",
                     cover: "projects/presentation/glorify_company_profile/1.webp",
@@ -809,6 +853,10 @@ window.portfolioData = {
                 },
                 {
                     title: "Rafah",
+                    client: "Rafah Facilities Management",
+                    challenge: "Present facility management, operations, and scale in an organized, dependable corporate document for tenders and RFPs.",
+                    solution: "Engineered service matrix charts, certified compliance badges, and clean corporate sectional color-coding across 16 pages.",
+                    deliverables: [ "16-Page RFP Profile", "Service Matrix Infographics", "Organizational Chart", "Print Presentation" ],
                     year: "2026",
                     role: "EDITORIAL & PRINT",
                     cover: "projects/presentation/rafah_company_profile/1.webp",
@@ -1089,6 +1137,10 @@ window.portfolioData = {
             projects: [
                 {
                     title: "The Purpose Pivot Protocol",
+                    client: "Executive Strategy & Transformation",
+                    challenge: "Structure a complex 46-stage leadership transformation curriculum into a high-retention, publication-grade executive presentation.",
+                    solution: "Architected a disciplined editorial grid, bespoke roadmap diagrams, and clear color-coded phases that keep senior stakeholders fully engaged across 46 slides.",
+                    deliverables: [ "46-Slide Master Keynote", "Strategic Roadmaps", "Framework Diagrams", "Executive Handout PDF" ],
                     year: "2026",
                     role: "EXECUTIVE STRATEGY DECK",
                     cover: "projects/presentation/the_purpose_pivot_protocol/1.webp",
@@ -1144,6 +1196,10 @@ window.portfolioData = {
                 },
                 {
                     title: "M.A. Research Proposal",
+                    client: "Government Strategy & Academic Research",
+                    challenge: "Translate dense policy research and multi-year cultural roadmaps into an authoritative, compelling presentation for public sector leaders.",
+                    solution: "Implemented clean institutional editorial grids, comparative policy matrices, and structured milestone timelines across 35 slides.",
+                    deliverables: [ "35-Slide Strategic Deck", "Milestone Timelines", "Policy Matrices", "Data Architecture" ],
                     year: "2024",
                     role: "STRATEGY DECK",
                     cover: "projects/presentation/ma_research_proposal/1.webp",
@@ -1188,6 +1244,10 @@ window.portfolioData = {
                 },
                 {
                     title: "Gym Nutrition Plan",
+                    client: "Performance & Athletic Nutrition",
+                    challenge: "Design an actionable, motivational guide that transforms complex dietary science and workout regimes into easy-to-follow daily routines.",
+                    solution: "Utilized high-energy bold typography, intuitive macro-tracking tables, and dynamic visual callouts that guide athletes effortlessly.",
+                    deliverables: [ "16-Slide Visual Guide", "Nutritional Charts", "Macro Trackers", "Meal Plan Templates" ],
                     year: "2024",
                     role: "LIFESTYLE DECK",
                     cover: "projects/presentation/gym_nutrition_plan/1.webp",
@@ -1213,6 +1273,10 @@ window.portfolioData = {
                 },
                 {
                     title: "Political Texts & Terminology",
+                    client: "Academic & Discourse Analysis",
+                    challenge: "Structure extensive linguistic and political comparative analyses without overwhelming the audience with dense academic text.",
+                    solution: "Created comparative side-by-side matrices, historical timeline banners, and semantic taxonomy diagrams across 28 slides.",
+                    deliverables: [ "28-Slide Academic Deck", "Taxonomy Diagrams", "Comparative Matrices", "Lecture Presentation" ],
                     year: "2023",
                     role: "ACADEMIC DECK",
                     cover: "projects/presentation/political_texts_terminology/1.webp",
