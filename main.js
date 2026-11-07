@@ -92,6 +92,9 @@ function renderServices() {
             const wrapper = document.createElement('div');
             wrapper.className = 'visual-img-wrapper';
 
+            const pane = document.createElement('div');
+            pane.className = 'visual-media-pane';
+
             const isVideoCover = /\.(mp4|webm|ogg)$/i.test(project.cover);
             const media = document.createElement(isVideoCover ? 'video' : 'img');
             media.src = project.cover;
@@ -133,7 +136,8 @@ function renderServices() {
             media.dataset.gallery = project.gallery.join(',');
             media.dataset.desc = project.description;
 
-            wrapper.append(media);
+            pane.append(media);
+            wrapper.append(pane);
             
             if (isVideoCover) {
                 const playBadge = document.createElement('div');
@@ -1456,7 +1460,7 @@ function renderClients() {
     }, { passive: true });
 }
 
-// 3D Gyroscope Tilt Effect
+// 3D Gyroscope Tilt Effect (Frame tilts on pointer interaction without moving layout)
 function initTilt3D() {
     if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -1475,76 +1479,79 @@ function initTilt3D() {
             const y = (e.clientY - rect.top) / rect.height;
             const tiltX = (y - 0.5) * -intensity;
             const tiltY = (x - 0.5) * intensity;
-            const pY = el.style.getPropertyValue('--parallax-y') || '0px';
             el.classList.add('tilting');
-            el.style.transform = `translate3d(0, ${pY}, 0) perspective(800px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(${scale},${scale},${scale})`;
+            el.style.transform = `perspective(800px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(${scale},${scale},${scale})`;
             el.style.transition = 'transform 0.08s linear';
         });
 
         el.addEventListener('mouseleave', () => {
-            const pY = el.style.getPropertyValue('--parallax-y') || '0px';
             el.classList.remove('tilting');
-            el.style.transform = `translate3d(0, ${pY}, 0)`;
+            el.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)';
             el.style.transition = 'transform 0.5s cubic-bezier(0.19, 1, 0.22, 1)';
         });
     });
 }
 
-// Selected Works Grid Scroll Parallax (Staggered Column Rhythm)
+// Inner Media Scroll Parallax (Images glide smoothly inside their frames while frame stays locked)
 function initGridParallax() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const visibleCards = new Set();
+    const visiblePanes = new Set();
     const cardObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
+            const pane = entry.target.querySelector('.visual-media-pane');
+            if (!pane) return;
             if (entry.isIntersecting) {
-                visibleCards.add(entry.target);
+                visiblePanes.add({ card: entry.target, pane });
             } else {
-                visibleCards.delete(entry.target);
+                for (const item of visiblePanes) {
+                    if (item.card === entry.target) {
+                        visiblePanes.delete(item);
+                        break;
+                    }
+                }
             }
         });
-    }, { rootMargin: '220px 0px 220px 0px' });
+    }, { rootMargin: '160px 0px 160px 0px' });
 
     const observeCards = () => {
         document.querySelectorAll('.visual-item').forEach(card => cardObserver.observe(card));
     };
     observeCards();
 
+    // Re-observe when view changes to services or when accordions expand
+    window.addEventListener('viewchange', (e) => {
+        if (e.detail?.view === 'services') {
+            setTimeout(observeCards, 80);
+            setTimeout(kickCards, 100);
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.service-header, .view-more-btn')) {
+            setTimeout(observeCards, 180);
+            setTimeout(kickCards, 220);
+        }
+    });
+
     let cardRaf = null;
     const renderCards = () => {
         cardRaf = null;
         const vh = window.innerHeight;
-        const is2Col = window.innerWidth <= 900;
 
-        visibleCards.forEach(card => {
-            const grid = card.parentElement;
-            if (!grid || !grid.classList.contains('visual-grid')) return;
-
+        visiblePanes.forEach(({ card, pane }) => {
             const rect = card.getBoundingClientRect();
-            // 0 when enters at bottom, 1 when leaves at top
+            // progress: 0 when card top enters bottom of viewport, 1 when bottom leaves at top
             const progress = (vh - rect.top) / (vh + rect.height);
-            const centered = progress - 0.5; // -0.5 to 0.5
+            const centered = Math.max(-0.55, Math.min(0.55, progress - 0.5)); // -0.5 to 0.5
 
-            // Distinct column stagger depths for rich organic art-gallery rhythm
-            const idx = [...grid.children].indexOf(card);
-            let multiplier;
-            if (is2Col) {
-                multiplier = (idx % 2 === 1) ? 75 : -55;
-            } else {
-                const col = idx % 4;
-                if (col === 1) multiplier = 90;
-                else if (col === 3) multiplier = 110;
-                else if (col === 2) multiplier = -45;
-                else multiplier = -65;
-            }
+            // Alternating column stagger for organic visual depth
+            const grid = card.parentElement;
+            const idx = grid ? [...grid.children].indexOf(card) : 0;
+            const factor = (idx % 2 === 1) ? 96 : 80;
+            const shiftY = (centered * -factor).toFixed(2);
 
-            const colShift = (centered * multiplier).toFixed(2);
-            card.style.setProperty('--parallax-y', `${colShift}px`);
-
-            // If not actively hovering with 3D tilt, keep base translation synced
-            if (!card.classList.contains('tilting')) {
-                card.style.transform = `translate3d(0, ${colShift}px, 0)`;
-            }
+            pane.style.transform = `translate3d(0, ${shiftY}px, 0)`;
         });
     };
 
@@ -1554,32 +1561,10 @@ function initGridParallax() {
         }
     };
 
-    // Re-observe and kick when view changes to services or when accordions expand
-    window.addEventListener('viewchange', (e) => {
-        if (e.detail?.view === 'services') {
-            setTimeout(() => {
-                observeCards();
-                kickCards();
-            }, 80);
-        }
-    });
-
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('.service-header, .view-more-btn')) {
-            setTimeout(() => {
-                observeCards();
-                kickCards();
-            }, 180);
-        }
-    });
-
     window.addEventListener('scroll', kickCards, { passive: true });
-    window.addEventListener('resize', kickCards, { passive: true });
     if (window.lenis) {
         window.lenis.on('scroll', kickCards);
     }
-
-    // Initial pass
     kickCards();
 }
 

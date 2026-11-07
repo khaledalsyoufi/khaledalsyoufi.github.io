@@ -901,7 +901,7 @@
                 uv -= d * fall * 0.14 * h;
 
                 // Scroll velocity bends the picture like a stretched tape.
-                uv.y += v * 0.07 * sin(vUv.x * 3.14159);
+                uv.y += v * 0.05 * sin(vUv.x * 3.14159);
 
                 // Tracking: per-line jitter and a rolling tear band.
                 float line = floor(vUv.y * uSize.y / 3.0);
@@ -911,7 +911,7 @@
                 uv.x += jitter * 0.005 * h + band * 0.025 * h + jitter * abs(v) * 0.02;
 
                 // Chromatic split, stronger while scrolling fast.
-                float shift = 0.005 * h + abs(v) * 0.035;
+                float shift = 0.005 * h + abs(v) * 0.025;
                 float r = texture2D(uTex, cover(uv + vec2(shift, 0.0))).r;
                 float g = texture2D(uTex, cover(uv)).g;
                 float b = texture2D(uTex, cover(uv - vec2(shift, 0.0))).b;
@@ -1063,7 +1063,10 @@
 
         const ro = new ResizeObserver((entries) => {
             entries.forEach((entry) => {
-                const tile = registry.get(entry.target);
+                const targetWrapper = entry.target.classList.contains('visual-img-wrapper')
+                    ? entry.target
+                    : entry.target.closest('.visual-img-wrapper');
+                const tile = registry.get(targetWrapper || entry.target);
                 if (!tile) return;
                 const w = Math.round(entry.contentRect.width * DPR);
                 const h = Math.round(entry.contentRect.height * DPR);
@@ -1135,7 +1138,8 @@
             });
 
             io.observe(wrapper);
-            ro.observe(wrapper);
+            const pane = wrapper.querySelector('.visual-media-pane');
+            ro.observe(pane || wrapper);
         };
 
         const scan = () => {

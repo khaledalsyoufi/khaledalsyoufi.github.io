@@ -969,8 +969,7 @@ body.view-mode .services.page-view.is-visible:not(.animate-in) .service-item {
 }
 
 .service-visuals {
-    padding-top: 1.5rem;
-    padding-bottom: 5rem;
+    padding-bottom: 4rem;
 }
 
 .visual-grid {
@@ -982,8 +981,6 @@ body.view-mode .services.page-view.is-visible:not(.animate-in) .service-item {
 .visual-item {
     display: flex;
     flex-direction: column;
-    will-change: transform;
-    transform: translate3d(0, var(--parallax-y, 0px), 0);
 }
 
 .visual-img-wrapper {
@@ -991,6 +988,29 @@ body.view-mode .services.page-view.is-visible:not(.animate-in) .service-item {
     overflow: hidden;
     border: 1px solid var(--border-color);
     position: relative;
+}
+
+/* Inner Parallax Media Carrier (Scroll parallax moves the image inside, frame stays locked) */
+.visual-media-pane {
+    position: absolute;
+    top: -18%;
+    left: 0;
+    right: 0;
+    bottom: -18%;
+    width: 100%;
+    height: 136%;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    pointer-events: auto;
+}
+
+.visual-media-pane img,
+.visual-media-pane video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), filter 0.4s ease;
 }
 
 /* Authentic VHS Card Glitch & Scanline Distortion on Hover */
@@ -1041,7 +1061,10 @@ body.view-mode .services.page-view.is-visible:not(.animate-in) .service-item {
 }
 
 /* The work carries the colour; the interface stays monochrome */
-.visual-item:hover img, .visual-item:hover video {
+.visual-item:hover .visual-media-pane img,
+.visual-item:hover .visual-media-pane video,
+.visual-item:hover img,
+.visual-item:hover video {
     transform: scale(1.08);
     filter: saturate(1.1) contrast(1.05);
 }
