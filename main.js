@@ -131,15 +131,6 @@ function renderServices() {
             }
             media.dataset.title = project.title;
             media.dataset.role = project.role;
-            if (project.year) media.dataset.year = project.year;
-            if (project.client) media.dataset.client = project.client;
-            if (project.challenge) media.dataset.challenge = project.challenge;
-            if (project.solution) media.dataset.solution = project.solution;
-            if (project.deliverables) {
-                media.dataset.deliverables = Array.isArray(project.deliverables)
-                    ? project.deliverables.join(' • ')
-                    : project.deliverables;
-            }
             // A square logo thumbnail says nothing about the shape of the pages behind it.
             if (project.ratio) media.dataset.ratio = project.ratio;
             media.dataset.gallery = project.gallery.join(',');
@@ -470,7 +461,7 @@ function initLightbox() {
         head.className = 'stack-head';
         const kicker = document.createElement('p');
         kicker.className = 'stack-kicker mono';
-        kicker.textContent = `${meta.role || 'DESIGN'} / ${total} ${total === 1 ? 'IMAGE' : 'IMAGES'}${meta.year ? ` · ${meta.year}` : ''}`;
+        kicker.textContent = `${meta.role || 'DESIGN'} / ${total} ${total === 1 ? 'IMAGE' : 'IMAGES'}`;
         const heading = document.createElement('h2');
         heading.className = 'stack-title';
         heading.textContent = title;
@@ -480,73 +471,6 @@ function initLightbox() {
             desc.className = 'stack-desc';
             desc.textContent = meta.desc;
             head.append(desc);
-        }
-
-        // Mini Case Study Dossier (Challenge, Solution, Scope/Deliverables)
-        if (meta.challenge || meta.solution || meta.deliverables || meta.client) {
-            const dossier = document.createElement('div');
-            dossier.className = 'case-study-dossier mono';
-
-            if (meta.client) {
-                const clientRow = document.createElement('div');
-                clientRow.className = 'case-study-meta-row';
-                clientRow.innerHTML = `<span class="case-study-label">[CLIENT]</span> <span class="case-study-val">${meta.client}</span>`;
-                dossier.append(clientRow);
-            }
-
-            if (meta.challenge || meta.solution) {
-                const dossierGrid = document.createElement('div');
-                dossierGrid.className = 'case-study-grid';
-
-                if (meta.challenge) {
-                    const chBlock = document.createElement('div');
-                    chBlock.className = 'case-study-block';
-                    const chLabel = document.createElement('span');
-                    chLabel.className = 'case-study-label';
-                    chLabel.textContent = '[THE CHALLENGE]';
-                    const chText = document.createElement('p');
-                    chText.className = 'case-study-text';
-                    chText.textContent = meta.challenge;
-                    chBlock.append(chLabel, chText);
-                    dossierGrid.append(chBlock);
-                }
-
-                if (meta.solution) {
-                    const solBlock = document.createElement('div');
-                    solBlock.className = 'case-study-block';
-                    const solLabel = document.createElement('span');
-                    solLabel.className = 'case-study-label';
-                    solLabel.textContent = '[CONCEPT & SOLUTION]';
-                    const solText = document.createElement('p');
-                    solText.className = 'case-study-text';
-                    solText.textContent = meta.solution;
-                    solBlock.append(solLabel, solText);
-                    dossierGrid.append(solBlock);
-                }
-                dossier.append(dossierGrid);
-            }
-
-            if (meta.deliverables) {
-                const delivWrap = document.createElement('div');
-                delivWrap.className = 'case-study-deliverables';
-                const delivLabel = document.createElement('span');
-                delivLabel.className = 'case-study-label';
-                delivLabel.textContent = '[DELIVERABLES & SCOPE]';
-                const tagsWrap = document.createElement('div');
-                tagsWrap.className = 'case-study-tags';
-                
-                const tags = meta.deliverables.split(' • ').map(t => t.trim()).filter(Boolean);
-                tags.forEach(tag => {
-                    const pill = document.createElement('span');
-                    pill.className = 'case-study-tag';
-                    pill.textContent = tag;
-                    tagsWrap.append(pill);
-                });
-                delivWrap.append(delivLabel, tagsWrap);
-                dossier.append(delivWrap);
-            }
-
-            head.append(dossier);
         }
         // Portrait sets (social posts) read as a feed grid; each post opens large.
         const isFeed = lightbox.classList.contains('is-portrait') && total > 1;
