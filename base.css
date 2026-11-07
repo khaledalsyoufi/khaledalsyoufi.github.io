@@ -37,6 +37,25 @@
     box-sizing: border-box;
 }
 
+/* Prevent image & video dragging, selection, and download UI */
+img, video {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+video::-internal-media-controls-download-button {
+    display: none !important;
+}
+
+video::-webkit-media-controls-enclosure {
+    overflow: hidden;
+}
+
 /* The custom cursor is opt-in: JS adds .has-custom-cursor on <body> only when
    a fine pointer is present. Without JS the native cursor stays. */
 body.has-custom-cursor,

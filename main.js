@@ -95,6 +95,7 @@ function renderServices() {
             const isVideoCover = /\.(mp4|webm|ogg)$/i.test(project.cover);
             const media = document.createElement(isVideoCover ? 'video' : 'img');
             media.src = project.cover;
+            media.draggable = false;
             if (!isVideoCover) {
                 media.loading = 'lazy';
                 media.decoding = 'async';
@@ -105,6 +106,9 @@ function renderServices() {
                 media.loop = true;
                 media.muted = true;
                 media.playsInline = true;
+                media.setAttribute('controlsList', 'nodownload noplaybackrate');
+                media.setAttribute('disablePictureInPicture', 'true');
+                media.setAttribute('disableRemotePlayback', 'true');
                 if (project.poster) {
                     media.dataset.poster = project.poster;
                     if (posterObserver) posterObserver.observe(media);
@@ -387,6 +391,7 @@ function initLightbox() {
         const media = document.createElement(isVideo ? 'video' : 'img');
         media.src = isVideo ? src : screenSrc(src);
         media.className = 'lightbox-img';
+        media.draggable = false;
         if (!isVideo) {
             // A page added without a phone version still shows the full one.
             media.addEventListener('error', () => { media.src = src; }, { once: true });
@@ -399,6 +404,9 @@ function initLightbox() {
             media.controls = true;
             media.playsInline = true;
             media.preload = 'metadata';
+            media.setAttribute('controlsList', 'nodownload noplaybackrate');
+            media.setAttribute('disablePictureInPicture', 'true');
+            media.setAttribute('disableRemotePlayback', 'true');
             if (poster) media.poster = poster;
         }
         return media;
@@ -2706,12 +2714,31 @@ function initTypewriter() {
     startType(1450, false);
 }
 
-// Initialize loader immediately
+// Asset Protection: Block drag-and-drop & contextmenu download for all images and videos
+function initMediaProtection() {
+    document.addEventListener('dragstart', (e) => {
+        if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO' || e.target.closest('img, video, picture')) {
+            e.preventDefault();
+            return false;
+        }
+    }, { capture: true });
+
+    document.addEventListener('contextmenu', (e) => {
+        if (e.target.closest('img, video, .lightbox-img, .visual-img-wrapper, .cassette-face, .stack-viewer')) {
+            e.preventDefault();
+            return false;
+        }
+    }, { capture: true });
+}
+
+// Initialize immediately
+initMediaProtection();
 initLoader();
 initCustomCursor();
 
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', () => {
+    initMediaProtection();
     renderServices();
     renderClients();
     initServices();
