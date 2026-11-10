@@ -677,13 +677,20 @@
         });
     };
 
+    // ScrambleText overwrites an element's whole content with plain text, so a line that holds
+    // markup (a link, the Journey rows' org / leader / date spans) is scrambled leaf by leaf;
+    // scrambling the line itself would flatten its links into dead text.
+    const scrambleTargets = (el) => (el.children.length
+        ? [...el.querySelectorAll('*')].filter((c) => !c.children.length && c.textContent.trim())
+        : [el]);
+
     // Mono labels: decode like an on-screen display tuning in.
     const scrambleIn = (elements, baseDelay = 0, withSound = false) => {
         if (!window.ScrambleTextPlugin) return;
-        elements.forEach((el, index) => {
+        elements.forEach((line, index) => scrambleTargets(line).forEach((el, leaf) => {
             if (!el.dataset.originalText) {
                 el.dataset.originalText = el.textContent.trim();
-                if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', el.dataset.originalText);
+                if (el === line && !el.hasAttribute('aria-label')) el.setAttribute('aria-label', el.dataset.originalText);
             }
             gsap.killTweensOf(el);
             let previousText = el.textContent;
@@ -697,14 +704,14 @@
                     speed: 0.6
                 },
                 onUpdate: () => {
-                    if (!withSound || previousText === el.textContent) return;
+                    if (!withSound || leaf > 0 || previousText === el.textContent) return;
                     previousText = el.textContent;
                     if (!el.closest('.page-view')?.classList.contains('is-visible')) return;
                     const rect = el.getBoundingClientRect();
                     if (rect.bottom > 0 && rect.top < window.innerHeight) sound.typeKey(false, 100);
                 }
             });
-        });
+        }));
     };
 
     const revealView = (view) => {

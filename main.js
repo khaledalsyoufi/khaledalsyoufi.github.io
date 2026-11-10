@@ -1588,7 +1588,7 @@ function initSectionViews() {
     if (!pageViews.length || !viewLinks.length) return;
 
     const viewTitles = {
-        home: 'Khaled Alsyoufi | Graphic Designer',
+        home: 'Khaled Alsyoufi | Graphic Designer & Video Editor in Cairo',
         services: 'Selected Works | Khaled Alsyoufi',
         clients: 'Clients | Khaled Alsyoufi',
         about: 'Info | Khaled Alsyoufi'
