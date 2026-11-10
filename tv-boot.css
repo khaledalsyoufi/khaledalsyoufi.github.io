@@ -23,6 +23,11 @@
     visibility: hidden;
 }
 
+/* the site's CRT scanlines sit above #loader; they'd hide the set, which has its own glass */
+body:has(#loader.is-boot) .crt {
+    display: none;
+}
+
 /* ---------- the 3D set (tv3d.js) ---------- */
 .tv3d {
     position: fixed;

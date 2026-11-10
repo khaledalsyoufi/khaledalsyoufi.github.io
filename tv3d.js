@@ -466,10 +466,14 @@ export function createView(S, opts) {
     let zoom = null;
 
     const viewport = () => ({ w: document.documentElement.clientWidth, h: window.innerHeight });
+    // On a narrow (portrait) screen the camera keeps its distance and widens its lens until the TV fits
+    // across, rather than backing off into the fog; tanV is tan(half the vertical field of view).
+    const D_LOAD = 4.6, TV_HALF_VIEW = 1.2;
+    let tanV = TAN;
     function framing() {
         const { w, h } = viewport();
         const aspect = w / h;
-        const d = Math.max(4.6, 1.75 / (TAN * aspect));
+        const d = aspect < 1 ? D_LOAD : Math.max(D_LOAD, 1.75 / (tanV * aspect));
         return {
             start: LOOK.clone().addScaledVector(DIR_START, d * 1.32),
             load: LOOK.clone().addScaledVector(DIR_LOAD, d),
@@ -488,6 +492,8 @@ export function createView(S, opts) {
         renderer.domElement.style.width = w + 'px';
         renderer.domElement.style.height = h + 'px';
         camera.aspect = w / h;
+        tanV = Math.max(TAN, TV_HALF_VIEW / (D_LOAD * camera.aspect));
+        camera.fov = THREE.MathUtils.radToDeg(2 * Math.atan(tanV));
         camera.updateProjectionMatrix();
     };
     resize();
@@ -519,7 +525,7 @@ export function createView(S, opts) {
             const t = clamp01((now - zoom.t0) / zoom.ms);
             const e = easeInOut(t);
             const r = fillRect();
-            const end = SC.clone().add(new THREE.Vector3(0, 0, (r.h / 2) / TAN * 0.8));
+            const end = SC.clone().add(new THREE.Vector3(0, 0, (r.h / 2) / tanV * 0.8));
             camPos.lerpVectors(zoom.from, end, e);
             camLook.lerpVectors(zoom.look, SC, Math.min(1, easeOut(t) * 1.25));
             // the picture breaks up as the glass comes close, then everything goes to black

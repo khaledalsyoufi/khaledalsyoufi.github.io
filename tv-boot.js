@@ -379,7 +379,7 @@
     };
     async function make3D() {
         if (!webgl() || !HTMLScriptElement.supports || !HTMLScriptElement.supports('importmap')) return null;
-        const mod = await Promise.race([import('./tv3d.js?v=3'), wait(LOAD_3D).then(() => null)]).catch(() => null);
+        const mod = await Promise.race([import('./tv3d.js?v=4'), wait(LOAD_3D).then(() => null)]).catch(() => null);
         if (!mod) return null;
         try { return mod.createView(S, { q }); } catch (e) { return null; }
     }
