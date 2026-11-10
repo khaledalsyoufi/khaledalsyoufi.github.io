@@ -1,0 +1,744 @@
+/* ==========================================================================
+   First-load intro: a CRT TV on a VHS deck in the dark loading room.
+   Lives inside #loader while it has .is-boot (tv-boot.js drives it); once the
+   intro ends the class goes and #loader keeps its segmented bar for the
+   page-to-page transitions. Everything is sized in em off --u, so the whole
+   set scales as one piece with the viewport.
+   ========================================================================== */
+
+.tvb {
+    display: none;
+}
+
+.loader-screen.is-boot {
+    justify-content: center;
+}
+
+.loader-screen.is-boot .tvb {
+    display: grid;
+}
+
+/* the CSS TV only shows when the 3D set can't play (tv-boot.js adds .is-css) */
+.tvb:not(.is-css) .tvb-stage {
+    visibility: hidden;
+}
+
+/* ---------- the 3D set (tv3d.js) ---------- */
+.tv3d {
+    position: fixed;
+    inset: 0;
+    z-index: 9950;
+    opacity: 0;
+    transition: opacity 0.9s ease-out;
+    pointer-events: none;
+}
+
+.tv3d.is-in {
+    opacity: 1;
+}
+
+.tv3d canvas {
+    display: block;
+}
+
+.tv3d-hint {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: clamp(1.4rem, 4vh, 2.6rem);
+    text-align: center;
+    font-family: var(--mono-font);
+    font-size: clamp(0.62rem, 0.8vw, 0.75rem);
+    letter-spacing: 0.3em;
+    color: rgba(255, 255, 255, 0.38);
+    opacity: 0;
+    transition: opacity 0.6s;
+}
+
+.tv3d-hint-on,
+.tv3d-hint-ff {
+    display: none;
+}
+
+.tv3d.is-gate {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.tv3d.is-gate .tv3d-hint {
+    opacity: 1;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: clamp(0.72rem, 1vw, 0.88rem);
+    animation: tvb-blink 1.4s steps(1) infinite;
+}
+
+.tv3d.is-gate .tv3d-hint-on,
+.tv3d.is-play .tv3d-hint-ff {
+    display: inline;
+}
+
+.tv3d.is-play .tv3d-hint {
+    opacity: 1;
+}
+
+.tv3d.is-ff .tv3d-hint,
+.tv3d.is-zoom .tv3d-hint {
+    opacity: 0;
+}
+
+/* where the flight into the glass ends, and what lifts off the page */
+.tv3d-black {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loader-screen.is-boot .loader-bottom-bar {
+    display: none;
+}
+
+.tvb {
+    --u: min(11px, calc(88vw / 64), calc(74vh / 62));
+    --tvb-blue-hi: #2f56e8;
+    --tvb-blue: #1b37b8;
+    --tvb-blue-lo: #0e1f73;
+    --tvb-ink: #eef3ff;
+    --tvb-q: 1;
+    position: absolute;
+    inset: 0;
+    place-items: center;
+    overflow: hidden;
+    user-select: none;
+}
+
+@media (max-aspect-ratio: 3 / 4) {
+    .tvb {
+        --u: min(11px, calc(94vw / 64), calc(74vh / 62));
+    }
+}
+
+.tvb-stage {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: var(--u);
+    will-change: transform;
+}
+
+/* the floor shadow the set stands on */
+.tvb-stage::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50.5em;
+    width: 86em;
+    height: 9em;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.35) 45%, transparent 72%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* ---------- the TV ---------- */
+.tvb-tv {
+    position: relative;
+    width: 64em;
+    height: 48em;
+    box-sizing: border-box;
+    padding: 2.6em 2.4em 1.6em 2.6em;
+    display: grid;
+    grid-template-columns: 1fr 10.5em;
+    gap: 2.2em;
+    border-radius: 3.4em 3.4em 2.4em 2.4em;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 16%),
+        linear-gradient(165deg, #3a3935 0%, #2b2a27 45%, #1d1c1a 100%);
+    box-shadow:
+        inset 0 0.18em 0 rgba(255, 255, 255, 0.12),
+        inset 0 -0.5em 1.2em rgba(0, 0, 0, 0.55),
+        inset 0.4em 0 1em rgba(255, 255, 255, 0.03),
+        0 2.6em 4em -1em rgba(0, 0, 0, 0.75),
+        0 0 0 0.12em #111;
+}
+
+.tvb-front {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2em;
+    min-width: 0;
+}
+
+.tvb-bezel {
+    position: relative;
+    padding: 1.6em;
+    border-radius: 2.6em;
+    background: linear-gradient(180deg, #121211, #1b1a18);
+    box-shadow:
+        inset 0 0.5em 1.4em rgba(0, 0, 0, 0.85),
+        inset 0 -0.15em 0 rgba(255, 255, 255, 0.05),
+        0 0.12em 0 rgba(255, 255, 255, 0.07);
+}
+
+.tvb-screen {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 2.4em / 2.8em;
+    overflow: hidden;
+    isolation: isolate;
+    background: radial-gradient(ellipse at 50% 45%, #1d2421 0%, #0c100f 60%, #050606 100%);
+}
+
+.tvb-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1.4em;
+    font-family: var(--mono-font);
+    font-size: 1.05em;
+    letter-spacing: 0.32em;
+    color: #85837c;
+}
+
+.tvb-strip b {
+    font-weight: 600;
+    color: #a9a69e;
+}
+
+/* ---------- the control panel ---------- */
+.tvb-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.8em;
+    padding: 1.2em 0 0.6em;
+}
+
+.tvb-knob {
+    --r: -40deg;
+    position: relative;
+    flex: none;
+    width: 6.4em;
+    height: 6.4em;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #4a4945, #232220 60%, #151513);
+    box-shadow:
+        0 0.5em 0.9em rgba(0, 0, 0, 0.6),
+        inset 0 0.12em 0 rgba(255, 255, 255, 0.12),
+        0 0 0 0.35em #1a1917,
+        0 0 0 0.45em #2f2e2b;
+    transition: transform calc(0.6s * var(--tvb-q)) cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.tvb-knob::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0.6em;
+    width: 0.4em;
+    height: 1.6em;
+    margin-left: -0.2em;
+    border-radius: 0.2em;
+    background: #bdbab2;
+}
+
+.tvb-knob--sm {
+    width: 4.4em;
+    height: 4.4em;
+}
+
+.tvb-knob--sm::after {
+    top: 0.5em;
+    height: 1.1em;
+}
+
+.tvb-knob {
+    transform: rotate(var(--r));
+}
+
+.tvb.is-on .tvb-knob {
+    --r: 25deg;
+}
+
+.tvb.is-on .tvb-knob--sm {
+    --r: 70deg;
+}
+
+.tvb-grille {
+    flex: 1;
+    width: 7.6em;
+    min-height: 6em;
+    border-radius: 0.6em;
+    background: repeating-linear-gradient(180deg, #0b0b0a 0 0.45em, #2d2c29 0.45em 0.9em);
+    box-shadow: inset 0 0.2em 0.5em rgba(0, 0, 0, 0.8);
+}
+
+.tvb-power {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.tvb-power-btn {
+    width: 3.2em;
+    height: 1.6em;
+    border-radius: 0.3em;
+    background: linear-gradient(180deg, #3b3a36, #22211e);
+    box-shadow: 0 0.2em 0.3em rgba(0, 0, 0, 0.6), inset 0 0.1em 0 rgba(255, 255, 255, 0.1);
+}
+
+.tvb-led {
+    width: 0.8em;
+    height: 0.8em;
+    border-radius: 50%;
+    background: #6b1712;
+    box-shadow: 0 0 0.5em rgba(255, 60, 40, 0.45);
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.tvb.is-on .tvb-led {
+    background: var(--accent-color);
+    box-shadow: 0 0 0.8em var(--accent-color), 0 0 1.8em rgba(102, 232, 183, 0.5);
+}
+
+/* ---------- what's on the glass ---------- */
+.tvb-content,
+.tvb-static,
+.tvb-roll,
+.tvb-line,
+.tvb-fade,
+.tvb-glass {
+    position: absolute;
+    pointer-events: none;
+}
+
+.tvb-content {
+    inset: 0;
+    z-index: 1;
+    box-sizing: border-box;
+    padding: 2.1em 2.9em 1.9em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9em;
+    background: radial-gradient(ellipse at 50% 40%, var(--tvb-blue-hi) 0%, var(--tvb-blue) 58%, var(--tvb-blue-lo) 100%);
+    color: var(--tvb-ink);
+    font-family: var(--mono-font);
+    text-shadow: 0.07em 0 rgba(255, 40, 90, 0.55), -0.07em 0 rgba(40, 220, 255, 0.55);
+    opacity: 0;
+    transition: opacity calc(0.35s * var(--tvb-q)) ease-out;
+}
+
+.tvb.is-play .tvb-content {
+    opacity: 1;
+}
+
+.tvb-osd {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--display-font);
+    font-size: 2.1em;
+    letter-spacing: 0.06em;
+    line-height: 1;
+}
+
+.tvb-mode {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+}
+
+/* the deck's play / fast-forward triangles, drawn so they never depend on a font's glyphs */
+.tvb-tri {
+    display: inline-flex;
+    gap: 0.08em;
+}
+
+.tvb-tri i {
+    width: 0;
+    height: 0;
+    border-top: 0.4em solid transparent;
+    border-bottom: 0.4em solid transparent;
+    border-left: 0.62em solid currentColor;
+    filter: drop-shadow(0.07em 0 rgba(255, 40, 90, 0.55)) drop-shadow(-0.07em 0 rgba(40, 220, 255, 0.55));
+}
+
+.tvb-tri i + i {
+    display: none;
+}
+
+.tvb.is-ff .tvb-tri i + i {
+    display: block;
+}
+
+.tvb.is-ff .tvb-mode-word::before {
+    content: 'FF';
+}
+
+.tvb.is-ff .tvb-mode-word span {
+    display: none;
+}
+
+.tvb.is-done .tvb-mode {
+    animation: tvb-blink calc(0.5s * var(--tvb-q)) steps(1) infinite;
+}
+
+.tvb-title {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45em;
+    margin-top: 0.2em;
+    font-family: var(--display-font);
+    font-size: 2.3em;
+    line-height: 1;
+    letter-spacing: 0.04em;
+}
+
+.tvb-title small {
+    font-family: var(--mono-font);
+    font-size: 0.42em;
+    letter-spacing: 0.3em;
+    opacity: 0.75;
+}
+
+.tvb-log {
+    flex: 1;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.2em;
+    font-size: 1.25em;
+    letter-spacing: 0.12em;
+    overflow: hidden;
+}
+
+.tvb-log li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6em;
+    animation: tvb-print calc(0.18s * var(--tvb-q)) steps(3) both;
+}
+
+.tvb-log li i {
+    flex: 1;
+    border-bottom: 0.14em dotted rgba(238, 243, 255, 0.55);
+    transform: translateY(-0.25em);
+}
+
+.tvb-log li b {
+    font-weight: 400;
+}
+
+.tvb-log li.is-skip b {
+    color: #ffd84a;
+}
+
+.tvb-track {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.tvb-track-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.3em;
+    letter-spacing: 0.2em;
+    font-variant-numeric: tabular-nums;
+}
+
+.tvb-bar {
+    position: relative;
+    height: 1.5em;
+    background: repeating-linear-gradient(90deg, rgba(238, 243, 255, 0.2) 0 0.45em, transparent 0.45em 0.8em);
+}
+
+.tvb-bar i {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0%;
+    background: repeating-linear-gradient(90deg, var(--tvb-ink) 0 0.45em, transparent 0.45em 0.8em);
+    filter: drop-shadow(0 0 0.3em rgba(238, 243, 255, 0.55));
+}
+
+.tvb-osd--bottom {
+    font-size: 1.7em;
+    font-variant-numeric: tabular-nums;
+}
+
+/* static: an SVG noise tile stepped around so it boils */
+.tvb-static {
+    inset: -40%;
+    z-index: 2;
+    opacity: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.6 -0.35'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 9em 9em;
+    mix-blend-mode: screen;
+    animation: tvb-noise 0.24s steps(4) infinite;
+}
+
+/* the soft hum bar that rolls up a playing tape */
+.tvb-roll {
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 28%;
+    z-index: 3;
+    opacity: 0;
+    background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.07) 45%, rgba(255, 255, 255, 0.1) 55%, transparent);
+    animation: tvb-roll 3.6s linear infinite;
+    transition: opacity 0.4s;
+}
+
+.tvb.is-play .tvb-roll {
+    opacity: 1;
+}
+
+/* the phosphor line a CRT draws as it comes on */
+.tvb-line {
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 0.3em;
+    margin-top: -0.15em;
+    z-index: 4;
+    opacity: 0;
+    background: #f4fffb;
+    box-shadow: 0 0 0.8em #fff, 0 0 2.4em var(--accent-color);
+    transform: scaleX(0);
+}
+
+/* the page's own black, which the glass fades to as the camera goes through it */
+.tvb-fade {
+    inset: 0;
+    z-index: 5;
+    opacity: 0;
+    background: var(--bg-color, #0d0d0d);
+}
+
+.tvb-glass {
+    inset: 0;
+    z-index: 6;
+    border-radius: inherit;
+    background:
+        linear-gradient(125deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 22%, transparent 23%),
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px),
+        radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+    box-shadow: inset 0 0 2.4em rgba(0, 0, 0, 0.8), inset 0 0 0.3em rgba(0, 0, 0, 0.9);
+}
+
+/* ---------- the VHS deck ---------- */
+.tvb-vcr {
+    position: relative;
+    margin-top: 0.5em;
+    width: 58em;
+    height: 7.4em;
+    box-sizing: border-box;
+    padding: 0 2.4em;
+    display: flex;
+    align-items: center;
+    gap: 2em;
+    border-radius: 0.7em 0.7em 1em 1em;
+    background: linear-gradient(180deg, #34332f 0%, #262522 30%, #1a1918 100%);
+    box-shadow:
+        inset 0 0.14em 0 rgba(255, 255, 255, 0.12),
+        inset 0 -0.3em 0.6em rgba(0, 0, 0, 0.5),
+        0 1.6em 2.4em -0.6em rgba(0, 0, 0, 0.8);
+}
+
+.tvb-vcr-brand {
+    font-family: var(--mono-font);
+    font-size: 1em;
+    line-height: 1.3;
+    letter-spacing: 0.28em;
+    color: #85837c;
+}
+
+.tvb-slot {
+    position: relative;
+    flex: none;
+    width: 21em;
+    height: 2.6em;
+    border-radius: 0.35em;
+    background: #060606;
+    box-shadow: inset 0 0.3em 0.5em rgba(0, 0, 0, 0.9), 0 0.1em 0 rgba(255, 255, 255, 0.08);
+    perspective: 20em;
+}
+
+.tvb-flap {
+    position: absolute;
+    inset: 0.25em;
+    border-radius: 0.2em;
+    background: linear-gradient(180deg, #2a2927, #1b1a18);
+    transform-origin: 50% 0;
+}
+
+.tvb.is-tape .tvb-flap {
+    animation: tvb-flap calc(0.9s * var(--tvb-q)) cubic-bezier(0.3, 0.7, 0.2, 1) both;
+}
+
+/* the cassette's spine, held up to the slot and pushed in */
+.tvb-tape {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 20em;
+    height: 2.4em;
+    margin: -1.2em 0 0 -10em;
+    box-sizing: border-box;
+    padding: 0.35em 0.9em;
+    border-radius: 0.25em;
+    background: linear-gradient(180deg, #1c1c1c, #0b0b0b);
+    box-shadow: 0 0.8em 1.4em rgba(0, 0, 0, 0.7), inset 0 0.1em 0 rgba(255, 255, 255, 0.1);
+    opacity: 0;
+}
+
+.tvb-tape span {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    padding: 0 0.7em;
+    border-radius: 0.12em;
+    background: #ece8dc;
+    color: #1b1a18;
+    font-family: var(--mono-font);
+    font-size: 0.9em;
+    letter-spacing: 0.18em;
+    white-space: nowrap;
+}
+
+.tvb-tape span b {
+    color: #0b7a55;
+    font-weight: 600;
+}
+
+.tvb.is-tape .tvb-tape {
+    animation: tvb-insert calc(0.9s * var(--tvb-q)) cubic-bezier(0.3, 0.7, 0.2, 1) both;
+}
+
+.tvb-disp {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1em;
+    width: 13em;
+    height: 3.2em;
+    box-sizing: border-box;
+    padding: 0 1.1em;
+    border-radius: 0.3em;
+    background: #050807;
+    box-shadow: inset 0 0.2em 0.4em rgba(0, 0, 0, 0.9), 0 0.1em 0 rgba(255, 255, 255, 0.07);
+    font-family: var(--mono-font);
+    color: rgba(102, 232, 183, 0.16);
+    font-variant-numeric: tabular-nums;
+}
+
+.tvb-disp span {
+    font-size: 1.5em;
+    letter-spacing: 0.1em;
+}
+
+.tvb-disp .tvb-tri {
+    font-size: 1.4em;
+}
+
+.tvb.is-tape .tvb-disp {
+    color: var(--accent-color);
+    text-shadow: 0 0 0.5em rgba(102, 232, 183, 0.6);
+}
+
+.tvb-btns {
+    display: flex;
+    gap: 0.6em;
+    margin-left: auto;
+}
+
+.tvb-btns i {
+    width: 2.6em;
+    height: 1.1em;
+    border-radius: 0.2em;
+    background: linear-gradient(180deg, #3b3a36, #24231f);
+    box-shadow: 0 0.15em 0.25em rgba(0, 0, 0, 0.6), inset 0 0.1em 0 rgba(255, 255, 255, 0.1);
+}
+
+.tvb-hint {
+    margin-top: 2.6em;
+    font-family: var(--mono-font);
+    font-size: 1.15em;
+    letter-spacing: 0.3em;
+    color: rgba(255, 255, 255, 0.38);
+    opacity: 0;
+    transition: opacity 0.6s;
+}
+
+.tvb.is-play .tvb-hint {
+    opacity: 1;
+}
+
+.tvb-hint-on,
+.tvb-hint-ff {
+    display: none;
+}
+
+.tvb.is-gate .tvb-hint-on,
+.tvb.is-play .tvb-hint-ff {
+    display: inline;
+}
+
+.tvb.is-gate .tvb-hint {
+    opacity: 1;
+    color: rgba(255, 255, 255, 0.72);
+    animation: tvb-blink 1.4s steps(1) infinite;
+}
+
+.loader-screen.is-gate {
+    cursor: pointer;
+}
+
+.tvb.is-ff .tvb-hint,
+.tvb.is-zoom .tvb-hint {
+    opacity: 0;
+}
+
+@keyframes tvb-insert {
+    0% { opacity: 0; transform: translateY(4.5em) scale(1.3); }
+    30% { opacity: 1; transform: translateY(3.2em) scale(1.22); }
+    62% { opacity: 1; transform: translateY(0) scale(1.02); filter: brightness(1); }
+    100% { opacity: 0; transform: translateY(0) scale(0.9); filter: brightness(0.25); }
+}
+
+@keyframes tvb-flap {
+    0%, 45% { transform: rotateX(0deg); }
+    62%, 80% { transform: rotateX(-82deg); }
+    100% { transform: rotateX(0deg); }
+}
+
+@keyframes tvb-noise {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-7%, 4%); }
+    50% { transform: translate(5%, -6%); }
+    75% { transform: translate(-3%, -2%); }
+    100% { transform: translate(6%, 5%); }
+}
+
+@keyframes tvb-roll {
+    from { transform: translateY(-110%); }
+    to { transform: translateY(400%); }
+}
+
+@keyframes tvb-print {
+    from { opacity: 0; clip-path: inset(0 100% 0 0); }
+    to { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+
+@keyframes tvb-blink {
+    50% { opacity: 0; }
+}

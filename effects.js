@@ -360,7 +360,9 @@
 
         // A video with its own audio is playing: the deck steps aside until it stops.
         let videoHold = false;
-        const audible = () => enabled && !videoHold;
+        // The first-load intro (tv-boot.js) has its own sound; the deck stays quiet until it hands over.
+        const introHold = () => !!(window.tvBoot && window.tvBoot.active);
+        const audible = () => enabled && !videoHold && !introHold();
 
         const play = (name, opts) => {
             if (!audible() || !ctx || !sounds[name]) return;
@@ -482,6 +484,8 @@
             if (ctx && ctx.state !== 'running') ctx.resume().catch(() => {});
         };
         unlockEvents.forEach((type) => document.addEventListener(type, unlock, { capture: true, passive: true }));
+        // the intro is over: bring the deck up (it was held at zero while the intro played)
+        window.addEventListener('tvboot:end', () => applyLevel(0.6));
 
         /* ---------- interface hooks ---------- */
 

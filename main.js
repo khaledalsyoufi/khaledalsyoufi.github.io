@@ -1096,11 +1096,24 @@ function initLoader() {
     };
 
     if (prefersReducedMotion) {
+        if (window.tvBoot) window.tvBoot.dispose();
         hideLoader();
         document.documentElement.style.scrollBehavior = 'smooth';
         window.scrollTo(0, 0);
         return;
     }
+
+    // First load: the TV-and-VHS-deck intro (tv-boot.js) plays inside #loader, then hands over here.
+    if (window.tvBoot) {
+        window.tvBoot.start(() => {
+            window.scrollTo(0, 0);
+            hideLoader();
+            document.documentElement.style.scrollBehavior = 'smooth';
+        });
+        return;
+    }
+    // Without it, the segmented bar does the first load too.
+    loader.classList.remove('is-boot');
 
     // Play on every page load/refresh
     const duration = 1150; // smooth ~1.15s loading

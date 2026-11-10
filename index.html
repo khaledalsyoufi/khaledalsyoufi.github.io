@@ -16,6 +16,18 @@
     <link rel="stylesheet" href="responsive.css?v=127">
     <link rel="stylesheet" href="effects.css?v=2">
     <link rel="stylesheet" href="gallery.css?v=9">
+    <link rel="stylesheet" href="tv-boot.css?v=4">
+    <!-- three.js for the first-load 3D TV (tv3d.js); fetched early so it's in by the time the intro asks -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+        }
+    }
+    </script>
+    <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" crossorigin>
+    <link rel="modulepreload" href="tv3d.js?v=3">
     <link rel="preload" as="font" type="font/ttf" href="public/fonts/Teletactile.ttf" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -124,7 +136,55 @@
     </div>
 
     <!-- Loading Screen (Clean Segmented Loader) -->
-    <div id="loader" class="loader-screen" role="status" aria-live="polite" aria-label="Loading">
+    <div id="loader" class="loader-screen is-boot" role="status" aria-live="polite" aria-label="Loading">
+        <!-- First-load intro: a CRT TV on a VHS deck (tv-boot.css / tv-boot.js) -->
+        <div class="tvb" aria-hidden="true">
+            <div class="tvb-stage">
+                <div class="tvb-tv">
+                    <div class="tvb-front">
+                        <div class="tvb-bezel">
+                            <div class="tvb-screen">
+                                <div class="tvb-content">
+                                    <div class="tvb-osd">
+                                        <span class="tvb-mode"><span class="tvb-mode-word"><span>PLAY</span></span><span class="tvb-tri"><i></i><i></i></span></span>
+                                        <span>CH 03</span>
+                                    </div>
+                                    <div class="tvb-title">KHALED ALSYOUFI<small>PORTFOLIO TAPE &middot; SP</small></div>
+                                    <ul class="tvb-log"></ul>
+                                    <div class="tvb-track">
+                                        <div class="tvb-track-row"><span>TRACKING</span><span class="tvb-pct">000%</span></div>
+                                        <div class="tvb-bar"><i></i></div>
+                                    </div>
+                                    <div class="tvb-osd tvb-osd--bottom"><span class="tvb-counter">0:00:00</span><span>SP</span></div>
+                                </div>
+                                <div class="tvb-static"></div>
+                                <div class="tvb-roll"></div>
+                                <div class="tvb-line"></div>
+                                <div class="tvb-fade"></div>
+                                <div class="tvb-glass"></div>
+                            </div>
+                        </div>
+                        <div class="tvb-strip"><b>KA-90</b><span>COLOR &middot; STEREO</span></div>
+                    </div>
+                    <div class="tvb-panel">
+                        <div class="tvb-knob"></div>
+                        <div class="tvb-knob tvb-knob--sm"></div>
+                        <div class="tvb-grille"></div>
+                        <div class="tvb-power"><span class="tvb-power-btn"></span><span class="tvb-led"></span></div>
+                    </div>
+                </div>
+                <div class="tvb-vcr">
+                    <div class="tvb-vcr-brand">VIDEO<br>DECK</div>
+                    <div class="tvb-slot">
+                        <div class="tvb-flap"></div>
+                        <div class="tvb-tape"><span><b>KA</b>PORTFOLIO &middot; 2026<b>SP</b></span></div>
+                    </div>
+                    <div class="tvb-disp"><span class="tvb-tri"><i></i><i></i></span><span class="tvb-disp-text">--:--</span></div>
+                    <div class="tvb-btns"><i></i><i></i><i></i></div>
+                </div>
+                <div class="tvb-hint"><span class="tvb-hint-on">CLICK TO TURN ON</span><span class="tvb-hint-ff">CLICK TO FAST-FORWARD</span></div>
+            </div>
+        </div>
         <div class="loader-bottom-bar">
             <div class="loader-meta-row mono">
                 <span class="loader-label">LOADING</span>
@@ -1089,8 +1149,9 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrambleTextPlugin.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js"></script>
     <script src="portfolio-data.js?v=157"></script>
-    <script src="main.js?v=160"></script>
-    <script src="effects.js?v=16"></script>
+    <script src="tv-boot.js?v=4"></script>
+    <script src="main.js?v=161"></script>
+    <script src="effects.js?v=17"></script>
 </body>
 
 </html>
