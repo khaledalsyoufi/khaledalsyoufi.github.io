@@ -258,7 +258,7 @@
     }
 
     .modal-title {
-        font-family: 'Teletactile', sans-serif;
+        font-family: var(--display-font);
         font-size: 1.35rem;
     }
 

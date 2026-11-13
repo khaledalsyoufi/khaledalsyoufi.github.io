@@ -171,7 +171,7 @@ body.has-custom-cursor .custom-cursor {
 
 /* Uses the authentic headline font ('Teletactile') */
 .modal-title {
-    font-family: 'Teletactile', var(--display-font, sans-serif);
+    font-family: var(--display-font);
     font-size: clamp(1.45rem, 3.4vw, 2.15rem);
     font-weight: 400;
     line-height: 1.15;
@@ -182,7 +182,7 @@ body.has-custom-cursor .custom-cursor {
 }
 
 .modal-desc {
-    font-family: var(--pixel-font, monospace);
+    font-family: var(--pixel-font);
     font-size: 0.76rem;
     font-weight: 400;
     line-height: 1.5;
@@ -205,7 +205,7 @@ body.has-custom-cursor .custom-cursor {
     justify-content: center;
     gap: 8px;
     padding: 13px 18px;
-    font-family: var(--pixel-font, monospace);
+    font-family: var(--pixel-font);
     font-size: 0.92rem;
     font-weight: 400;
     letter-spacing: var(--osd-tracking);
@@ -315,7 +315,7 @@ body.has-custom-cursor .custom-cursor {
     justify-content: space-between;
     align-items: baseline;
     margin-bottom: 0.65rem;
-    font-family: var(--mono-font), 'Share Tech Mono', monospace;
+    font-family: var(--mono-font);
     font-size: clamp(0.72rem, 0.95vw, 0.85rem);
     color: #a4a5a8;
     letter-spacing: 0.18em;
@@ -1043,7 +1043,7 @@ body.view-mode .services.page-view.is-visible:not(.animate-in) .service-item {
     overflow: hidden !important;
     z-index: 50;
     color: #ffffff;
-    font-family: var(--body-font, 'Instrument Sans', sans-serif);
+    font-family: var(--sans-font);
 }
 
 body.view-mode .clients.page-view.tv-epg-view.is-visible {
@@ -1232,7 +1232,7 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
 }
 
 .tv-dial-num {
-    font-family: 'Teletactile', var(--mono-font, monospace);
+    font-family: 'Teletactile', var(--mono-font);
     width: 26px;
     font-size: 1.05rem;
     font-weight: 400;
@@ -1352,7 +1352,7 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
 }
 
 .tv-guide-name {
-    font-family: 'Teletactile', var(--display-font, sans-serif);
+    font-family: var(--display-font);
     font-size: 1.25rem;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.85);
@@ -1408,7 +1408,7 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
    shrinks the few that don't fit. */
 .tv-guide-title {
     width: 100%;
-    font-family: 'Teletactile', var(--display-font, sans-serif);
+    font-family: var(--display-font);
     font-size: clamp(2.2rem, 4.5vw, 3.8rem);
     font-weight: 400;
     letter-spacing: 0.01em;
@@ -1448,7 +1448,7 @@ body.view-mode .clients.page-view.tv-epg-view.is-visible {
 }
 
 .tv-timeline-end {
-    font-family: 'Teletactile', var(--display-font, sans-serif);
+    font-family: var(--display-font);
     font-size: 1.12rem;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.88);
@@ -3429,7 +3429,7 @@ body.glitching-in .crt::before {
 
 .stk-spec {
     color: #666;
-    font-family: monospace;
+    font-family: var(--mono-font);
     font-size: 0.38rem;
     font-weight: 600;
 }
@@ -3489,7 +3489,7 @@ body.glitching-in .crt::before {
 }
 
 .vhs-embossed-brand {
-    font-family: sans-serif;
+    font-family: var(--display-font);
     font-weight: 900;
     font-size: 1.15rem;
     line-height: 0.85;
@@ -3526,7 +3526,7 @@ body.glitching-in .crt::before {
 }
 
 .vhs-barcode-label .barcode-num {
-    font-family: monospace;
+    font-family: var(--mono-font);
     font-size: 0.38rem;
     font-weight: bold;
     letter-spacing: 0.08em;
@@ -3622,7 +3622,7 @@ body.glitching-in .crt::before {
 }
 
 .spine-code {
-    font-family: monospace;
+    font-family: var(--mono-font);
     font-size: 0.38rem;
     color: rgba(244, 242, 238, 0.5);
     letter-spacing: 0.05em;
@@ -4096,7 +4096,7 @@ body::before {
 .display-title .type-cursor {
     display: inline-block;
     color: var(--accent-color);
-    font-family: var(--pixel-font), var(--mono-font), monospace;
+    font-family: var(--pixel-font);
     font-weight: 400;
     margin-left: 0.04em;
     line-height: 0.9;

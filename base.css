@@ -11,10 +11,10 @@
        Muted stays above 4.5:1 on the darkest surface. */
     --text-secondary: #b7b3ab;
     --muted-color: #8f8b84;
-    --mono-font: 'Share Tech Mono', 'IBM Plex Mono', ui-monospace, monospace;
-    --sans-font: 'Instrument Sans', -apple-system, sans-serif;
-    --display-font: 'Teletactile', 'Instrument Sans', sans-serif;
-    --pixel-font: 'Share Tech Mono', 'IBM Plex Mono', monospace;
+    --mono-font: 'IBM Plex Mono', monospace;
+    --sans-font: 'IBM Plex Mono', monospace;
+    --display-font: 'Teletactile', 'IBM Plex Mono', monospace;
+    --pixel-font: 'IBM Plex Mono', monospace;
     /* The on-screen display voice: mono, uppercase, one tracking value */
     --osd-tracking: 0.08em;
     /* One curve, three durations */
