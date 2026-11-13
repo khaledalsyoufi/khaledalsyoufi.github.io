@@ -7,12 +7,24 @@
     --lightbox-bg: rgba(10, 10, 10, 0.85);
     --btn-color: #ffffff;
     --btn-text-color: #000000;
-    --muted-color: rgba(244, 242, 238, 0.55);
+    /* Three text roles from one warm ramp (the off-white of the brand, #F4F2EE).
+       Muted stays above 4.5:1 on the darkest surface. */
+    --text-secondary: #b7b3ab;
+    --muted-color: #8f8b84;
     --mono-font: 'Share Tech Mono', 'IBM Plex Mono', ui-monospace, monospace;
     --sans-font: 'Instrument Sans', -apple-system, sans-serif;
-    --display-font: 'Teletactile', 'Anton', 'Instrument Sans', sans-serif;
+    --display-font: 'Teletactile', 'Instrument Sans', sans-serif;
     --pixel-font: 'Share Tech Mono', 'IBM Plex Mono', monospace;
-    --transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    /* The on-screen display voice: mono, uppercase, one tracking value */
+    --osd-tracking: 0.08em;
+    /* One curve, three durations */
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur-fast: 0.16s;
+    --dur-menu: 0.2s;
+    --dur-enter: 0.45s;
+    --transition: color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease),
+        border-color var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease),
+        transform var(--dur-fast) var(--ease);
     color-scheme: dark;
 }
 
@@ -27,7 +39,8 @@
     --lightbox-bg: rgba(244, 242, 238, 0.92);
     --btn-color: #0b7a55;
     --btn-text-color: #FFFFFF;
-    --muted-color: rgba(13, 13, 13, 0.6);
+    --text-secondary: #4f4b45;
+    --muted-color: #6b665e;
     color-scheme: light;
 }
 
@@ -115,7 +128,7 @@ body.view-fixed .minimal-footer {
     text-transform: uppercase;
     /* 13px = 10pt: Apple's desktop legibility floor */
     font-size: 0.85rem;
-    letter-spacing: 0.09em;
+    letter-spacing: var(--osd-tracking);
 }
 
 .container {
@@ -131,9 +144,9 @@ body.view-fixed .minimal-footer {
 .display-title {
     font-family: var(--display-font);
     font-size: clamp(2.5rem, 6.5vw, 7.5rem);
-    font-weight: 700;
+    font-weight: 400;
     line-height: 0.9;
-    letter-spacing: -0.04em;
+    letter-spacing: 0.01em;
     text-transform: uppercase;
     margin-left: 0;
     transition: color 0.4s ease, margin-left 0.4s ease;
@@ -205,9 +218,10 @@ body.view-mode .nav-links a.is-current::after {
 }
 
 .section-label {
-    margin-bottom: clamp(2rem, 4vw, 4rem);
+    margin-bottom: clamp(32px, 4vw, 64px);
     color: var(--muted-color);
     font-weight: 400;
+    text-transform: none;
 }
 
 a:focus-visible,
@@ -243,8 +257,8 @@ button:focus-visible,
 
 .reveal {
     opacity: 0;
-    transform: translateY(50px);
-    transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+    transform: translateY(12px);
+    transition: opacity var(--dur-enter) var(--ease), transform var(--dur-enter) var(--ease);
 }
 
 .reveal.active {
@@ -286,9 +300,6 @@ button:focus-visible,
     .grid-lines,
     .marquee-content,
     .custom-cursor,
-    .celebrate-badge {
-        animation: none !important;
-    }
 
     .section,
     .reveal {
@@ -319,7 +330,6 @@ button:focus-visible,
         rgba(244, 242, 238, 0) 3px
     );
     mix-blend-mode: screen;
-    animation: crtFlicker 7s ease-in-out infinite;
 }
 
 /* the slow rolling band of a CRT refresh */
@@ -338,11 +348,7 @@ button:focus-visible,
     animation: crtRoll 11s linear infinite;
 }
 
-@keyframes crtFlicker {
-    0%, 100% { opacity: 0.9; }
-    47% { opacity: 0.86; }
-    48% { opacity: 0.94; }
-}
+
 
 @keyframes crtRoll {
     from { transform: translateY(-45vh); }

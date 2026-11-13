@@ -1588,7 +1588,7 @@ function initSectionViews() {
     if (!pageViews.length || !viewLinks.length) return;
 
     const viewTitles = {
-        home: 'Khaled Alsyoufi | Graphic Designer & Video Editor in Cairo',
+        home: 'Khaled Alsyoufi | Graphic Designer & Video Editor in Egypt',
         services: 'Selected Works | Khaled Alsyoufi',
         clients: 'Clients | Khaled Alsyoufi',
         about: 'Info | Khaled Alsyoufi'
@@ -2497,20 +2497,15 @@ function initInfoReelScroll() {
 }
 
 
-// The headline types itself out with an authentic typewriter blinking dash cursor (_)
-// and automatically rotates through 6 punchy editorial statements every 5 seconds.
+// The headline types itself out once, like an on-screen display, and then holds
+// with the blinking dash cursor (_). With more than one phrase it would rotate.
 function initTypewriter() {
     const lines = [...document.querySelectorAll('.display-title .blur-line')];
     const titleEl = document.querySelector('.display-title');
     if (!lines.length) return;
 
     const PHRASES = [
-        ["DESIGN", "THAT FEELS", "ALIVE."],
-        ["VISUALS", "THAT COMMAND", "ATTENTION."],
-        ["CRAFTED", "WITH PURE", "PRECISION."],
-        ["SHAPING", "BRANDS THAT", "STAND OUT."],
-        ["IDEAS", "BROUGHT INTO", "FOCUS."],
-        ["STORIES", "TOLD THROUGH", "MOTION."]
+        ["DESIGNING", "VISUALS WORTH", "REWINDING"]
     ];
 
     const HOLD_DELAY = 5000; // 5 seconds per phrase
@@ -2577,6 +2572,7 @@ function initTypewriter() {
                 item.visible.textContent = item.targetText;
                 item.ghost.textContent = '';
             });
+            if (PHRASES.length < 2) return;
             typeTimeout = setTimeout(() => {
                 currentPhraseIndex = (currentPhraseIndex + 1) % PHRASES.length;
                 cycleInstantly();
@@ -2617,7 +2613,7 @@ function initTypewriter() {
                     last.line.appendChild(cursor);
                 }
             }
-            typeTimeout = setTimeout(startDelete, HOLD_DELAY);
+            if (PHRASES.length > 1) typeTimeout = setTimeout(startDelete, HOLD_DELAY);
             return;
         }
 
