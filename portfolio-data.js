@@ -498,10 +498,10 @@ window.portfolioData = {
                     title: "OET with Ahmed Hesham",
                     year: "2026",
                     role: "SOCIAL MEDIA DESIGN",
-                    cover: "projects/social/oet_ahmed_hesham/1.webp",
+                    cover: "projects/social/oet_ahmed_hesham/2.webp",
                     gallery: [
-                        "projects/social/oet_ahmed_hesham/1.webp",
                         "projects/social/oet_ahmed_hesham/2.webp",
+                        "projects/social/oet_ahmed_hesham/1.webp",
                         "projects/social/oet_ahmed_hesham/3.webp",
                         "projects/social/oet_ahmed_hesham/4.webp",
                         "projects/social/oet_ahmed_hesham/5.webp",
