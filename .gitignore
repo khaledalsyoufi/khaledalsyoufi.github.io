@@ -1,3 +1,8 @@
 # Archive of unused files and raw unoptimized media
 _archive/
 _backups_before_compression/
+
+# IDE and tool caches
+.claude/
+graphify-out/
+

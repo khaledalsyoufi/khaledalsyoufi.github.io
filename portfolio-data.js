@@ -495,6 +495,25 @@ window.portfolioData = {
             description: "Engaging social media campaigns, post designs, and digital marketing visuals crafted to boost brand presence and audience interaction.",
             projects: [
                 {
+                    title: "OET with Ahmed Hesham",
+                    year: "2026",
+                    role: "SOCIAL MEDIA DESIGN",
+                    cover: "projects/social/oet_ahmed_hesham/1.webp",
+                    gallery: [
+                        "projects/social/oet_ahmed_hesham/1.webp",
+                        "projects/social/oet_ahmed_hesham/2.webp",
+                        "projects/social/oet_ahmed_hesham/3.webp",
+                        "projects/social/oet_ahmed_hesham/4.webp",
+                        "projects/social/oet_ahmed_hesham/5.webp",
+                        "projects/social/oet_ahmed_hesham/6.webp",
+                        "projects/social/oet_ahmed_hesham/7.webp",
+                        "projects/social/oet_ahmed_hesham/8.webp",
+                        "projects/social/oet_ahmed_hesham/9.webp",
+                        "projects/social/oet_ahmed_hesham/10.webp"
+                    ],
+                    description: "Social media campaign designs and visual assets for OET preparation courses."
+                },
+                {
                     title: "SH8",
                     year: "2026",
                     role: "SOCIAL MEDIA DESIGN",
