@@ -808,7 +808,7 @@ window.portfolioData = {
                     description: "Company profile design and layout for Apex System."
                 },
                 {
-                    title: "Glorify - Company Profile",
+                    title: "Glorify",
                     year: "2026",
                     role: "EDITORIAL & PRINT",
                     cover: "projects/presentation/glorify_company_profile/1.webp",
@@ -1025,7 +1025,7 @@ window.portfolioData = {
                     description: "Corporate presentation and company profile design."
                 },
                 {
-                    title: "Extravaganza - Company Profile",
+                    title: "Extravaganza",
                     year: "2024",
                     role: "COMPANY PROFILE",
                     cover: "projects/presentation/extravaganza_company_profile/1.webp",
